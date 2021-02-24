@@ -35,8 +35,8 @@ class KitOrderList(admin.ModelAdmin):
 
 @admin.register(Study)
 class StudyList(admin.ModelAdmin):
-    list_display = ('IRB_number', 'pet_name', 'status')
-    list_filter = ('IRB_number', 'start_date')
+    list_display = ('id','IRB_number', 'pet_name', 'status')
+    list_filter = ('id','IRB_number', 'start_date')
     ordering = ['IRB_number']
 
 
