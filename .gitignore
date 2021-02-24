@@ -1,6 +1,6 @@
 # Not required (or desired) for deployment
-venv
 *.pyc
+venv
 __pycache__
 local_settings.py
 .idea
