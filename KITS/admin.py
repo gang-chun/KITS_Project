@@ -8,7 +8,7 @@ class KitInstanceInline(admin.TabularInline):
 
 @admin.register(Kit)
 class KitList(admin.ModelAdmin):
-    list_display = ('IRB_number', 'type_name', 'description')
+    list_display = ('id','IRB_number', 'type_name', 'description')
     inlines = [KitInstanceInline]
 
 
@@ -28,8 +28,8 @@ class KitInstanceAdmin(admin.ModelAdmin):
 
 @admin.register(KitOrder)
 class KitOrderList(admin.ModelAdmin):
-    list_display = ('type', 'web_address', 'description' )
-    list_filter = ('type', 'web_address')
+    list_display = ('id','type', 'web_address', 'description' )
+    list_filter = ('id','type', 'web_address')
     search_fields = ('type', )
     ordering = ['type']
 
@@ -41,4 +41,4 @@ class StudyList(admin.ModelAdmin):
 
 
 
-#test test
+
