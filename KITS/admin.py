@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Study, KitOrder, KitInstance, Kit
+# from .models import Study, KitOrder, KitInstance, Kit
+from .models import Study, KitOrder, KitInstance, Kit, Location
 
 
 class KitInstanceInline(admin.TabularInline):
@@ -25,6 +26,13 @@ class KitInstanceAdmin(admin.ModelAdmin):
         }),
     )
 
+
+@admin.register(Location)
+class LocationList(admin.ModelAdmin):
+    list_display = ('building', 'room', 'shelf_number', )
+#    list_filter = ('building', 'room')
+#    search_fields = ('building', )
+#    ordering = ['building']
 
 @admin.register(KitOrder)
 class KitOrderList(admin.ModelAdmin):
