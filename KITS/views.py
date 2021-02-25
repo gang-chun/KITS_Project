@@ -17,5 +17,7 @@ def login(request):
                   {'kits': login})
 
 
+
+@login_required
 def home(request):
     return render(request, 'KITS/home.html')
