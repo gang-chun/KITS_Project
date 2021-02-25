@@ -41,6 +41,15 @@ class Study(models.Model):
         return str(self.IRB_number)
 
 
+class Location(models.Model):
+    building = models.CharField(max_length=100)
+    room = models.CharField(max_length=100)
+    shelf_number = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return f'{self.building} ({self.room})'
+
+
 class Kit(models.Model):
     IRB_number = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='studies')
     type_name = models.CharField(max_length=100)
@@ -57,7 +66,8 @@ class KitInstance(models.Model):
                           help_text='Unique ID for this particular kit used in any Study')
     scanner_id = models.CharField(max_length=100, default=id)
     kit = models.ForeignKey('Kit', on_delete=models.RESTRICT)
-    # Bld/room
+    Location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
+
     location = models.CharField(max_length=100)
 
     expiration_date = models.DateField(null=True, blank=True)
