@@ -13,5 +13,7 @@ def login(request):
    return render(request, 'registration/login.html',
                  {'kits': login})
 
+
+@login_required
 def home(request):
    return render(request, 'kits/home.html')
