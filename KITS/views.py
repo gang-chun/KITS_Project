@@ -6,12 +6,16 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 
 now = timezone.now()
+
+
 def index(request):
     return render(request, 'registration/login.html')
 
+
 def login(request):
-   return render(request, 'registration/login.html',
-                 {'kits': login})
+    return render(request, 'registration/login.html',
+                  {'kits': login})
+
 
 def home(request):
-   return render(request, 'kits/home.html')
+    return render(request, 'KITS/home.html')
