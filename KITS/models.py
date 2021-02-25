@@ -16,7 +16,7 @@ class KitOrder(models.Model):
         return str(self.type)
 
 
-class Study(models.Model):
+class Study (models.Model):
     id = models.AutoField(primary_key=True)
     kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
     IRB_number = models.CharField(max_length=50)

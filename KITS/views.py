@@ -21,3 +21,7 @@ def login(request):
 @login_required
 def home(request):
     return render(request, 'KITS/home.html')
+
+@login_required
+def study(request):
+    return render(request, 'KITS/study.html')
