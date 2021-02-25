@@ -24,3 +24,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('KITS.urls')),
 ]
+
+
+# Django site authentication URLs (login, logout, password reset)
+urlpatterns += [
+    path('accounts/', include('django.contrib.auth.urls'))
+]

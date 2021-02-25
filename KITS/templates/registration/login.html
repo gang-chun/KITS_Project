@@ -3,11 +3,10 @@
 {% extends 'KITS/base.html' %}
 {% block content %}
 
-
-<title> KITS Login</title>
 <head>
     <meta charset="UTF-8">
     <link href="../templates/styles.css" type="text/css" rel="stylesheet"/>
+    <title> KITS Login</title>
 </head>
     <body>
         <h1>Login</h1>
@@ -23,7 +22,8 @@
         <p><a class="btn btn-default" href="{% url 'KITS:home' %}"
                                            role="button">Login Link #2</a></p>
 
-        <button class="button" style="vertical-align:middle"><span> Style Button </span></button>
+        {# Link to reset password. #}
+        <p><a href="{% url 'password_reset' %}">Forgot Password?</a></p>
     </body>
 
 {% endblock content %}
