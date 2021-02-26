@@ -3,57 +3,62 @@
 
 {% extends 'KITS/base.html' %}
 {% block content %}
-
-<style>
-    .studynav {
-    background-color: #FFFFFF;
-    overflow: hidden;
-    padding-top: 15px;
-
-}
-
-/* Style the links inside the navigation bar */
-.studynav a {
-    float: left;
-    color: #050520;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    {# font: ; commenting out until used #}
-    font-size: 15px;
-
-}
-
-/* Change the color of links on hover */
-.studynav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Add a color to the active/current link */
-.studynav a.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
-</style>
-    <title>Studies</title>
     <body>
-
-            <div class="studynav">
-              <a href="{% url 'KITS:home' %}">Current Studies</a>
-              <a href="{% url 'KITS:study' %}">Create Study</a>
-
-
-              <a href="{% url 'KITS:home' %}">Review Non-Active Studies</a>
-              <a href="{% url 'KITS:home' %}">Review Kit Shortages</a>
-              <a href="{% url 'KITS:home' %}">Review Expired Kits</a>
-              <input type="text" style="float:right" placeholder="Search for a study..">
-
-            </div>
-            <hr>
-
-
+        <div>
+            <h1>Welcome to KITS!</h1>
+        </div>
+        <hr>
+        {% if user.is_authenticated %}
+        <div>
+            <p>
+                Now this is a story all about how<br/>
+                My life got flipped turned upside down<br/>
+                And I'd like to take a minute, just sit right there<br/>
+                I'll tell you how I became the prince of a town called Bel-Air
+            </p>
+            <p>
+                In West Philadelphia born and raised<br/>
+                On the playground is where I spent most of my days<br/>
+                Chilling out, maxing, relaxing all cool<br/>
+                And all shooting some b-ball outside of the school<br/>
+                When a couple of guys who were up to no good<br/>
+                Started making trouble in my neighborhood<br/>
+                I got in one little fight and my mom got scared<br/>
+                And said "You're moving with your auntie and uncle in Bel-Air"<br/>
+                I begged and pleaded with her day after day<br/>
+                But she packed my suitcase and sent me on my way<br/>
+                She gave me a kiss and then she gave me my ticket<br/>
+                I put my Walkman on and said "I might as well kick it"<br/>
+                First class, yo, this is bad<br/>
+                Drinking orange juice out of a champagne glass<br/>
+                Is this what the people of Bel-Air living like?<br/>
+                Hmm, this might be all right<br/>
+                But wait, I hear they're prissy, bourgeois, and all that<br/>
+                Is this the type of place that they should send this cool cat?<br/>
+                I don't think so, I'll see when I get there<br/>
+                I hope they're prepared for the Prince of Bel-Air
+            </p>
+            <p>
+                Well, uh<br/>
+                The plane landed and when I came out<br/>
+                There was a dude, looked like a cop, standing there with my name out<br/>
+                I ain't trying to get arrested yet, I just got here<br/>
+                I sprang with the quickness like lightning, disappeared<br/>
+                I whistled for a cab and when it came near<br/>
+                The license plate said 'Fresh' and it had dice in the mirror<br/>
+                If anything I could say that this cab was rare<br/>
+                But I thought "Nah, forget it, yo, Holmes, to Bel-Air!"
+            </p>
+            <p>
+                I pulled<br/>
+                Up to a house about seven or eight<br/>
+                And I yelled to the cabbie "Yo', Holmes, smell ya later"<br/>
+                Looked at my kingdom, I was finally there<br/>
+                To sit on my throne as the Prince of Bel-Air
+            </p>
+        </div>
+        {% else %}
+        {% endif %}
     </body>
 {% endblock content %}
 
