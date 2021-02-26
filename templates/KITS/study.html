@@ -35,6 +35,12 @@
   background-color: #4CAF50;
   color: white;
 }
+.box a:hover{
+  width: 300px;
+  border: 15px;
+  padding: 50px;
+  margin: 20px;
+}
 
 </style>
     <title>Studies</title>
@@ -49,11 +55,15 @@
               <a href="{% url 'KITS:home' %}">Review Kit Shortages</a>
               <a href="{% url 'KITS:home' %}">Review Expired Kits</a>
               <input type="text" style="float:right" placeholder="Search for a study..">
-
             </div>
             <hr>
+            <div class="box">
+                <H1><b style="font-size: .75em;">Create Study</H1>
 
-            <H1>Create Study</H1>
+
+            </div>
+
+
 
     </body>
 {% endblock content %}
