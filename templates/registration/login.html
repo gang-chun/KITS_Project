@@ -2,6 +2,7 @@
 <html lang="en">
 {% extends 'KITS/base.html' %}
 {% block content %}
+<div class="container">
 {% if form.errors %}
     <div class="alert alert-danger" role="alert">
         The username or password you entered is incorrect. Please try again or reset your password.
@@ -29,14 +30,15 @@
         <td>{{ form.password }}</td>
       </tr>
     </table>
-    <input type="submit" value="login" />
+    <input class="btn btn-success" type="submit" value="Login" />
     <input type="hidden" name="next" value="{{ next }}" />
+
+      {# Assumes you setup the password_reset view in your URLconf #}
+    <a href="{% url 'password_reset' %}" class="btn btn-info">Lost password?</a>
   </form>
 
-  {# Assumes you setup the password_reset view in your URLconf #}
 
-    <p><a href="{% url 'password_reset' %}" class="btn btn-link">Lost password?</a></p>
-
+</div>
 {% endblock content %}
 
 </html>
