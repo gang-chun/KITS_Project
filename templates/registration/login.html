@@ -2,29 +2,40 @@
 <html lang="en">
 {% extends 'KITS/base.html' %}
 {% block content %}
+{% if form.errors %}
+    <div class="alert alert-danger" role="alert">
+        The username or password you entered is incorrect. Please try again or reset your password.
+    </div>
+  {% endif %}
 
-<head>
-    <meta charset="UTF-8">
-    <link href="../../KITS/static/css/styles.css" type="text/css" rel="stylesheet"/>
-    <title> KITS Login</title>
-</head>
-    <body>
-        <h1>Login</h1>
-            <p>
-            Welcome to the Kit Inventory Tracking System!
-            </p>
-        <form method="FORM" class="form-group">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-success" >Login</button>
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p>Your account doesn't have access to this page. To proceed,
+      please login with an account that has access.</p>
+    {% else %}
+      <p>Please login to see this page.</p>
+    {% endif %}
+  {% endif %}
 
-        </form>
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <table>
+      <tr>
+        <td>{{ form.username.label_tag }}</td>
+        <td>{{ form.username }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+      </tr>
+    </table>
+    <input type="submit" value="login" />
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
 
-        <p><a class="btn btn-info" href="{% url 'KITS:home' %}"
-                                           role="button">Login Link #2</a></p>
+  {# Assumes you setup the password_reset view in your URLconf #}
 
-        {# Link to reset password. #}
-        <p><a href="{% url 'password_reset' %}">Forgot Password?</a></p>
-    </body>
+    <p><a href="{% url 'password_reset' %}" class="btn btn-link">Lost password?</a></p>
 
 {% endblock content %}
 

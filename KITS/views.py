@@ -17,10 +17,14 @@ def login(request):
                   {'kits': login})
 
 
+def logout(request):
+    return render(request, 'registration/logout.html',
+                  {'kits': logout})
 
-@login_required
+
 def home(request):
     return render(request, 'KITS/home.html')
+
 
 @login_required
 def study(request):
