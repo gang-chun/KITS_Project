@@ -7,4 +7,5 @@ name: object
 urlpatterns = [
     path('', views.home, name='home'),
     path('study/', views.study, name='study'),
+    path('create_study/', views.create_study, name = 'create_study'),
 ]

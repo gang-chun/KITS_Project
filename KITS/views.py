@@ -28,4 +28,8 @@ def home(request):
 
 @login_required
 def study(request):
-    return render(request, 'KITS/study.html')
+    return render(request, 'KITS/studies.html')
+
+@login_required
+def create_study(request):
+    return render(request, 'KITS/create_study.html')
