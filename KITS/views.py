@@ -47,3 +47,30 @@ def create_study(request):
     else:
         form = StudyForm()
     return render(request, 'KITS/create_study.html', {'form': form})
+
+
+@login_required
+def study_edit(request, pk):
+    study = get_object_or_404(Study, pk=pk)
+    if request.method == "POST":
+        # update
+        form = StudyForm(request.POST, instance=study)
+        if form.is_valid():
+            study = form.save(commit=False)
+            study.updated_date = timezone.now()
+            study.save()
+            study = Study.objects.filter(start_date__lte=timezone.now())
+            return render(request, 'KITS/study_list.html',
+                          {'studies': study})
+
+    else:
+        # edit
+        form = StudyForm(instance=study)
+    return render(request, 'KITS/study_edit.html', {'form': form})
+
+
+@login_required
+def study_archive(request, pk):
+    study = get_object_or_404(Study, pk=pk)
+    study.status = 'Closed'
+    return redirect('KITS:study_list')

@@ -27,9 +27,9 @@ class Study(models.Model):
     requisition_form_qty = models.CharField(max_length=5)
     # status = models.CharField(max_length=100)
     STATUS = (
-        ('Preparing to Open', ('Preparing to Open')),
-        ('Open', ('Open')),
-        ('Closed', ('Closed'))
+        ('Preparing to Open', 'Preparing to Open'),
+        ('Open', 'Open'),
+        ('Closed', 'Closed')
     )
 
     status = models.CharField(
