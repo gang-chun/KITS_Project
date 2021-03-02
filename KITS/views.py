@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+
+from .forms import *
 from .models import *
-# from .forms import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 
@@ -32,4 +33,16 @@ def study(request):
 
 @login_required
 def create_study(request):
-    return render(request, 'KITS/create_study.html')
+   if request.method == "POST":
+       form = StudyForm(request.POST)
+       if form.is_valid():
+           create_study = form.save(commit=False)
+           create_study.created_date = timezone.now()
+           create_study.save()
+           create_study = Study.objects.filter(start_date__lte=timezone.now())
+           return render(request, 'KITS/create_study.html',
+                         {'create_study': create_study})
+   else:
+       form = StudyForm()
+
+   return render(request, 'KITS/create_study.html', {'form': form})

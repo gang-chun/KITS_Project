@@ -27,7 +27,8 @@ class Study (models.Model):
     status = models.CharField(max_length=100)
     start_date = models.DateTimeField(
         default=timezone.now)
-    end_date = models.DateTimeField(auto_now_add=True)
+    #auto_now_add=True
+    end_date = models.DateTimeField()
 
     def created(self):
         self.created_date = timezone.now()
