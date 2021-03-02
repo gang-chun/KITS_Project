@@ -14,6 +14,16 @@
         <H1><b style="font-size: .75em;">Studies</b></H1>
         <hr>
         <p>List all studies here with a filter for active/inactive etc.</p>
+
+        <form action="{%  url 'KITS:study_list' %}" method="get">
+            <label for="status">Filter by Status</label>
+            <select name="status">
+                {% for status in typeList %}
+                    <option value="{{ status }}">{{ status }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
         <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr class="bg-info">
