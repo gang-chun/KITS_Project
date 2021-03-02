@@ -16,6 +16,7 @@ class KitOrder(models.Model):
     def __str__(self):
         return str(self.type)
 
+
 class Study(models.Model):
     id = models.AutoField(primary_key=True)
     kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
@@ -24,7 +25,7 @@ class Study(models.Model):
     comment = models.CharField(max_length=100, blank=True)
     sponsor_name = models.CharField(max_length=100)
     requisition_form_qty = models.CharField(max_length=5)
-    #status = models.CharField(max_length=100)
+    # status = models.CharField(max_length=100)
     STATUS = (
         ('Preparing to Open', ('Preparing to Open')),
         ('Open', ('Open')),
@@ -39,7 +40,7 @@ class Study(models.Model):
 
     start_date = models.DateTimeField(
         default=timezone.now)
-    #auto_now_add=True
+    # auto_now_add=True
     end_date = models.DateTimeField(blank=True)
 
     class Meta:
@@ -55,9 +56,6 @@ class Study(models.Model):
 
     def __str__(self):
         return str(self.IRB_number)
-
-
-
 
 
 class Location(models.Model):
@@ -118,5 +116,3 @@ class KitInstance(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.id} ({self.kit}) {self.status} {self.expiration_date}'
-
-

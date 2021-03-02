@@ -11,13 +11,13 @@
 }
     </style>
     <div class="box">
-    <H1><b style="font-size: .75em;">Create Study</b></H1>
-    <hr>
-    <form method="POST" class="study-form">{% csrf_token %}
-          {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Add test</button>
-    </form>
-
+        <H1><b style="font-size: .75em;">Create Study</b></H1>
+        <hr>
+        <form method="POST" class="study-form">{% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Add test</button>
+        </form>
+    </div>
 {% endblock %}
 
 </html>
