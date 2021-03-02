@@ -30,7 +30,20 @@ def home(request):
 @login_required
 def study_list(request):
     studies = Study.objects.all()
-    return render(request, 'KITS/study_list.html', {'studies': studies})
+    # studies = Study.objects.all()
+
+    if request.GET.get('status'):
+        status_filter = request.GET.get('status')
+        query = Study.status.filter(STATUS = status_filter)
+    else:
+        query = Study.objects.all()
+    typeList = query.order_by('status').values_list('status', flat=True).distinct()
+    _dict = {}
+
+    for x in range(len(typeList)):
+        _dict[typeList[x]] =typeList[x]
+
+    return render(request, 'KITS/study_list.html', {'studies': studies, 'typeList': _dict, 'query': query})
 
 
 @login_required
