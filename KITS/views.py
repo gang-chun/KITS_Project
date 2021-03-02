@@ -22,14 +22,14 @@ def logout(request):
     return render(request, 'registration/logout.html',
                   {'kits': logout})
 
-
 def home(request):
     return render(request, 'KITS/home.html')
 
 
 @login_required
 def study(request):
-    return render(request, 'KITS/studies.html')
+    study = Study.objects.all()
+    return render(request, 'KITS/studies.html', {'studies': study})
 
 @login_required
 def create_study(request):

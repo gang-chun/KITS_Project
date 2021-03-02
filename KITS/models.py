@@ -6,6 +6,7 @@ import uuid  # Required for unique study instances
 
 
 # Create your models here.
+
 class KitOrder(models.Model):
     id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=100)
@@ -15,8 +16,7 @@ class KitOrder(models.Model):
     def __str__(self):
         return str(self.type)
 
-
-class Study (models.Model):
+class Study(models.Model):
     id = models.AutoField(primary_key=True)
     kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
     IRB_number = models.CharField(max_length=50)
@@ -24,11 +24,26 @@ class Study (models.Model):
     comment = models.CharField(max_length=100, blank=True)
     sponsor_name = models.CharField(max_length=100)
     requisition_form_qty = models.CharField(max_length=5)
-    status = models.CharField(max_length=100)
+    #status = models.CharField(max_length=100)
+    STATUS = (
+        ('Preparing to Open', ('Preparing to Open')),
+        ('Open', ('Open')),
+        ('Closed', ('Closed'))
+    )
+
+    status = models.CharField(
+        max_length=32,
+        choices=STATUS,
+        default='Preparing to Open',
+    )
+
     start_date = models.DateTimeField(
         default=timezone.now)
     #auto_now_add=True
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True)
+
+    class Meta:
+        ordering = ['IRB_number']
 
     def created(self):
         self.created_date = timezone.now()
@@ -40,6 +55,9 @@ class Study (models.Model):
 
     def __str__(self):
         return str(self.IRB_number)
+
+
+
 
 
 class Location(models.Model):
