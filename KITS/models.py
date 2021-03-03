@@ -4,6 +4,8 @@ from datetime import date
 from django.db import models
 import uuid  # Required for unique study instances
 
+from django import forms
+
 
 # Create your models here.
 
@@ -25,7 +27,8 @@ class Study(models.Model):
     comment = models.CharField(max_length=100, blank=True)
     sponsor_name = models.CharField(max_length=100)
     requisition_form_qty = models.CharField(max_length=5)
-    # status = models.CharField(max_length=100)
+
+
     STATUS = (
         ('Preparing to Open', 'Preparing to Open'),
         ('Open', 'Open'),
@@ -116,3 +119,8 @@ class KitInstance(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.id} ({self.kit}) {self.status} {self.expiration_date}'
+
+class Requisition(models.Model):
+    id = models.AutoField(primary_key=True)
+    study = models.ForeignKey(Study, on_delete=models.CASCADE)
+    link = models.URLField(max_length=200, blank=True)

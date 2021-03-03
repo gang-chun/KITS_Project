@@ -6,6 +6,8 @@ from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 
+from .filters import StudyFilter
+
 now = timezone.now()
 
 
@@ -30,20 +32,21 @@ def home(request):
 @login_required
 def study_list(request):
     studies = Study.objects.all()
-    # studies = Study.objects.all()
 
-    if request.GET.get('status'):
-        status_filter = request.GET.get('status')
-        query = Study.status.filter(STATUS = status_filter)
-    else:
-        query = Study.objects.all()
-    typeList = query.order_by('status').values_list('status', flat=True).distinct()
-    _dict = {}
+    # Filter bar
+    myFilter = StudyFilter(request.GET, queryset=studies)
+    studies = myFilter.qs
 
-    for x in range(len(typeList)):
-        _dict[typeList[x]] =typeList[x]
+    return render(request, 'KITS/study_list.html', {'studies': studies, 'myFilter': myFilter})
 
-    return render(request, 'KITS/study_list.html', {'studies': studies, 'typeList': _dict, 'query': query})
+
+@login_required
+def study_detail(request, pk):
+   study = get_object_or_404(Study, pk=pk)
+   kits = Kit.objects.filter(IRB_number=pk)
+   kit_quantity = KitInstance.objects.filter(kit_id=pk).count()
+   kit_order = get_object_or_404(Study, pk=pk)
+   return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'kit_order': kit_order, 'kit_quantity':kit_quantity,})
 
 
 @login_required
