@@ -13,7 +13,6 @@
     <div class="box">
     <H1><b style="font-size: .75em;">Study: {{ study }} {{ study.pet_name }}</b></H1>
     <hr>
-    <p>list all details about a specific study</p>
 
         <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -38,7 +37,7 @@
             {% for kit in kits %}
                 <tr>
                     <td>{{ kit.type_name }}</td>
-                    <td> {{ kitinstance }}</td>
+                    <td>{{ kit_quantity }}</td>
                 </tr>
 
 
