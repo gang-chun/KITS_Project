@@ -5,6 +5,8 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
+from django.db.models import Count, Max
+from django.db.models.functions import Greatest
 
 from .filters import StudyFilter
 
@@ -43,28 +45,12 @@ def study_list(request):
 @login_required
 def study_detail(request, pk):
    study = get_object_or_404(Study, pk=pk)
-   kits = Kit.objects.filter(IRB_number=pk).values('type_name','id')
-   kit_quantity = KitInstance.objects.filter(kit_id=pk).count()
+   kits = Kit.objects.filter(IRB_number=pk).annotate(no_of_kits=Count('kitinstance'))\
+       .annotate(exp=Max('kitinstance__expiration_date'))
    kit_order = get_object_or_404(Study, pk=pk)
 
 
-   qs = Kit.objects.annotate(no_of_kits=Count('KitInstance')
-   #qs_values = {'type_name': 'name', 'id': 'id_no'}
-
-   #kit_q = []
-
-   #for i in kits():
-       #kit_q = KitInstance.objects.filter(kits[i])
-       #kit_q.append(kit_q)
-
-   #qs = kit_q[pk]
-   #qs = get_object_or_404(Study, id=pk)
-   #qs = KitInstance.objects.filter(kit__id=pk)
-
-
-
-
-   return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'kit_order': kit_order, 'kit_quantity':kit_quantity, 'qs': qs})
+   return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'kit_order': kit_order,})
 
 
 @login_required

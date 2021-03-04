@@ -88,7 +88,7 @@ class KitInstance(models.Model):
     kit = models.ForeignKey('Kit', on_delete=models.RESTRICT)
     Location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
 
-    location = models.CharField(max_length=100)
+    location = models.CharField(max_length=100, blank=True)
 
     expiration_date = models.DateField(null=True, blank=True)
     KIT_STATUS = (
