@@ -5,7 +5,7 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from django.db.models import Count, Max
+from django.db.models import Count, Max, Q
 from django.db.models.functions import Greatest
 
 from .filters import StudyFilter
@@ -45,7 +45,7 @@ def study_list(request):
 @login_required
 def study_detail(request, pk):
    study = get_object_or_404(Study, pk=pk)
-   kits = Kit.objects.filter(IRB_number=pk).annotate(no_of_kits=Count('kitinstance'))\
+   kits = Kit.objects.filter(IRB_number=pk).annotate(no_of_kits=Count('kitinstance',filter=Q(kitinstance__status='a')))\
        .annotate(exp=Max('kitinstance__expiration_date'))
    kit_order = get_object_or_404(Study, pk=pk)
 
