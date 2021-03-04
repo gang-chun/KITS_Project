@@ -37,13 +37,13 @@
             {% for kit in kits %}
                 <tr>
                     <td>{{ kit.type_name }}</td>
-                    <td>{{ kit_quantity }}</td>
+                    <td>{{ kit.id }}</td>
                 </tr>
 
 
             </tbody>
         </table>
-        <p>Kit Ordering: {{ kit_order }}</p>
+        <p>Kit Ordering: {{ qs }}</p>
         <p>Requisition: </p>
     {% endfor %}
     </div>

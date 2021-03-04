@@ -43,10 +43,28 @@ def study_list(request):
 @login_required
 def study_detail(request, pk):
    study = get_object_or_404(Study, pk=pk)
-   kits = Kit.objects.filter(IRB_number=pk)
+   kits = Kit.objects.filter(IRB_number=pk).values('type_name','id')
    kit_quantity = KitInstance.objects.filter(kit_id=pk).count()
    kit_order = get_object_or_404(Study, pk=pk)
-   return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'kit_order': kit_order, 'kit_quantity':kit_quantity,})
+
+
+   qs = Kit.objects.annotate(no_of_kits=Count('KitInstance')
+   #qs_values = {'type_name': 'name', 'id': 'id_no'}
+
+   #kit_q = []
+
+   #for i in kits():
+       #kit_q = KitInstance.objects.filter(kits[i])
+       #kit_q.append(kit_q)
+
+   #qs = kit_q[pk]
+   #qs = get_object_or_404(Study, id=pk)
+   #qs = KitInstance.objects.filter(kit__id=pk)
+
+
+
+
+   return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'kit_order': kit_order, 'kit_quantity':kit_quantity, 'qs': qs})
 
 
 @login_required
