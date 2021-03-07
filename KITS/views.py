@@ -108,7 +108,7 @@ def kit_checkin(request):
             new_kit.save()
             kit = Kit.objects.filter(date_added__lte=timezone.now())
             return render(request, 'KITS/kit_list.html',
-                          {'kit': kit})
+                          {'kits': kit})
     else:
         form = KitForm()
     return render(request, 'KITS/kit_checkin.html', {'form': form})
@@ -137,8 +137,7 @@ def kit_edit(request, pk):
             kit.updated_date = timezone.now()
             kit.save()
             #kit = Kit.objects.filter(start_date__lte=timezone.now())
-            return render(request, 'KITS/kit_list.html',
-                          {'kit': kit})
+            return redirect('KITS:kit_list')
 
     else:
         # edit
