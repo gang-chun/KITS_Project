@@ -95,3 +95,19 @@ def study_archive(request, pk):
     study = get_object_or_404(Study, pk=pk)
     study.status = 'Closed'
     return redirect('KITS:study_list')
+
+
+@login_required
+def kit_checkin(request):
+    if request.method == "POST":
+        form = KitForm(request.POST)
+        if form.is_valid():
+            new_kit = form.save(commit=False)
+            new_kit.created_date = timezone.now()
+            new_kit.save()
+            kit = Kit.objects.filter(start_date__lte=timezone.now())
+            return render(request, 'KITS/kit_checkin.html',
+                          {'kit': kit})
+    else:
+        form = KitForm()
+    return render(request, 'KITS/kit_checkin.html', {'form': form})
