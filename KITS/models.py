@@ -84,7 +84,7 @@ class Kit(models.Model):
     type_name = models.CharField(
         max_length=32,
         choices=TYPE_NAME,
-        default='Screening',
+        blank= True,
     )
 
     def __str__(self):

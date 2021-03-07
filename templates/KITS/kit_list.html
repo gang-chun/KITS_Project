@@ -22,6 +22,9 @@
                 <th>Description</th>
                 <th>Date Added</th>
                 <th colspan="5">Actions</th>
+
+
+
             </tr>
             </thead>
             <tbody>
@@ -32,6 +35,7 @@
                 <td>{{ kit.IRB_number }}</td>
                 <td>{{ kit.description }}</td>
                 <td>{{ kit.date_added }}</td>
+                <td><a href="{% url 'KITS:kit_edit' pk=kit.pk%}" class="btn btn-warning">Edit</a></td>
             </tr>
              {% endfor %}
             </tbody>

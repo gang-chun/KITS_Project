@@ -44,14 +44,15 @@ def study_list(request):
 
 @login_required
 def study_detail(request, pk):
-   study = get_object_or_404(Study, pk=pk)
-   kits = Kit.objects.filter(IRB_number=pk).annotate(no_of_kits=Count('kitinstance',filter=Q(kitinstance__status='a')))\
-       .annotate(no_of_kits_exp=Count('kitinstance', filter=Q(kitinstance__status='e')))\
-       .annotate(exp=Max('kitinstance__expiration_date'))
-   kit_order = KitOrder.objects.filter(id=pk)
-   req = Requisition.objects.filter(study=pk)
+    study = get_object_or_404(Study, pk=pk)
+    kits = Kit.objects.filter(IRB_number=pk).annotate(
+        no_of_kits=Count('kitinstance', filter=Q(kitinstance__status='a'))) \
+        .annotate(no_of_kits_exp=Count('kitinstance', filter=Q(kitinstance__status='e'))) \
+        .annotate(exp=Max('kitinstance__expiration_date'))
+    kit_order = KitOrder.objects.filter(id=pk)
+    req = Requisition.objects.filter(study=pk)
 
-   return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'kit_order': kit_order, 'req':req})
+    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'kit_order': kit_order, 'req': req})
 
 
 @login_required
@@ -112,13 +113,34 @@ def kit_checkin(request):
         form = KitForm()
     return render(request, 'KITS/kit_checkin.html', {'form': form})
 
+
 @login_required
 def kit_list(request):
     kit = Kit.objects.all()
 
     # Filter bar
-    #myFilter = KitFilter(request.GET, queryset=kit)
-    #kit = myFilter.qs
+    # myFilter = KitFilter(request.GET, queryset=kit)
+    # kit = myFilter.qs
 
     return render(request, 'KITS/kit_list.html', {'kit': kit})
-                                                  #'myFilter': myFilter})
+    # 'myFilter': myFilter})
+
+
+@login_required
+def kit_edit(request, pk):
+    kit = get_object_or_404(Kit, pk=pk)
+    if request.method == "POST":
+        # update
+        form = KitForm(request.POST, instance=kit)
+        if form.is_valid():
+            kit = form.save(commit=False)
+            kit.updated_date = timezone.now()
+            kit.save()
+            #kit = Kit.objects.filter(start_date__lte=timezone.now())
+            return render(request, 'KITS/kit_list.html',
+                          {'kit': kit})
+
+    else:
+        # edit
+        form = KitForm(instance=kit)
+    return render(request, 'KITS/kit_edit.html', {'form': form})
