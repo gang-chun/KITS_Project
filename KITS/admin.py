@@ -19,7 +19,7 @@ class KitInstanceAdmin(admin.ModelAdmin):
     list_filter = ('expiration_date', 'kit')
     fieldsets = (
         (None, {
-            'fields': ('kit', 'id')
+            'fields': ('kit', 'id', 'location')
         }),
         ('Availability', {
             'fields': ('status', 'expiration_date')
