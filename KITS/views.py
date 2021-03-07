@@ -139,6 +139,7 @@ def kit_edit(request, pk):
             #kit = Kit.objects.filter(start_date__lte=timezone.now())
             return redirect('KITS:kit_list')
 
+
     else:
         # edit
         form = KitForm(instance=kit)
