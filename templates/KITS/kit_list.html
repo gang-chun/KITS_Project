@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'KITS/base.html' %}
+{% block content %}
+    <style>
+    .box {
+    margin: 8px;
+    border: 1px solid silver;
+    padding: 8px;
+    border-radius: 4px;
+}
+    </style>
+    <div class="box">
+        <H1><b style="font-size: .75em;">Kits</b></H1>
+        <hr>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr class="bg-info">
+                <th>ID</th>
+                <th>Type</th>
+                <th>IRB_Number</th>
+                <th>Description</th>
+                <th>Date Added</th>
+                <th colspan="5">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for kits in kit %}
+            <tr>
+                <td>{{ kit.id }}</td>
+                <td>{{ kit.type_name }}</td>
+                <td>{{ kit.IRB_number_id }}</td>
+                <td>{{ kit.description }}</td>
+                <td>{{ kit.date_added }}</td>
+            </tr>
+             {% endfor %}
+            </tbody>
+        </table>
+     <a href="{% url 'KITS:kit_checkin' %}" class="btn btn-success">Check-in Kit</a>
+    </div>
+{% endblock %}
+</html>

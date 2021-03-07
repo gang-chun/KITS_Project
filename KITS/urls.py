@@ -12,4 +12,5 @@ urlpatterns = [
     path('study/<int:pk>/edit', views.study_edit, name='study_edit'),
     path('study/<int:pk>/archive/', views.study_archive, name='study_archive'),
     path('kit_checkin/', views.kit_checkin, name='kit_checkin'),
+    path('kit_list/', views.kit_list, name='kit_list'),
 ]

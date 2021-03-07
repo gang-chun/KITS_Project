@@ -72,8 +72,20 @@ class Location(models.Model):
 
 class Kit(models.Model):
     IRB_number = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='studies')
-    type_name = models.CharField(max_length=100)
+    #type_name = models.CharField(max_length=100)
     description = models.CharField(max_length=100, blank=True)
+    date_added = models.DateTimeField(
+        default=timezone.now)
+    TYPE_NAME = (
+        ('Screening', 'Screening'),
+        ('Day 1', 'Day 1'),
+        ('Day 30', 'Day 30')
+    )
+    type_name = models.CharField(
+        max_length=32,
+        choices=TYPE_NAME,
+        default='Screening',
+    )
 
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'

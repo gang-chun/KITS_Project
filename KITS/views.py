@@ -105,9 +105,20 @@ def kit_checkin(request):
             new_kit = form.save(commit=False)
             new_kit.created_date = timezone.now()
             new_kit.save()
-            kit = Kit.objects.filter(start_date__lte=timezone.now())
-            return render(request, 'KITS/kit_checkin.html',
+            kit = Kit.objects.filter(date_added__lte=timezone.now())
+            return render(request, 'KITS/kit_list.html',
                           {'kit': kit})
     else:
         form = KitForm()
     return render(request, 'KITS/kit_checkin.html', {'form': form})
+
+@login_required
+def kit_list(request):
+    kit = Kit.objects.all()
+
+    # Filter bar
+    #myFilter = KitFilter(request.GET, queryset=kit)
+    #kit = myFilter.qs
+
+    return render(request, 'KITS/kit_list.html', {'kit': kit})
+                                                  #'myFilter': myFilter})

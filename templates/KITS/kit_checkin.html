@@ -9,13 +9,15 @@
     padding: 8px;
     border-radius: 4px;
 }
-    </style>
- <div class="box">
-        <H1><b style="font-size: .75em;">Kit Check-in</b></H1>
-
-
-
-
+   </style>
+    <div class="box">
+        <H1><b style="font-size: .75em;">Check-in Kit</b></H1>
+        <hr>
+        <form method="POST" class="kit-form">{% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Add </button>
+        </form>
+    </div>
 {% endblock %}
 
 </html>
