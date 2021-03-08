@@ -9,8 +9,16 @@ class StudyForm(forms.ModelForm):
             'id', 'kit_order', 'IRB_number', 'pet_name', 'comment', 'sponsor_name', 'requisition_form_qty', 'status',
             'start_date', 'end_date')
 
+
 class KitForm(forms.ModelForm):
     class Meta:
         model = Kit
         fields = (
-            'id','type_name','description','IRB_number', 'date_added')
+            'id', 'type_name', 'description', 'IRB_number', 'date_added')
+
+
+class KitTypeNewForm(forms.ModelForm):
+    class Meta:
+        model = Kit
+        fields = (
+            'type_name',)
