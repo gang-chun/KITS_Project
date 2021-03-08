@@ -36,11 +36,13 @@
                 <td>{{ kit.description }}</td>
                 <td>{{ kit.date_added }}</td>
                 <td><a href="{% url 'KITS:kit_edit' pk=kit.pk%}" class="btn btn-warning">Edit</a></td>
+
             </tr>
              {% endfor %}
             </tbody>
         </table>
-     <a href="{% url 'KITS:kit_checkin' %}" class="btn btn-success">Check-in Kit</a>
+        <a href="{% url 'KITS:kit_checkin' %}" class="btn btn-success">Check-in Kit</a>
+        <a href="{% url 'KITS:kit_type_new' %}" class="btn btn-success">Add Kit Type</a>
     </div>
 {% endblock %}
 </html>

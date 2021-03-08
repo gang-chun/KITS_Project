@@ -143,3 +143,19 @@ def kit_edit(request, pk):
         # edit
         form = KitForm(instance=kit)
     return render(request, 'KITS/kit_edit.html', {'form': form})
+
+@login_required
+def kit_type_new(request):
+    if request.method == "POST":
+        form = KitTypeNewForm(request.POST)
+        if form.is_valid():
+            kit_type_new = form.name
+            kit_type_new = form.save(commit=False)
+            kit_type_new.created_date = timezone.now()
+            kit_type_new.save()
+            #kit = Kit.objects.filter(start_date__lte=timezone.now())
+            return render(request, 'KITS/kit_list.html',
+                          {'kit': kit})
+    else:
+        form = KitTypeNewForm()
+    return render(request, 'KITS/kit_type_new.html', {'form': form})
