@@ -95,6 +95,7 @@ def study_edit(request, pk):
 def study_archive(request, pk):
     study = get_object_or_404(Study, pk=pk)
     study.status = 'Closed'
+    study.save()
     return redirect('KITS:study_list')
 
 
@@ -136,10 +137,8 @@ def kit_edit(request, pk):
             kit = form.save(commit=False)
             kit.updated_date = timezone.now()
             kit.save()
-            #kit = Kit.objects.filter(start_date__lte=timezone.now())
+            # kit = Kit.objects.filter(start_date__lte=timezone.now())
             return redirect('KITS:kit_list')
-
-
     else:
         # edit
         form = KitForm(instance=kit)
