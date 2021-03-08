@@ -6,6 +6,7 @@ import uuid  # Required for unique study instances
 
 # Create your models here.
 
+
 class KitOrder(models.Model):
     id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=100)
@@ -93,7 +94,8 @@ class KitInstance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                           help_text='Unique ID for this particular kit used in any Study')
     scanner_id = models.CharField(max_length=100)
-    kit = models.ForeignKey(Kit, on_delete=models.CASCADE, related_name='kit')
+    kit = models.ForeignKey('Kit', on_delete=models.RESTRICT)
+    # kit = models.ForeignKey(Kit, on_delete=models.CASCADE, related_name='kit')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
 
     note = models.CharField(max_length=100, blank=True)
