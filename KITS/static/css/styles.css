@@ -42,8 +42,10 @@
     background-color: powderblue;
     overflow: hidden;
     border-style: solid;
-    border-radius: 5px;
+    border-radius: 0px;
     border-width: 1px;
+    width: 90%;
+
 }
 
 /* Style the links inside the navigation bar */
