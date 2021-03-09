@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends 'KITS/base2.html' %}
+{% block content %}
+    <body>
+        <div class="container-fluid">
+            <h1>Welcome to the Kit Inventory Tracking System.</h1>
+        </div>
+        <hr>
+        <div class="container-fluid">
+        {% if user.is_authenticated %}
+            <p><strong>If you can see this sentence, you're logged in!</strong></p>
+        {% else %}
+        {% endif %}
+        <p>
+            Experimental design for home page. This is up for consideration.
+        </p>
+        <p>
+            Currently, any link clicked on will return you to the original style site. You can click on
+            "New Home" to return to this design.
+        </p>
+        </div>
+    </body>
+{% endblock content %}
+
+</html>

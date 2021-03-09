@@ -16,16 +16,17 @@
         .welcome-text{
             position: absolute;
             width: 600px;
-            height: 300px;
+            height: 100px;
             margin: 20% 30%;
             text-align: center;
         }
-        .welcome-text h1{
+        .welcome-text h1 {
             text-align: center;
             text-transform: uppercase;
             font-size: 60px;
             color: #fff;
-        .welcome-text a{
+        }
+        .welcome-text a {
             border: 1px solid #fff;
             padding: 10px 25px;
             text-decoration: none;
@@ -34,23 +35,38 @@
             display: inline-block;
             color: #fff;
         }
-}
+        .welcome-text p {
+            color: #fff;
+            font-size: 16px;
+        }
+        hr {
+            width: 60%;
+            margin-left:auto;
+            margin-right: auto;
+            background-color: white;
+        }
+
     </style>
     <body>
         <div class="welcome-text">
             <h1>Welcome to KITS!</h1>
-            <a href="">Login</a>
-        </div>
-        {% load static %}
-        <hr>
+            <p> KITS stands for Kit Inventory Tracking System.
+                This application was created to help clinical trial sites track their research kits for the multiple studies they are apart of.
+            </p>
+            {% load static %}
+
+
         {% if user.is_authenticated %}
-        <div class="container">
+            <hr>
             <p>
                 This is a test paragraph to be filled with useful information in the near future!
             </p>
-        </div>
+
         {% else %}
+            <a href="{% url 'login' %}?next={{request.path}}">Log In</a>
+
         {% endif %}
+        </div>
     </body>
 {% endblock content %}
 

@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.db.models import Count, Max, Q
 from django.db.models.functions import Greatest
 
-from .filters import StudyFilter
+from .filters import StudyFilter, KitFilter
 
 now = timezone.now()
 
@@ -29,6 +29,10 @@ def logout(request):
 
 def home(request):
     return render(request, 'KITS/home.html')
+
+
+def home2(request):
+    return render(request, 'KITS/home2.html')
 
 
 @login_required
@@ -104,12 +108,12 @@ def kit_checkin(request):
     if request.method == "POST":
         form = KitForm(request.POST)
         if form.is_valid():
+            Kit.objects.only("type_name")
             new_kit = form.save(commit=False)
             new_kit.created_date = timezone.now()
             new_kit.save()
             kit = Kit.objects.filter(date_added__lte=timezone.now())
-            return render(request, 'KITS/kit_list.html',
-                          {'kits': kit})
+            return redirect('KITS:kit_list')
     else:
         form = KitForm()
     return render(request, 'KITS/kit_checkin.html', {'form': form})
@@ -120,11 +124,12 @@ def kit_list(request):
     kit = Kit.objects.all()
 
     # Filter bar
-    # myFilter = KitFilter(request.GET, queryset=kit)
-    # kit = myFilter.qs
+    myFilter = KitFilter(request.GET, queryset=kit)
+    kit = myFilter.qs
 
-    return render(request, 'KITS/kit_list.html', {'kit': kit})
-    # 'myFilter': myFilter})
+    return render(request, 'KITS/kit_list.html', {'kit': kit, 'myFilter': myFilter})
+
+
 
 
 @login_required
@@ -144,18 +149,9 @@ def kit_edit(request, pk):
         form = KitForm(instance=kit)
     return render(request, 'KITS/kit_edit.html', {'form': form})
 
+
 @login_required
-def kit_type_new(request):
-    if request.method == "POST":
-        form = KitTypeNewForm(request.POST)
-        if form.is_valid():
-            kit_type_new = form.name
-            kit_type_new = form.save(commit=False)
-            kit_type_new.created_date = timezone.now()
-            kit_type_new.save()
-            #kit = Kit.objects.filter(start_date__lte=timezone.now())
-            return render(request, 'KITS/kit_list.html',
-                          {'kit': kit})
-    else:
-        form = KitTypeNewForm()
-    return render(request, 'KITS/kit_type_new.html', {'form': form})
+def kit_delete(request, pk):
+   kit = get_object_or_404(Kit, pk=pk)
+   kit.delete()
+   return redirect('KITS:kit_list')

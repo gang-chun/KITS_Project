@@ -6,6 +6,7 @@ app_name = 'KITS'
 name: object
 urlpatterns = [
     path('', views.home, name='home'),
+    path('home2/', views.home2, name='home2'),
     path('study_list/', views.study_list, name='study_list'),
     path('study/<int:pk>/study_detail/', views.study_detail, name='study_detail'),
     path('create_study/', views.create_study, name='create_study'),
@@ -15,7 +16,7 @@ urlpatterns = [
     path('kit_list/', views.kit_list, name='kit_list'),
     path('kit_list/<int:pk>/kit_edit/', views.kit_edit, name='kit_edit'),
     path('kit_list/<int:pk>/kit_/', views.kit_edit, name='kit_edit'),
-    path('kit_list/kit_type_new/', views.kit_type_new, name='kit_type_new'),
+    path('kit_list/<int:pk>/delete/', views.kit_delete, name='kit_delete'),
 
 
 
