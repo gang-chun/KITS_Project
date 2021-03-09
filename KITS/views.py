@@ -50,9 +50,9 @@ def study_list(request):
 def study_detail(request, pk):
     study = get_object_or_404(Study, pk=pk)
     kits = Kit.objects.filter(IRB_number=pk).annotate(
-        no_of_kits=Count('kitinstance', filter=Q(kitinstance__status='a'))) \
-        .annotate(no_of_kits_exp=Count('kitinstance', filter=Q(kitinstance__status='e'))) \
-        .annotate(exp=Max('kitinstance__expiration_date'))
+        no_of_kits=Count('kit', filter=Q(kit__status='a'))) \
+        .annotate(no_of_kits_exp=Count('kit', filter=Q(kit__status='e'))) \
+        .annotate(exp=Max('kit__expiration_date'))
     kit_order = KitOrder.objects.filter(id=pk)
     req = Requisition.objects.filter(study=pk)
 
