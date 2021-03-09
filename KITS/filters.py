@@ -5,5 +5,5 @@ class StudyFilter(django_filters.FilterSet):
     class Meta:
         model = Study
         fields = (
-            'IRB_number', 'status',
+            'IRB_number', 'pet_name', 'status',
         )
