@@ -4,6 +4,7 @@ from datetime import date
 from django.db import models
 import uuid  # Required for unique study instances
 
+
 # Create your models here.
 
 class KitOrder(models.Model):
@@ -68,10 +69,10 @@ class Location(models.Model):
 
 class Kit(models.Model):
     IRB_number = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='studies')
-    # type_name = models.CharField(max_length=100)
     description = models.CharField(max_length=100, blank=True)
     date_added = models.DateTimeField(
         default=timezone.now)
+
     TYPE_NAME = (
         ('Screening', 'Screening'),
         ('Day 1', 'Day 1'),
@@ -133,3 +134,5 @@ class Requisition(models.Model):
     id = models.AutoField(primary_key=True)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     link = models.URLField(max_length=200, blank=True)
+
+

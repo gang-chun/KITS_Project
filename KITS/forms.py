@@ -17,8 +17,3 @@ class KitForm(forms.ModelForm):
             'id', 'type_name', 'description', 'IRB_number', 'date_added')
 
 
-class KitTypeNewForm(forms.ModelForm):
-    class Meta:
-        model = Kit
-        fields = (
-            'type_name',)

@@ -16,7 +16,6 @@ urlpatterns = [
     path('kit_list/', views.kit_list, name='kit_list'),
     path('kit_list/<int:pk>/kit_edit/', views.kit_edit, name='kit_edit'),
     path('kit_list/<int:pk>/kit_/', views.kit_edit, name='kit_edit'),
-    path('kit_list/kit_type_new/', views.kit_type_new, name='kit_type_new'),
 
 
 
