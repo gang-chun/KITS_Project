@@ -31,6 +31,10 @@ def home(request):
     return render(request, 'KITS/home.html')
 
 
+def home2(request):
+    return render(request, 'KITS/home2.html')
+
+
 @login_required
 def study_list(request):
     studies = Study.objects.all()
