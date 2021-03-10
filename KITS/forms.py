@@ -26,6 +26,6 @@ class KitInstanceForm(forms.ModelForm):
     class Meta:
         model = KitInstance
         fields = (
-            'id', 'expiration_date', 'status', 'note')
-        child_model = KitInstance
-        child_form_class = KitIDForm
+            'id','expiration_date', 'status', 'note')
+        #child_model = Kit
+        #child_form_class = KitIDForm

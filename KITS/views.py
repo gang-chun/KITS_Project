@@ -158,11 +158,10 @@ def kit_delete(request, pk):
 
 @login_required
 def kitinstance(request):
-    #kit = get_object_or_404(Kitinstance, pk=pk)
+    #kitinstance = get_object_or_404(KitInstance, pk=pk)
     if request.method == "POST":
         form = KitInstanceForm(request.POST)
         if form.is_valid():
-            KitInstance.objects.all()
             new_kitinstance = form.save(commit=False)
             new_kitinstance.created_date = timezone.now()
             new_kitinstance.save()
@@ -171,3 +170,22 @@ def kitinstance(request):
     else:
         form = KitInstanceForm()
     return render(request, 'KITS/kitinstance.html', {'form': form})
+
+'''
+@login_required
+def kitinstance_add(request, pk):
+    new_kitinstance = get_object_or_404(KitInstance, pk=pk)
+    if request.method == "POST":
+        form = KitInstanceForm(request.POST)
+        if form.is_valid():
+            new_kitinstance = form.save(commit=False)
+            new_kitinstance.created_date = timezone.now()
+            new_kitinstance.save()
+            KitInstance.objects.filter(date_added__lte=timezone.now())
+            return redirect('KITS:kitinstance')
+    else:
+        form = KitInstanceForm()
+    return render(request, 'KITS/kitinstance_add.html', {'form': form})
+
+
+'''
