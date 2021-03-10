@@ -11,13 +11,13 @@
 }
     </style>
     <div class="box">
-    <H1><b style="font-size: .75em;">Study: {{ study }} {{ study.pet_name }}</b></H1>
+    <H1><b style="font-size: .75em;">{{ kit }} Kit#{{ kit.id }}</b></H1>
     <hr>
 
         <table class="table table-striped table-bordered table-hover">
             <thead>
                 <tr class="bg-info">
-                    <th>Status: {{ study.status }}</th>
+                    <th>Kit Instance</th>
                 </tr>
             </thead>
         </table>
@@ -39,10 +39,9 @@
             <tbody>
             {% for kit in kits %}
                 <tr>
-                    <td>{{ kit.type_name }}</td>
-                    <td>{{ kit.no_of_kits }}</td>
-                    <td>{{ kit.no_of_kits_exp }}</td>
-                    <td>{{ kit.exp }}</td>
+                    <td>{{ kitinstance.expiration_date }}</td>
+                    <td>{{ kitinstance.status }}</td>
+                    <td>{{ kitinstance.note }}</td>
                 </tr>
 
             {% endfor %}
@@ -50,10 +49,9 @@
         </table>
 
 
-    <a href="" class="btn btn-success">Add more kit types</a>
+    <a href="" class="btn btn-success">Add Kit Instance</a>
     <hr>
-    <p>Kit Ordering: {{ kit_order }} </p>
-    <p>Requisition: {{ req }}</p>
+
     </div>
 {% endblock %}
 

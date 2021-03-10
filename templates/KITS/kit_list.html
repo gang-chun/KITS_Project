@@ -10,6 +10,7 @@
     border-radius: 4px;
 }
     </style>
+
     <div class="box">
         <H1><b style="font-size: .75em;">Kits</b></H1>
         <hr>
@@ -39,10 +40,12 @@
                 <td>{{ kit.IRB_number }}</td>
                 <td>{{ kit.description }}</td>
                 <td>{{ kit.date_added }}</td>
+
                 <td><a href="{% url 'KITS:kit_edit' pk=kit.pk%}" class="btn btn-warning">Edit</a>
                 <a href="{% url 'KITS:kit_delete' pk=kit.pk%}"
                     onclick="return confirm('Are you sure you want to delete Kit {{ kit.id }} under IRB#{{ kit.IRB_number }}? Do you have proper authorization?')"
-                       class="btn btn-warning">Delete</a></td>
+                       class="btn btn-warning">Delete</a>
+                <a href="{% url 'KITS:kitinstance' %}" class="btn btn-warning">Add Kit Instance</a></td>
             </tr>
              {% endfor %}
             </tbody>

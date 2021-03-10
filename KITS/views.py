@@ -108,11 +108,10 @@ def kit_checkin(request):
     if request.method == "POST":
         form = KitForm(request.POST)
         if form.is_valid():
-            Kit.objects.only("type_name")
             new_kit = form.save(commit=False)
             new_kit.created_date = timezone.now()
             new_kit.save()
-            kit = Kit.objects.filter(date_added__lte=timezone.now())
+            Kit.objects.filter(date_added__lte=timezone.now())
             return redirect('KITS:kit_list')
     else:
         form = KitForm()
@@ -155,3 +154,20 @@ def kit_delete(request, pk):
    kit = get_object_or_404(Kit, pk=pk)
    kit.delete()
    return redirect('KITS:kit_list')
+
+
+@login_required
+def kitinstance(request):
+    #kit = get_object_or_404(Kitinstance, pk=pk)
+    if request.method == "POST":
+        form = KitInstanceForm(request.POST)
+        if form.is_valid():
+            KitInstance.objects.all()
+            new_kitinstance = form.save(commit=False)
+            new_kitinstance.created_date = timezone.now()
+            new_kitinstance.save()
+            KitInstance.objects.filter(date_added__lte=timezone.now())
+            return redirect('KITS:kitinstance')
+    else:
+        form = KitInstanceForm()
+    return render(request, 'KITS/kitinstance.html', {'form': form})

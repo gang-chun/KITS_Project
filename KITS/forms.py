@@ -17,3 +17,15 @@ class KitForm(forms.ModelForm):
             'id', 'type_name', 'description', 'IRB_number', 'date_added')
 
 
+class KitIDForm(forms.ModelForm):
+        model = Kit
+        fields = ('id')
+
+
+class KitInstanceForm(forms.ModelForm):
+    class Meta:
+        model = KitInstance
+        fields = (
+            'id', 'expiration_date', 'status', 'note')
+        child_model = KitInstance
+        child_form_class = KitIDForm
