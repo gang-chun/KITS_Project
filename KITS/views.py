@@ -155,7 +155,7 @@ def kit_delete(request, pk):
    kit.delete()
    return redirect('KITS:kit_list')
 
-
+#kits = Kit.objects.filter(id=pk)
 @login_required
 def kitinstance(request):
     #kitinstance = get_object_or_404(KitInstance, pk=pk)

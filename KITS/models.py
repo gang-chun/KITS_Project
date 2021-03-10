@@ -72,17 +72,7 @@ class Kit(models.Model):
     description = models.CharField(max_length=100, blank=True)
     date_added = models.DateTimeField(
         default=timezone.now)
-
-    TYPE_NAME = (
-        ('Screening', 'Screening'),
-        ('Day 1', 'Day 1'),
-        ('Day 30', 'Day 30')
-    )
-    type_name = models.CharField(
-        max_length=32,
-        choices=TYPE_NAME,
-        blank=True,
-    )
+    type_name = models.CharField(max_length=32,blank=True)
 
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
