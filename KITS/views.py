@@ -104,7 +104,8 @@ def study_archive(request, pk):
 
 
 @login_required
-def kit_checkin(request):
+def kit_addkittype(request):
+
     if request.method == "POST":
         form = KitForm(request.POST)
         if form.is_valid():
@@ -115,21 +116,16 @@ def kit_checkin(request):
             return redirect('KITS:kit_list')
     else:
         form = KitForm()
-    return render(request, 'KITS/kit_checkin.html', {'form': form})
+    return render(request, 'KITS/kit_addkittype.html', {'form': form})
 
 
 @login_required
 def kit_list(request):
     kit = Kit.objects.all()
-
     # Filter bar
     myFilter = KitFilter(request.GET, queryset=kit)
     kit = myFilter.qs
-
     return render(request, 'KITS/kit_list.html', {'kit': kit, 'myFilter': myFilter})
-
-
-
 
 @login_required
 def kit_edit(request, pk):
@@ -146,7 +142,7 @@ def kit_edit(request, pk):
     else:
         # edit
         form = KitForm(instance=kit)
-    return render(request, 'KITS/kit_edit.html', {'form': form})
+    return render(request, 'KITS/kit_edit.html', {'form': form,})
 
 
 @login_required
@@ -157,23 +153,33 @@ def kit_delete(request, pk):
 
 #kits = Kit.objects.filter(id=pk)
 @login_required
-def kitinstance(request):
-    #kitinstance = get_object_or_404(KitInstance, pk=pk)
+def kit_addkitinstance(request, pk):
+    kit_instance = get_object_or_404(Kit, pk=pk)
+    #kit_instance = Kit.objects.filter(id=pk)
+
     if request.method == "POST":
         form = KitInstanceForm(request.POST)
         if form.is_valid():
+
+
+
+            #new_kitinstance = KitInstance.objects.get(form.cleaned_data['pk'])
             new_kitinstance = form.save(commit=False)
-            new_kitinstance.created_date = timezone.now()
+            new_kitinstance.kit_id = pk
+            #new_kitinstance.created_date = timezone.now()
+            new_kitinstance.kit_id = pk
             new_kitinstance.save()
-            KitInstance.objects.filter(date_added__lte=timezone.now())
-            return redirect('KITS:kitinstance')
+            #KitInstance.objects.filter(date_added__lte=timezone.now())
+
+            return redirect('KITS:kit_list')
     else:
         form = KitInstanceForm()
-    return render(request, 'KITS/kitinstance.html', {'form': form})
+    return render(request, 'KITS/kit_addkitinstance.html', {'form': form, 'kit_instance': kit_instance})
 
-'''
+
 @login_required
 def kitinstance_add(request, pk):
+
     new_kitinstance = get_object_or_404(KitInstance, pk=pk)
     if request.method == "POST":
         form = KitInstanceForm(request.POST)
@@ -186,6 +192,3 @@ def kitinstance_add(request, pk):
     else:
         form = KitInstanceForm()
     return render(request, 'KITS/kitinstance_add.html', {'form': form})
-
-
-'''

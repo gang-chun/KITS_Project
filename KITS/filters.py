@@ -14,5 +14,5 @@ class KitFilter(django_filters.FilterSet):
     class Meta:
         model = Kit
         fields = (
-            'type_name', 'date_added', "IRB_number_id",
+            "IRB_number_id", 'type_name'
         )
