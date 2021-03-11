@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'KITS/base.html' %}
+{% block content %}
+    <style>
+    .box {
+    margin: 8px;
+    border: 1px solid silver;
+    padding: 8px;
+    border-radius: 4px;
+}
+   </style>
+    <div class="box">
+        <H1><b style="font-size: .75em;">Add Kit Instance</b></H1>
+        <hr>
+        <form method="POST" class="kitinstance-form">{% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock %}
+
+</html>
