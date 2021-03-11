@@ -12,11 +12,15 @@ urlpatterns = [
     path('create_study/', views.create_study, name='create_study'),
     path('study/<int:pk>/edit', views.study_edit, name='study_edit'),
     path('study/<int:pk>/archive/', views.study_archive, name='study_archive'),
-    path('kit_list/kit_checkin/', views.kit_checkin, name='kit_checkin'),
+
+    path('kit_list/kit_addtype/', views.kit_addkittype, name='kit_addkittype'),
+
     path('kit_list/', views.kit_list, name='kit_list'),
     path('kit_list/<int:pk>/kit_edit/', views.kit_edit, name='kit_edit'),
     path('kit_list/<int:pk>/delete/', views.kit_delete, name='kit_delete'),
-    path('kit_list/kitinstance/', views.kitinstance, name='kitinstance'),
+    path('kit_list/<int:pk>/kit_addkitinstance/', views.kit_addkitinstance, name='kit_addkitinstance')
+
+
     #path('kit_list/kitinstance/<int:pk>/addkitinstance', views.kitinstance_add, name='kitinstance_add'),
 
 

@@ -11,11 +11,13 @@
 }
    </style>
     <div class="box">
-        <H1><b style="font-size: .75em;">Check-in Kit</b></H1>
+        <H1><b style="font-size: .75em;">Adding a "{{ kit_instance.type_name }}" kit for study: {{ kit_instance.IRB_number }}</b></H1>
+
+
         <hr>
-        <form method="POST" class="kit-form">{% csrf_token %}
+        <form method="POST" class="kitinstance-form">{% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Add </button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
 {% endblock %}
