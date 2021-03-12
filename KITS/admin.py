@@ -9,7 +9,9 @@ class KitInstanceInline(admin.TabularInline):
 
 @admin.register(Kit)
 class KitList(admin.ModelAdmin):
-    list_display = ('id','IRB_number', 'type_name', 'description')
+    # model = Kit
+    # extra = 0
+    list_display = ('id', 'IRB_number', 'type_name', 'description')
     inlines = [KitInstanceInline]
 
 

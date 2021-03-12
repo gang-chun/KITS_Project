@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 
 {% extends 'KITS/base.html' %}
 {% block content %}
@@ -50,8 +50,8 @@
     <body>
         <div class="welcome-text">
             <h1>Welcome to KITS!</h1>
-            <p> KITS stands for Kit Inventory Tracking System.
-                This application was created to help clinical trial sites track their research kits for the multiple studies they are apart of.
+            <p>The Kit Inventory Tracking System application was created to help clinical trial sites track their </b>
+                research kits used in the multiple studies conducted by the sites.
             </p>
             {% load static %}
 
@@ -59,7 +59,7 @@
         {% if user.is_authenticated %}
             <hr>
             <p>
-                This is a test paragraph to be filled with useful information in the near future!
+
             </p>
 
         {% else %}
