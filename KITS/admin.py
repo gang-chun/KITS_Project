@@ -1,6 +1,7 @@
 from django.contrib import admin
 # from .models import Study, KitOrder, KitInstance, Kit
 from .models import Study, KitOrder, KitInstance, Kit, Location
+from simple_history.admin import SimpleHistoryAdmin
 
 
 class KitInstanceInline(admin.TabularInline):
@@ -9,8 +10,6 @@ class KitInstanceInline(admin.TabularInline):
 
 @admin.register(Kit)
 class KitList(admin.ModelAdmin):
-    # model = Kit
-    # extra = 0
     list_display = ('id', 'IRB_number', 'type_name', 'description')
     inlines = [KitInstanceInline]
 
@@ -43,11 +42,14 @@ class KitOrderList(admin.ModelAdmin):
     search_fields = ('type', )
     ordering = ['type']
 
-@admin.register(Study)
-class StudyList(admin.ModelAdmin):
-    list_display = ('id','IRB_number', 'pet_name', 'status')
-    list_filter = ('id','IRB_number', 'start_date')
-    ordering = ['IRB_number']
+# @admin.register(Study)
+# class StudyList(admin.ModelAdmin):
+#    list_display = ('id','IRB_number', 'pet_name', 'status')
+#    list_filter = ('id','IRB_number', 'start_date')
+#    ordering = ['IRB_number']
+
+
+admin.site.register(Study, SimpleHistoryAdmin)
 
 
 

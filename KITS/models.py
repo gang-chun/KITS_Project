@@ -2,10 +2,11 @@ from django.utils import timezone
 from django.contrib.auth.models import User  # So we can test if authenticated
 from datetime import date
 from django.db import models
+from simple_history.models import HistoricalRecords
 import uuid  # Required for unique study instances
 
-# Create your models here.
 
+# Create your models here.
 
 class KitOrder(models.Model):
     id = models.AutoField(primary_key=True)
@@ -25,7 +26,7 @@ class Study(models.Model):
     comment = models.CharField(max_length=100, blank=True)
     sponsor_name = models.CharField(max_length=100)
     requisition_form_qty = models.CharField(max_length=5)
-
+    history = HistoricalRecords()
     STATUS = (
         ('Preparing to Open', 'Preparing to Open'),
         ('Open', 'Open'),
@@ -69,20 +70,10 @@ class Location(models.Model):
 
 class Kit(models.Model):
     IRB_number = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='studies')
-    # type_name = models.CharField(max_length=100)
     description = models.CharField(max_length=100, blank=True)
     date_added = models.DateTimeField(
         default=timezone.now)
-    TYPE_NAME = (
-        ('Screening', 'Screening'),
-        ('Day 1', 'Day 1'),
-        ('Day 30', 'Day 30')
-    )
-    type_name = models.CharField(
-        max_length=32,
-        choices=TYPE_NAME,
-        blank=True,
-    )
+    type_name = models.CharField(max_length=32,blank=True)
 
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
@@ -94,8 +85,7 @@ class KitInstance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                           help_text='Unique ID for this particular kit used in any Study')
     scanner_id = models.CharField(max_length=100)
-    kit = models.ForeignKey('Kit', on_delete=models.RESTRICT)
-    # kit = models.ForeignKey(Kit, on_delete=models.CASCADE, related_name='kit')
+    kit = models.ForeignKey('Kit', on_delete=models.RESTRICT, related_name='kit')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
 
     note = models.CharField(max_length=100, blank=True)
@@ -135,3 +125,6 @@ class Requisition(models.Model):
     id = models.AutoField(primary_key=True)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     link = models.URLField(max_length=200, blank=True)
+
+
+
