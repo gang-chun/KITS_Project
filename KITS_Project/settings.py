@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '(j%taiszjwtnbj#_=p^h2=+kx2bln6ymbusgp&%9k$xnw3_nr6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Allowed hosts when Debug = False. Local machine and deployment links allowed.
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
@@ -126,13 +126,13 @@ STATIC_URL = '/static/'
 # Email for resetting password, temporarily replaced by console output
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'deletelater023@gmail.com'
-EMAIL_HOST_PASSWORD = 'deletePass023'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = '587'
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'deletelater023@gmail.com'
+# EMAIL_HOST_PASSWORD = 'deletePass023'
 
 # Overrides login and logout redirects
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+# LOGIN_REDIRECT_URL = '/'
+# LOGOUT_REDIRECT_URL = '/'
