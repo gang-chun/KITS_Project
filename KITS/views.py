@@ -5,7 +5,7 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from django.db.models import Count, Max, Q
+from django.db.models import Count, Max, Q, F
 from django.db.models.functions import Greatest
 
 from .filters import StudyFilter, KitFilter
@@ -192,3 +192,14 @@ def kitinstance_add(request, pk):
     else:
         form = KitInstanceForm()
     return render(request, 'KITS/kitinstance_add.html', {'form': form})
+
+@login_required
+def report(request):
+    return render(request, 'KITS/report.html')
+
+@login_required
+def report_expiredkits(request):
+    kits = KitInstance.objects.filter(status='e')
+
+
+    return render(request, 'KITS/report_expiredkits.html', {'kits': kits})

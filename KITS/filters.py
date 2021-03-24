@@ -1,5 +1,6 @@
 import django_filters
 from .models import *
+from django.db.models import F
 
 
 class StudyFilter(django_filters.FilterSet):
@@ -16,3 +17,4 @@ class KitFilter(django_filters.FilterSet):
         fields = (
             "IRB_number_id", 'type_name'
         )
+

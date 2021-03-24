@@ -18,8 +18,10 @@ urlpatterns = [
     path('kit_list/', views.kit_list, name='kit_list'),
     path('kit_list/<int:pk>/kit_edit/', views.kit_edit, name='kit_edit'),
     path('kit_list/<int:pk>/delete/', views.kit_delete, name='kit_delete'),
-    path('kit_list/<int:pk>/kit_addkitinstance/', views.kit_addkitinstance, name='kit_addkitinstance')
+    path('kit_list/<int:pk>/kit_addkitinstance/', views.kit_addkitinstance, name='kit_addkitinstance'),
 
+    path('report/', views.report, name='report'),
+    path('report/report_expiredkits/', views.report_expiredkits, name='report_expiredkits'),
 
     #path('kit_list/kitinstance/<int:pk>/addkitinstance', views.kitinstance_add, name='kitinstance_add'),
 
