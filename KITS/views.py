@@ -5,7 +5,7 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from django.db.models import Count, Max, Q, F
+from django.db.models import Count, Max, Q, F, Sum
 from django.db.models.functions import Greatest
 
 from .filters import StudyFilter, KitFilter
@@ -202,4 +202,14 @@ def report_expiredkits(request):
     kits = KitInstance.objects.filter(status='e')
 
 
+
     return render(request, 'KITS/report_expiredkits.html', {'kits': kits})
+
+
+@login_required
+def report_expiredkits_studies(request):
+    kits = Kit.objects.filter(kit__status='e').values('IRB_number__IRB_number')\
+        .annotate(qty=Count('kit')).values('IRB_number__IRB_number','qty','IRB_number__pet_name')
+
+    return render(request, 'KITS/report_expiredkits_studies.html', {'kits': kits})
+
