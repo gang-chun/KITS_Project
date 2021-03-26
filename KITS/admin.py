@@ -2,6 +2,7 @@ from django.contrib import admin
 # from .models import Study, KitOrder, KitInstance, Kit
 from .models import Study, KitOrder, KitInstance, Kit, Location
 from simple_history.admin import SimpleHistoryAdmin
+from .models import UserHistory
 
 
 class KitInstanceInline(admin.TabularInline):
@@ -50,7 +51,9 @@ class KitOrderList(admin.ModelAdmin):
 
 
 admin.site.register(Study, SimpleHistoryAdmin)
+# admin.site.register(UserHistory)
 
-
-
+@admin.register(UserHistory)
+class UserHistoryList(admin.ModelAdmin):
+    list_display = ('user', 'viewed_on', 'the_object', 'history_instance')
 
