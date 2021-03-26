@@ -15,7 +15,7 @@ class KitOrder(models.Model):
     type = models.CharField(max_length=100)
     description = models.TextField(max_length=100, blank=True)
     web_address = models.URLField(max_length=200, blank=True)
-
+    history = HistoricalRecords()
     def __str__(self):
         return str(self.type)
 
@@ -68,7 +68,7 @@ class Location(models.Model):
     building = models.CharField(max_length=100)
     room = models.CharField(max_length=100)
     shelf_number = models.CharField(max_length=100, blank=True)
-
+    history = HistoricalRecords()
     def __str__(self):
         return f'{self.building} ({self.room})'
 
@@ -79,7 +79,7 @@ class Kit(models.Model):
     date_added = models.DateTimeField(
         default=timezone.now)
     type_name = models.CharField(max_length=32,blank=True)
-
+    history = HistoricalRecords()
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
 
@@ -110,7 +110,7 @@ class KitInstance(models.Model):
         default='a',
         help_text='Kit Availability',
     )
-
+    history = HistoricalRecords()
     class Meta:
         ordering = ['expiration_date']
         permissions = (("can_mark_demolished", "Set kit as demolished"),)
@@ -130,10 +130,11 @@ class Requisition(models.Model):
     id = models.AutoField(primary_key=True)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     link = models.URLField(max_length=200, blank=True)
+    history = HistoricalRecords()
 
 class UserHistoryManager(models.Manager):
-    def create_user_history(self, user, the_object, viewed_on, history_instance):
-        user_hisx = self.create(user=user, the_object=the_object, viewed_on=viewed_on, history_instance=history_instance)
+    def create_user_history(self, user, the_object, changed_on, history_instance):
+        user_hisx = self.create(user=user, the_object=the_object, changed_on=changed_on, history_instance=history_instance)
         # do something with the user_hisx object if needed
         return user_hisx
 
@@ -144,15 +145,10 @@ class UserHistory(models.Model):
 #    content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True)
 #    object_id = models.PositiveIntegerField() # 1, 2, ...
 #    content_object = GenericForeignKey()  # Exact names used so no need to pass 'obj_id', 'cont_obj' in ctor
-    viewed_on = models.DateTimeField(auto_now_add=True)
+    changed_on = models.DateTimeField(auto_now_add=True)
     objects = UserHistoryManager()
     def __str__(self):
         return str(self.history_instance + self.the_object)
 
     class Meta:
         verbose_name_plural = "UserHistories"
-
-
-
-
-# book = Book.objects.create_book("Pride and Prejudice")

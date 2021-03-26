@@ -49,11 +49,16 @@ class KitOrderList(admin.ModelAdmin):
 #    list_filter = ('id','IRB_number', 'start_date')
 #    ordering = ['IRB_number']
 
+class StudyHistoryAdmin(SimpleHistoryAdmin):
+    list_display = ('id', 'IRB_number', 'pet_name', 'status')
+    history_list_display = ["status"]
+
 
 admin.site.register(Study, SimpleHistoryAdmin)
-# admin.site.register(UserHistory)
+
+
 
 @admin.register(UserHistory)
 class UserHistoryList(admin.ModelAdmin):
-    list_display = ('user', 'viewed_on', 'the_object', 'history_instance')
+    list_display = ('user', 'changed_on', 'the_object', 'history_instance')
 
