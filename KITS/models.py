@@ -1,5 +1,7 @@
 from django.utils import timezone
 from django.contrib.auth.models import User  # So we can test if authenticated
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from datetime import date
 from django.db import models
 from simple_history.models import HistoricalRecords
@@ -46,6 +48,7 @@ class Study(models.Model):
 
     class Meta:
         ordering = ['IRB_number']
+        verbose_name_plural = "Studies"
 
     def created(self):
         self.created_date = timezone.now()
@@ -54,6 +57,8 @@ class Study(models.Model):
     def updated(self):
         self.updated_date = timezone.now()
         self.save()
+
+
 
     def __str__(self):
         return str(self.IRB_number)
@@ -73,7 +78,7 @@ class Kit(models.Model):
     description = models.CharField(max_length=100, blank=True)
     date_added = models.DateTimeField(
         default=timezone.now)
-    type_name = models.CharField(max_length=32, blank=True)
+    type_name = models.CharField(max_length=32,blank=True)
 
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
@@ -125,5 +130,29 @@ class Requisition(models.Model):
     id = models.AutoField(primary_key=True)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     link = models.URLField(max_length=200, blank=True)
-    file = models.FileField(upload_to='MEDIA_ROOT/req/', max_length=200, blank=True)
-    description = models.CharField(max_length=200, blank=True)
+
+class UserHistoryManager(models.Manager):
+    def create_user_history(self, user, the_object, viewed_on, history_instance):
+        user_hisx = self.create(user=user, the_object=the_object, viewed_on=viewed_on, history_instance=history_instance)
+        # do something with the user_hisx object if needed
+        return user_hisx
+
+class UserHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    the_object = models.CharField(max_length=100, blank=False)
+    history_instance = models.CharField(max_length=100, blank=False)
+#    content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True)
+#    object_id = models.PositiveIntegerField() # 1, 2, ...
+#    content_object = GenericForeignKey()  # Exact names used so no need to pass 'obj_id', 'cont_obj' in ctor
+    viewed_on = models.DateTimeField(auto_now_add=True)
+    objects = UserHistoryManager()
+    def __str__(self):
+        return str(self.history_instance + self.the_object)
+
+    class Meta:
+        verbose_name_plural = "UserHistories"
+
+
+
+
+# book = Book.objects.create_book("Pride and Prejudice")

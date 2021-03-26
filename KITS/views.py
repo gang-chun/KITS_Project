@@ -1,14 +1,35 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-
 from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.db.models import Count, Max, Q, F, Sum
 from django.db.models.functions import Greatest
-
+from django.shortcuts import render
 from .filters import StudyFilter, KitFilter
+
+from django.dispatch import receiver
+from simple_history.signals import (
+    pre_create_historical_record,
+    post_create_historical_record
+)
+
+
+@receiver(post_create_historical_record)
+def post_create_historical_record_callback(sender, **kwargs):
+    t_user_t = kwargs["history_user"]
+
+    complete_object = " ".join([str(kwargs["instance"]), str(type(kwargs["instance"]))])
+    print(kwargs["history_instance"])
+    date_t = kwargs["history_date"]
+    viewed_on_t = models.DateTimeField(auto_now_add=True)
+    # print(date_t, viewed_on_t)
+    user_history_instance = \
+        UserHistory.objects.create_user_history(t_user_t, complete_object, str(kwargs["history_instance"]),
+                                                kwargs["history_date"])
+    user_history_instance.save()
+    print("Sent after saving historical record")
+
 
 now = timezone.now()
 
