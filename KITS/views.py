@@ -78,6 +78,7 @@ def create_study(request):
 @login_required
 def study_edit(request, pk):
     study = get_object_or_404(Study, pk=pk)
+    #req = get_object_or_404(Requisition, pk=pk) - not sure how to implement
     if request.method == "POST":
         # update
         form = StudyForm(request.POST, instance=study)

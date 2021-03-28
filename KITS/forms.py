@@ -1,5 +1,5 @@
 from django import forms
-from .models import KitOrder, KitInstance, Kit, Study, Location
+from .models import KitOrder, KitInstance, Kit, Study, Location, Requisition
 
 
 class StudyForm(forms.ModelForm):
@@ -8,6 +8,12 @@ class StudyForm(forms.ModelForm):
         fields = (
             'id', 'kit_order', 'IRB_number', 'pet_name', 'comment', 'sponsor_name', 'requisition_form_qty', 'status',
             'start_date', 'end_date')
+
+
+class RequisitionForm(forms.ModelForm):
+    class Meta:
+        model = Requisition
+        fields = ('link', 'file', 'description')
 
 
 class KitForm(forms.ModelForm):
