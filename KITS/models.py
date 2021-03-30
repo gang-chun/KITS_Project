@@ -79,7 +79,7 @@ class Kit(models.Model):
     date_added = models.DateTimeField(
         default=timezone.now)
     type_name = models.CharField(max_length=32,blank=True)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
 
@@ -110,7 +110,7 @@ class KitInstance(models.Model):
         default='a',
         help_text='Kit Availability',
     )
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
     class Meta:
         ordering = ['expiration_date']
         permissions = (("can_mark_demolished", "Set kit as demolished"),)
@@ -130,7 +130,7 @@ class Requisition(models.Model):
     id = models.AutoField(primary_key=True)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     link = models.URLField(max_length=200, blank=True)
-    history = HistoricalRecords()
+    # history = HistoricalRecords()
 
 class UserHistoryManager(models.Manager):
     def create_user_history(self, user, the_object, changed_on, history_instance):
