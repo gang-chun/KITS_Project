@@ -18,3 +18,10 @@ class KitFilter(django_filters.FilterSet):
             "IRB_number_id", 'type_name'
         )
 
+
+class KitReportFilter(django_filters.FilterSet):
+    class Meta:
+        model = Kit
+        #fields = 'IRB_number'
+        fields = '__all__'
+        exclude = 'description', 'date_added', 'type_name'

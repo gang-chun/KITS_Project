@@ -6,13 +6,14 @@ from django.shortcuts import redirect
 from django.db.models import Count, Max, Q, F, Sum
 from django.db.models.functions import Greatest
 from django.shortcuts import render
-from .filters import StudyFilter, KitFilter
+from .filters import StudyFilter, KitFilter, KitReportFilter
 
 from django.dispatch import receiver
 from simple_history.signals import (
     pre_create_historical_record,
     post_create_historical_record
 )
+from datetime import datetime, timedelta
 
 
 @receiver(post_create_historical_record)
@@ -221,11 +222,32 @@ def report(request):
 
 @login_required
 def report_expiredkits(request):
+
+    today = date.today()
+    in1month = today + timedelta(days=30)
+    i = today.strftime('%Y-%m-%d')
+    j = in1month.strftime('%Y-%m-%d')
+    # KitInstance.objects.filter(expiration_date__range=(i,j)
+
     kits = KitInstance.objects.filter(status='e')
 
 
+    # To grab the IRB numbers and put them into a list
+    kits2 = list(kits)
+    test = []
+    test1 = []
+    for kit in kits2:
+        test1 = kit.kit.IRB_number
+        test.append(test1)
 
-    return render(request, 'KITS/report_expiredkits.html', {'kits': kits})
+    # To GET the IRB_number from the user's search
+    myFilter = KitReportFilter(request.GET)
+    test = myFilter.qs
+
+    # To redo the 'kits' after the user searches
+    kits = KitInstance.objects.filter(status='e').filter(kit__in=test)
+
+    return render(request, 'KITS/report_expiredkits.html', {'kits': kits, 'myFilter': myFilter})
 
 
 @login_required
