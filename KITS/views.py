@@ -113,7 +113,7 @@ def create_study(request):
 @login_required
 def study_edit(request, pk):
     study = get_object_or_404(Study, pk=pk)
-    #req = get_object_or_404(Requisition, pk=pk) - not sure how to implement
+
     if request.method == "POST":
         # update
         form = StudyForm(request.POST, instance=study)
@@ -128,7 +128,7 @@ def study_edit(request, pk):
     else:
         # edit
         form = StudyForm(instance=study)
-    return render(request, 'KITS/study_edit.html', {'form': form})
+        return render(request, 'KITS/study_edit.html', {'form': form})
 
 
 @login_required
@@ -137,6 +137,42 @@ def study_archive(request, pk):
     study.status = 'Closed'
     study.save()
     return redirect('KITS:study_list')
+
+
+@login_required
+def create_req(request, pk):
+    study = get_object_or_404(Study, pk=pk)
+
+    if request.method == "POST":
+        form = RequisitionForm(request.POST)
+        if form.is_valid():
+            new_req = form.save(commit=False)
+            new_req.save()
+            return render(request, 'KITS/study_detail.html', {'study': study, 'new_req': new_req})
+    else:
+        form = RequisitionForm()
+    return render(request, 'KITS/create_req.html', {'form': form, 'study': study})
+
+
+@login_required
+def req_edit(request, pk):
+    study = get_object_or_404(Study, pk=pk)
+    req = get_object_or_404(Requisition, pk=pk)
+
+    if request.method == "POST":
+        # update
+        form = RequisitionForm(request.POST, instance=req)
+        if form.is_valid():
+            req = form.save(commit=False)
+            req.updated_date = timezone.now()
+            req.save()
+            # req = Requisition.objects.filter(start_date__lte=timezone.now())
+            return render(request, 'KITS/study_detail.html', {'study': study, 'req': req})
+
+    else:
+        # edit
+        form = RequisitionForm(instance=req)
+        return render(request, 'KITS/req_edit.html', {'form': form})
 
 
 @login_required
@@ -163,6 +199,7 @@ def kit_list(request):
     kit = myFilter.qs
     return render(request, 'KITS/kit_list.html', {'kit': kit, 'myFilter': myFilter})
 
+
 @login_required
 def kit_edit(request, pk):
     kit = get_object_or_404(Kit, pk=pk)
@@ -178,34 +215,34 @@ def kit_edit(request, pk):
     else:
         # edit
         form = KitForm(instance=kit)
-    return render(request, 'KITS/kit_edit.html', {'form': form,})
+    return render(request, 'KITS/kit_edit.html', {'form': form})
 
 
 @login_required
 def kit_delete(request, pk):
-   kit = get_object_or_404(Kit, pk=pk)
-   kit.delete()
-   return redirect('KITS:kit_list')
+    kit = get_object_or_404(Kit, pk=pk)
+    kit.delete()
+    return redirect('KITS:kit_list')
 
-#kits = Kit.objects.filter(id=pk)
+# kits = Kit.objects.filter(id=pk)
+
+
 @login_required
 def kit_addkitinstance(request, pk):
     kit_instance = get_object_or_404(Kit, pk=pk)
-    #kit_instance = Kit.objects.filter(id=pk)
+    # kit_instance = Kit.objects.filter(id=pk)
 
     if request.method == "POST":
         form = KitInstanceForm(request.POST)
         if form.is_valid():
 
-
-
-            #new_kitinstance = KitInstance.objects.get(form.cleaned_data['pk'])
+            # new_kitinstance = KitInstance.objects.get(form.cleaned_data['pk'])
             new_kitinstance = form.save(commit=False)
             new_kitinstance.kit_id = pk
-            #new_kitinstance.created_date = timezone.now()
+            # new_kitinstance.created_date = timezone.now()
             new_kitinstance.kit_id = pk
             new_kitinstance.save()
-            #KitInstance.objects.filter(date_added__lte=timezone.now())
+            # KitInstance.objects.filter(date_added__lte=timezone.now())
 
             return redirect('KITS:kit_list')
     else:
@@ -229,9 +266,11 @@ def kitinstance_add(request, pk):
         form = KitInstanceForm()
     return render(request, 'KITS/kitinstance_add.html', {'form': form})
 
+
 @login_required
 def report(request):
     return render(request, 'KITS/report.html')
+
 
 @login_required
 def report_expiredkits(request):
@@ -266,7 +305,7 @@ def report_expiredkits(request):
 @login_required
 def report_expiredkits_studies(request):
     kits = Kit.objects.filter(kit__status='e').values('IRB_number__IRB_number')\
-        .annotate(qty=Count('kit')).values('IRB_number__IRB_number','qty','IRB_number__pet_name')
+        .annotate(qty=Count('kit')).values('IRB_number__IRB_number', 'qty', 'IRB_number__pet_name')
 
     return render(request, 'KITS/report_expiredkits_studies.html', {'kits': kits})
 
