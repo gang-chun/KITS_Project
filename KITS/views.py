@@ -71,14 +71,27 @@ def study_list(request):
 @login_required
 def study_detail(request, pk):
     study = get_object_or_404(Study, pk=pk)
+
     kits = Kit.objects.filter(IRB_number=pk).annotate(
         no_of_kits=Count('kit', filter=Q(kit__status='a'))) \
         .annotate(no_of_kits_exp=Count('kit', filter=Q(kit__status='e'))) \
         .annotate(exp=Max('kit__expiration_date'))
-    kit_order = KitOrder.objects.filter(id=pk)
+    #kit_order = KitOrder.objects.filter(study=pk)
     req = Requisition.objects.filter(study=pk)
 
-    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'kit_order': kit_order, 'req': req})
+    kit_order = KitOrder.objects.filter(study=pk)
+    if kit_order.exists():
+        test = 'True'
+        type_qs = KitOrder.objects.filter(study=pk).values('type')
+        type = type_qs[0]['type']
+        kit_order = KitOrder.objects.filter(study=pk).values(type)
+        kit_order = kit_order[0][type]
+
+    else:
+        test = 'False'
+        kit_order ="No order details have been added"
+
+    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'req': req, 'kit_order': kit_order, 'test':test})
 
 
 @login_required
@@ -256,4 +269,40 @@ def report_expiredkits_studies(request):
         .annotate(qty=Count('kit')).values('IRB_number__IRB_number','qty','IRB_number__pet_name')
 
     return render(request, 'KITS/report_expiredkits_studies.html', {'kits': kits})
+
+
+@login_required
+def kit_ordering(request, pk):
+
+    kitorder = get_object_or_404(KitOrder, pk=pk)
+
+
+    if request.method == "POST":
+        form = KitOrderForm(request.POST, instance=kitorder)
+        if form.is_valid():
+            kitorder = form.save(commit=False)
+            kitorder.update_date = timezone.now()
+            kitorder.save()
+            return redirect('KITS:study_detail', pk=pk)
+
+    else:
+        # edit
+        form = KitOrderForm(instance=kitorder)
+
+    return render(request, 'KITS/kit_ordering.html', {'form': form})
+
+@login_required
+def kit_ordering_add(request, pk):
+    #new_kitorder = get_object_or_404(Study, pk=pk)
+    study = get_object_or_404(Study, pk=pk)
+
+    if request.method == "POST":
+        form = KitOrderForm(request.POST)
+        if form.is_valid():
+            new_kitorder = form.save(commit=False)
+            new_kitorder.save()
+            return redirect('KITS:study_detail', pk=pk)
+    else:
+        form = KitOrderForm()
+    return render(request, 'KITS/kit_ordering_add.html', {'form': form, 'study':study})
 

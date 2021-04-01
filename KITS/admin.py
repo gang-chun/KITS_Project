@@ -38,8 +38,8 @@ class LocationList(admin.ModelAdmin):
 
 @admin.register(KitOrder)
 class KitOrderList(admin.ModelAdmin):
-    list_display = ('id','type', 'web_address', 'description' )
-    list_filter = ('id','type', 'web_address')
+    list_display = ('type', 'link', 'description' )
+    list_filter = ('type', 'link')
     search_fields = ('type', )
     ordering = ['type']
 

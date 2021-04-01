@@ -10,19 +10,12 @@ import uuid  # Required for unique study instances
 
 # Create your models here.
 
-class KitOrder(models.Model):
-    id = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=100)
-    description = models.TextField(max_length=100, blank=True)
-    web_address = models.URLField(max_length=200, blank=True)
-    history = HistoricalRecords()
-    def __str__(self):
-        return str(self.type)
+
 
 
 class Study(models.Model):
     id = models.AutoField(primary_key=True)
-    kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
+    #kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
     IRB_number = models.CharField(max_length=50)
     pet_name = models.CharField(max_length=50)
     comment = models.CharField(max_length=100, blank=True)
@@ -58,11 +51,20 @@ class Study(models.Model):
         self.updated_date = timezone.now()
         self.save()
 
-
-
     def __str__(self):
         return str(self.IRB_number)
 
+class KitOrder(models.Model):
+    #id = models.AutoField(primary_key=True)
+    study = models.OneToOneField(Study, on_delete=models.CASCADE, primary_key=True)
+    TYPE = (('link', 'link'), ('file', 'file'), ('description', 'description'))
+    type = models.CharField(max_length=32, choices=TYPE, default='See description')
+    link = models.URLField(max_length=200, blank=True)
+    file = models.FileField(max_length=100, blank=True)
+    description = models.TextField(max_length=100, blank=True)
+    history = HistoricalRecords()
+    def __str__(self):
+        return str(self.type)
 
 class Location(models.Model):
     building = models.CharField(max_length=100)

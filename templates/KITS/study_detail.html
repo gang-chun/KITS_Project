@@ -50,10 +50,23 @@
         </table>
 
 
-    <a href="{% url 'KITS:kit_addkittype' %}" class="btn btn-success">Add Kit Type</a>
     <hr>
-    <p>Kit Ordering: {{ kit_order }} </p>
+
+
+    {% if test == 'True' %}
+        <p>Kit Ordering: {{ kit_order }} </p>
+        <a href="{% url 'KITS:kit_ordering' pk=study.pk %}" class="btn btn-success">Edit kit ordering details</a>
+    {% elif test == 'False' %}
+        <p>{{ kit_order }}</p>
+        <a href="{% url 'KITS:kit_ordering_add' pk=study.pk %}" class="btn btn-success">Add Kit Ordering Info</a>
+
+    {% endif %}
+
+    <hr>
     <p>Requisition: {{ req }}</p>
+    <p>Test: {{ test }}</p>
+
+
     </div>
 {% endblock %}
 

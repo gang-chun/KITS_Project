@@ -6,7 +6,7 @@ class StudyForm(forms.ModelForm):
     class Meta:
         model = Study
         fields = (
-            'id', 'kit_order', 'IRB_number', 'pet_name', 'comment', 'sponsor_name', 'requisition_form_qty', 'status',
+            'id', 'IRB_number', 'pet_name', 'comment', 'sponsor_name', 'requisition_form_qty', 'status',
             'start_date', 'end_date')
 
 
@@ -34,3 +34,9 @@ class KitInstanceForm(forms.ModelForm):
             'id','expiration_date', 'status', 'note', 'location')
         #child_model = Kit
         #child_form_class = KitIDForm
+
+class KitOrderForm(forms.ModelForm):
+    class Meta:
+        model = KitOrder
+        fields = '__all__'
+
