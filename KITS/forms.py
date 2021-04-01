@@ -12,6 +12,7 @@ class StudyForm(forms.ModelForm):
 
 class RequisitionForm(forms.ModelForm):
     class Meta:
+        model = Requisition
         fields = ('link', 'file', 'description')
 
 
