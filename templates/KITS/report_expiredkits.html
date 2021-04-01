@@ -11,10 +11,13 @@
 }
     </style>
     <div class="box">
-        <H1><b style="font-size: .75em;">Reports about expired kits > All expired kits</b></H1>
-
-        <a href="{% url 'KITS:report_expiredkits_studies' %}" class="btn btn-success">Review a list of studies with expired kits</a>
-
+        <H1><b style="font-size: .75em;">Reports > All expired kits </b></H1>
+        <hr>
+    <p> {{ test }}</p>
+    <form method="get">
+           {{ myFilter.form }}
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
 
     <hr>
     <table class="table table-striped table-bordered table-hover">
@@ -39,6 +42,7 @@
             {% endfor %}
             </tbody>
         </table>
+        <a href="" class="btn btn-success">Export report</a>
 
     </div>
 {% endblock %}
