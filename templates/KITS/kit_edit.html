@@ -15,8 +15,8 @@
     </style>
 
     <div class="box">
-    <h1>Edit Kit Type</h1>
 
+    <H1><b style="font-size: .75em;">Editing the "{{ kit.type_name }}" kit for IRB: {{ kit.IRB_number }}</b></H1>
 
     <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}

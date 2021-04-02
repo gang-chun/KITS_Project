@@ -224,7 +224,7 @@ def kit_edit(request, pk):
     else:
         # edit
         form = KitForm(instance=kit)
-    return render(request, 'KITS/kit_edit.html', {'form': form})
+    return render(request, 'KITS/kit_edit.html', {'form': form, 'kit':kit})
 
 
 
