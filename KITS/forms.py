@@ -41,3 +41,7 @@ class KitOrderForm(forms.ModelForm):
         model = KitOrder
         fields = '__all__'
 
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = '__all__'
