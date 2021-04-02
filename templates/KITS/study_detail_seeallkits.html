@@ -33,8 +33,13 @@
                     <th>{{ kit.scanner_id }}</th>
                     <th>{{ kit.expiration_date }}</th>
                     <th>{% if kit.status == 'a'%}
-                            <p>available</p>
-                        {% elif kit.status == 'e'%}
+
+                            {% if kit.expired_soon == True %}
+                                <p style="color:red;">expiring soon</p>
+                            {% else %}
+                                <p>available</p>
+                            {% endif %}
+                        {% elif kit.status == 'e' %}
                             <p>expired</p>
                         {% endif %}</th>
                     <th>{{ kit.kit.location }}</th>
@@ -42,6 +47,7 @@
                 {% endfor %}
             </table>
 
+    <p>{{ range }}</p>
     <a href="" class="btn btn-success">Export File</a>
     </div>
 

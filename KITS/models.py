@@ -130,12 +130,12 @@ class KitInstance(models.Model):
     @property
     def is_expired(self):
         if date.today() > self.expiration_date:
-            return True
-        return False
+            self.status = 'e'
+            self.save()
 
     @property
     def expired_soon(self):
-        if date.today() > self.expiration_date + timedelta(days=3):
+        if date.today() < self.expiration_date + timedelta(days=30):
             return True
         return False
 
