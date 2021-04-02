@@ -105,15 +105,9 @@ def study_detail_seeallkits(request, pk):
     study = get_object_or_404(Study, pk=pk)
 
     status = 'a or e'
-    today = date.today()
-    range = today + timedelta(days=30)
-    #i = today.strftime('%Y-%m-%d')
-    #j = soon.strftime('%Y-%m-%d')
-
-
     kits = KitInstance.objects.filter(kit__IRB_number=pk).filter(status__in=status).order_by('kit__id','expiration_date')
 
-    return render(request, 'KITS/study_detail_seeallkits.html', {'study': study, 'kits': kits, 'range': range})
+    return render(request, 'KITS/study_detail_seeallkits.html', {'study': study, 'kits': kits})
 
 @login_required
 def create_study(request):
