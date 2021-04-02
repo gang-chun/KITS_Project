@@ -66,14 +66,21 @@ class KitOrder(models.Model):
         return str(self.type)
 
 class Location(models.Model):
+    id = models.AutoField(primary_key=True)
     building = models.CharField(max_length=100)
     room = models.CharField(max_length=100)
     shelf_number = models.CharField(max_length=100, blank=True)
     history = HistoricalRecords()
 
     def __str__(self):
-        return f'{self.building} ({self.room})'
+        return f'{self.building} - {self.room} - {self.shelf_number}'
 
+    def created(self):
+        self.created_date = timezone.now()
+        self.save()
+
+    class Meta:
+        unique_together = ['building', 'room', 'shelf_number']
 
 class Kit(models.Model):
     IRB_number = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='studies')
@@ -81,6 +88,7 @@ class Kit(models.Model):
     date_added = models.DateTimeField(
         default=timezone.now)
     type_name = models.CharField(max_length=32, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
     # history = HistoricalRecords()
 
     def __str__(self):

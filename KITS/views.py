@@ -202,6 +202,11 @@ def kit_list(request):
 
 @login_required
 def kit_edit(request, pk):
+
+    test = request
+    if 'study_detail' in str(test):
+        test = 'study_detail'
+
     kit = get_object_or_404(Kit, pk=pk)
     if request.method == "POST":
         # update
@@ -211,11 +216,16 @@ def kit_edit(request, pk):
             kit.updated_date = timezone.now()
             kit.save()
             # kit = Kit.objects.filter(start_date__lte=timezone.now())
-            return redirect('KITS:kit_list')
+
+            if test == 'study_detail':
+                return redirect('KITS:study_detail', pk=pk)
+            else:
+                return redirect('KITS:kit_list')
     else:
         # edit
         form = KitForm(instance=kit)
     return render(request, 'KITS/kit_edit.html', {'form': form})
+
 
 
 @login_required
@@ -345,3 +355,16 @@ def kit_ordering_add(request, pk):
         form = KitOrderForm()
     return render(request, 'KITS/kit_ordering_add.html', {'form': form, 'study':study})
 
+@login_required
+def kit_addlocation(request):
+
+    if request.method == "POST":
+        form = LocationForm(request.POST)
+        if form.is_valid():
+            location = form.save(commit=False)
+            location.created_date = timezone.now()
+            location.save()
+            return redirect('KITS:kit_list')
+    else:
+        form = LocationForm()
+    return render(request, 'KITS/kit_addlocation.html', {'form': form})
