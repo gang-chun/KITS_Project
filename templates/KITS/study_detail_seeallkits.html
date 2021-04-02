@@ -25,18 +25,22 @@
                 <th>Location</th>
             </tr>
             </thead>
-            <tbody>
 
-            {% for kit in kits %}
-            <tr>
-                <th>{{ kit.kit.type_name }}</th>
-                <th>{{ kit.scanner_id }}</th>
-                <th>{{ kit.expiration_date }}</th>
-                <th>{{ kit.status }}</th>
-                <th>{{ kit.kit.location }}</th>
-            </tbody>
-            {% endfor %}
-        </table>
+            <tbody>
+                {% for kit in kits %}
+                <tr>
+                    <th>{{ kit.kit.type_name }}</th>
+                    <th>{{ kit.scanner_id }}</th>
+                    <th>{{ kit.expiration_date }}</th>
+                    <th>{% if kit.status == 'a'%}
+                            <p>available</p>
+                        {% elif kit.status == 'e'%}
+                            <p>expired</p>
+                        {% endif %}</th>
+                    <th>{{ kit.kit.location }}</th>
+                </tbody>
+                {% endfor %}
+            </table>
 
     <a href="" class="btn btn-success">Export File</a>
     </div>

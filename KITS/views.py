@@ -91,14 +91,21 @@ def study_detail(request, pk):
         test = 'False'
         kit_order ="No order details have been added"
 
-    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'req': req, 'kit_order': kit_order, 'test':test})
+    kit_exist = str(kits)
+    if kit_exist == '<QuerySet []>':
+        kit_exist = 'False'
+    else:
+        kit_exist = 'True'
+
+    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'req': req, 'kit_order': kit_order, 'test':test, 'kit_exist': kit_exist})
 
 
 @login_required
 def study_detail_seeallkits(request, pk):
     study = get_object_or_404(Study, pk=pk)
 
-    kits = KitInstance.objects.filter(kit__IRB_number=pk)
+    status = 'a or e'
+    kits = KitInstance.objects.filter(kit__IRB_number=pk).filter(status__in=status).order_by('kit__id')
 
     return render(request, 'KITS/study_detail_seeallkits.html', {'study': study, 'kits': kits})
 
