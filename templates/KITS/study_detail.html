@@ -20,16 +20,22 @@
     <H1><b style="font-size: .75em;">Study: {{ study }} {{ study.pet_name }}</b></H1>
     <hr>
 
-    <p>Status: {{ study.status }}</p>
-    <p>Sponsor: {{ study.sponsor_name }}</p>
+    <p><b>Status: </b>{{ study.status }}</p>
+    <p><b>Sponsor: </b>{{ study.sponsor_name }}</p>
+
+    {% if study.comment == ''%}
+        <p><b>Notes:</b> <em>No additional notes were added for this study.</em></p>
+    {% else %}
+        <p><b>Notes:</b> {{ study.comment }}</p>
+
+    {% endif %}
 
     <hr>
-    <h3>Kit Inventory</h3>
 
         <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr class="bg-info">
-                <th>Kit</th>
+                <th>Type of Kit</th>
                 <th>Available Kits</th>
                 <th>Expired Kits</th>
                 <th>Last to expire</th>
@@ -49,7 +55,7 @@
                     <td>{{ kit.location }}
                     <td>{{ new_req.description }}</td>
                     <td>{{ kit.description }}</td>
-                    <td><a href="{% url 'KITS:kit_edit_from_study' pk=kit.pk %}" class="btn btn-warning">Edit Kit</a></td>
+                    <td><a href="{% url 'KITS:kit_edit_from_study' pk=kit.pk %}" class="btn btn-warning">Edit Details</a></td>
 
 
                 </tr>
@@ -58,7 +64,7 @@
             </tbody>
         </table>
 
-
+        <a href="{% url 'KITS:study_detail_seeallkits' pk=study.pk %}" class="btn btn-warning">See all kits in this study</a>
 
     <hr>
 
@@ -66,12 +72,22 @@
     {% if test == 'True' %}
         <h3>Kit Ordering </h3>
         <p> {{ kit_order }} </p>
+
+            {% if study.kitorder.type == 'link' or study.kitorder.type == 'file'%}
+                <p><b>Notes: </b> {{study.kitorder.description}}</p>
+            {% endif %}
+
         <a href="{% url 'KITS:kit_ordering' pk=study.pk %}" class="btn btn-success">Edit kit ordering details</a>
+
+
     {% elif test == 'False' %}
+
         <p>{{ kit_order }}</p>
         <a href="{% url 'KITS:kit_ordering_add' pk=study.pk %}" class="btn btn-success">Add Kit Ordering Info</a>
 
     {% endif %}
+
+
     </div>
 
     <h3>Requisition: </h3>

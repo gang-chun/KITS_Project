@@ -95,6 +95,14 @@ def study_detail(request, pk):
 
 
 @login_required
+def study_detail_seeallkits(request, pk):
+    study = get_object_or_404(Study, pk=pk)
+
+    kits = KitInstance.objects.filter(kit__IRB_number=pk)
+
+    return render(request, 'KITS/study_detail_seeallkits.html', {'study': study, 'kits': kits})
+
+@login_required
 def create_study(request):
     if request.method == "POST":
         form = StudyForm(request.POST)
