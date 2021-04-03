@@ -18,6 +18,7 @@
     </style>
     <div class="box">
     <H1><b style="font-size: .75em;">Study: {{ study }} {{ study.pet_name }}</b></H1>
+
     <hr>
 
     <p><b>Status: </b>{{ study.status }}</p>
@@ -30,7 +31,8 @@
 
     {% endif %}
 
-
+    <a class="btn btn-warning" href="{% url 'KITS:study_detail_study_edit' pk=study.pk %}">Edit Study Details</a>
+    <hr>
     {% if kit_exist == 'False' %}
 
         <p><b>Kits: </b>No kits have been added to this study. To edit, go to 'Check-In Kits'</p>
@@ -41,8 +43,8 @@
             <thead>
             <tr class="bg-info">
                 <th>Kit Name</th>
-                <th>Kits Available</th>
-                <th>Kits Expired</th>
+                <th>Available Kits</th>
+                <th>Expired Kits</th>
                 <th>Kit last to expire</th>
                 <th>Location</th>
                 <th>Requisition</th>
@@ -70,13 +72,13 @@
         </table>
 
 
-        <a href="{% url 'KITS:study_detail_seeallkits' pk=study.pk %}" class="btn btn-warning">See all kits in this study</a>
+        <a href="{% url 'KITS:study_detail_seeallkits' pk=study.pk %}" class="btn btn-warning">See all kits in inventory</a>
     {% endif %}
     <hr>
 
     <div class="column">
     {% if test == 'True' %}
-        <h3>Kit Ordering </h3>
+        <h3> Kit Ordering Info</h3>
         <p> {{ kit_order }} </p>
 
             {% if study.kitorder.type == 'link' or study.kitorder.type == 'file'%}
@@ -102,7 +104,7 @@
 
     </div>
 
-    <h3>Requisition: </h3>
+    <h3>Requisition Info </h3>
     <a href="{% url 'KITS:create_req' pk=study.pk %}" class="btn btn-success">Add Requisition Info</a>
     <a class="btn btn-warning" href="{% url 'KITS:req_edit' pk=study.pk %}">Edit Requisition Info</a>
 

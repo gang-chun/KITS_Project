@@ -11,6 +11,7 @@ urlpatterns = [
     path('study/<int:pk>/study_detail/', views.study_detail, name='study_detail'),
     path('study/<int:pk>/study_detail/kit_edit/', views.kit_edit, name='kit_edit_from_study'),
     path('study/<int:pk>/study_detail/study_detail_seeallkits/', views.study_detail_seeallkits, name='study_detail_seeallkits'),
+    path('study/<int:pk>/study_detail/study_edit', views.study_edit, name='study_detail_study_edit'),
 
     path('create_study/', views.create_study, name='create_study'),
     path('study/<int:pk>/edit', views.study_edit, name='study_edit'),

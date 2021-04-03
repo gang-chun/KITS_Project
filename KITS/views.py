@@ -127,6 +127,11 @@ def create_study(request):
 
 @login_required
 def study_edit(request, pk):
+
+    test = request
+    if 'study_detail' in str(test):
+        test = 'study_detail'
+
     study = get_object_or_404(Study, pk=pk)
 
     if request.method == "POST":
@@ -137,7 +142,11 @@ def study_edit(request, pk):
             study.updated_date = timezone.now()
             study.save()
             study = Study.objects.filter(start_date__lte=timezone.now())
-            return render(request, 'KITS/study_list.html',
+
+            if test == 'study_detail':
+                return redirect('KITS:study_detail', pk=pk)
+            else:
+                return render(request, 'KITS/study_list.html',
                           {'studies': study})
 
     else:
@@ -233,7 +242,7 @@ def kit_edit(request, pk):
             # kit = Kit.objects.filter(start_date__lte=timezone.now())
 
             if test == 'study_detail':
-                return redirect('KITS:study_detail', pk=pk)
+                return redirect('KITS:study_detail', pk=kit.IRB_number_id)
             else:
                 return redirect('KITS:kit_list')
     else:
