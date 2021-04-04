@@ -35,7 +35,7 @@
     <hr>
     {% if kit_exist == 'False' %}
 
-        <p><b>Kits: </b>No kits have been added to this study. To edit, go to 'Check-In Kits'</p>
+        <p><b>Kits: </b>No kits have been added to this study. To add kits, go to 'Check-In Kits' page.</p>
 
     {% else %}
         <hr>
@@ -73,6 +73,8 @@
 
 
         <a href="{% url 'KITS:study_detail_seeallkits' pk=study.pk %}" class="btn btn-warning">See all kits in inventory</a>
+        <p style="padding-top:10px;">To add more kits, please go to 'Check-In Kits' page.</p>
+
     {% endif %}
     <hr>
 

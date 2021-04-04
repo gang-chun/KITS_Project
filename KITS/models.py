@@ -94,6 +94,9 @@ class Kit(models.Model):
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
 
+    class Meta:
+        unique_together = ['IRB_number', 'type_name']
+
 
 class KitInstance(models.Model):
     """Model representing a specific kit (i.e. that can be used by a Study).
