@@ -14,7 +14,7 @@ from simple_history.signals import (
     post_create_historical_record
 )
 from datetime import datetime, timedelta
-
+from django.contrib import messages
 
 @receiver(post_create_historical_record)
 def post_create_historical_record_callback(sender, **kwargs):
@@ -39,6 +39,7 @@ def index(request):
     return render(request, 'registration/login.html')
 
 
+
 def login(request):
     return render(request, 'registration/login.html',
                   {'kits': login})
@@ -59,11 +60,12 @@ def home2(request):
 
 @login_required
 def study_list(request):
-    studies = Study.objects.all()
+    studies = Study.objects.exclude(status='Closed')
 
     # Filter bar
-    myFilter = StudyFilter(request.GET, queryset=studies)
-    studies = myFilter.qs
+    myFilter = StudyFilter(request.GET, queryset=Study.objects.all())
+    if request.GET:
+        studies = myFilter.qs
 
     return render(request, 'KITS/study_list.html', {'studies': studies, 'myFilter': myFilter})
 
@@ -128,6 +130,7 @@ def create_study(request):
 @login_required
 def study_edit(request, pk):
 
+    # To redirect to the study details page if the request came from the study details page
     test = request
     if 'study_detail' in str(test):
         test = 'study_detail'
@@ -160,6 +163,9 @@ def study_archive(request, pk):
     study = get_object_or_404(Study, pk=pk)
     study.status = 'Closed'
     study.save()
+
+    message = "The study's status has changed to 'closed' and was put into archive."
+    messages.success(request, message)
     return redirect('KITS:study_list')
 
 
@@ -217,10 +223,12 @@ def kit_addkittype(request):
 
 @login_required
 def kit_list(request):
-    kit = Kit.objects.all()
+    kit = Kit.objects.exclude(IRB_number__status='Closed')
     # Filter bar
     myFilter = KitFilter(request.GET, queryset=kit)
     kit = myFilter.qs
+
+
     return render(request, 'KITS/kit_list.html', {'kit': kit, 'myFilter': myFilter})
 
 
@@ -254,8 +262,14 @@ def kit_edit(request, pk):
 
 @login_required
 def kit_delete(request, pk):
-    kit = get_object_or_404(Kit, pk=pk)
-    kit.delete()
+    try:
+        kit = get_object_or_404(Kit, pk=pk)
+        kit.delete()
+    except:
+        message = "This kit type cannot be deleted because there are kits still in inventory."
+        messages.error(request, message)
+        return redirect('KITS:kit_list')
+
     return redirect('KITS:kit_list')
 
 # kits = Kit.objects.filter(id=pk)
@@ -400,3 +414,8 @@ def kit_checkout(request):
     myFilter = KitFilter(request.GET, queryset=kit)
     kit = myFilter.qs
     return render(request, 'KITS/kit_checkout.html', {'kit': kit, 'myFilter': myFilter})
+
+@login_required
+def help(request):
+
+    return render(request, 'KITS/help.html')
