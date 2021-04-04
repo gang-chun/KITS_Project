@@ -22,22 +22,27 @@
             <thead>
             <tr class="bg-info">
                 <th>Kit ID</th>
+                <th>KitInstance ID</th>
                 <th>Status</th>
                 <th>Expiration Date</th>
-                <th colspan="4">Checkout Confirm</th>
+                <th>Checkout Confirm</th>
 
 
             </tr>
             </thead>
             <tbody>
-            {% for kit in kitinstance %}
+            {% for kitinstance in kitinstance %}
             <tr>
-                <td>{{ kitinstance.status}}</td>
                 <td>{{ kitinstance.kit_id}}</td>
+                <td>{{ kitinstance.id }}</td>
+                <td>{{ kitinstance.status}}</td>
                 <td>{{ kitinstance.expiration_date}}</td>
-                <td><a href="{% url 'KITS:kit_checkout' pk=kitinstance.pk%}"
-                    onclick="return confirm('Are you sure you want to checkout Kit {{ kitinstance.kit_id }}?"
-                       class="btn btn-warning">Checkout</a></td>
+                <td><a href="{% url 'KITS:kitinstance_statusedit' pk=kitinstance.pk%}"
+                    onclick="return confirm('Are you sure you want to checkout Kit {{ kit.id }}?"
+                    class="btn btn-warning">Checkout</a></td>
+
+
+
             </tr>
             {% endfor %}
             </tbody>

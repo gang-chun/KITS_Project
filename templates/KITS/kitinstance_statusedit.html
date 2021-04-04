@@ -16,12 +16,13 @@
 
     <div class="box">
 
-    <h1>Edit Study</h1>
+    <H1><b style="font-size: .75em;">checking out kit{{kitinstance.kit_id]}</b></H1>
+
     <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="save btn btn-success">Checkout</button>
+        <button type="submit" class="save btn btn-success">Update</button>
     </form>
     </div>
-{% endblock %}
 
+{% endblock %}
 </html>

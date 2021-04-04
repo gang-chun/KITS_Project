@@ -49,4 +49,4 @@ class LocationForm(forms.ModelForm):
 class KitInstanceEditForm(forms.ModelForm):
     class Meta:
         model = KitInstance
-        fields = ('status',)
+        fields = '__all__'
