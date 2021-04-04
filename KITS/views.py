@@ -392,3 +392,11 @@ def kit_addlocation(request):
     else:
         form = LocationForm()
     return render(request, 'KITS/kit_addlocation.html', {'form': form})
+
+@login_required
+def kit_checkout(request):
+    kit = Kit.objects.all()
+    # Filter bar
+    myFilter = KitFilter(request.GET, queryset=kit)
+    kit = myFilter.qs
+    return render(request, 'KITS/kit_checkout.html', {'kit': kit, 'myFilter': myFilter})
