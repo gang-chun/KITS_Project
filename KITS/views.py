@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.db.models import Count, Max, Q, F, Sum
 from django.db.models.functions import Greatest
 from django.shortcuts import render
-from .filters import StudyFilter, KitFilter, KitReportFilter
+from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter
 
 from django.dispatch import receiver
 from simple_history.signals import (
@@ -395,8 +395,19 @@ def kit_addlocation(request):
 
 @login_required
 def kit_checkout(request):
-    kit = Kit.objects.all()
+    kitinstance = KitInstance.objects.all()
     # Filter bar
-    myFilter = KitFilter(request.GET, queryset=kit)
-    kit = myFilter.qs
-    return render(request, 'KITS/kit_checkout.html', {'kit': kit, 'myFilter': myFilter})
+    myFilter = KitInstanceFilter(request.GET, queryset=kitinstance)
+    kitinstance = myFilter.qs
+    return render(request, 'KITS/kit_checkout.html', {'kitinstance': kitinstance, 'myFilter': myFilter})
+
+'''
+@login_required
+def kitinstance_statusedit(request):
+    print("test")
+
+    if KitInstance.status == "a":
+        kit = KitInstance.status == "c"
+        kit.save()
+        return render(request, 'KITS/kit_checkout.html', {'kit': kit})
+'''

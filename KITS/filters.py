@@ -25,3 +25,9 @@ class KitReportFilter(django_filters.FilterSet):
         #fields = 'IRB_number'
         fields = '__all__'
         exclude = 'description', 'date_added', 'type_name'
+
+class KitInstanceFilter(django_filters.FilterSet):
+    class Meta:
+        model = KitInstance
+        fields = '__all__'
+        exclude = 'id','scanner_id','note','expiration_date','kit_id','location_id',
