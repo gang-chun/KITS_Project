@@ -13,7 +13,7 @@ class StudyForm(forms.ModelForm):
 class RequisitionForm(forms.ModelForm):
     class Meta:
         model = Requisition
-        fields = ('link', 'file', 'description')
+        fields = '__all__'
 
 
 class KitForm(forms.ModelForm):
@@ -24,27 +24,31 @@ class KitForm(forms.ModelForm):
 
 
 class KitIDForm(forms.ModelForm):
+    class Meta:
         model = Kit
-        fields = ('id')
+        fields = ('id', )
 
 
 class KitInstanceForm(forms.ModelForm):
     class Meta:
         model = KitInstance
         fields = (
-            'id','expiration_date', 'status', 'note', 'location')
-        #child_model = Kit
-        #child_form_class = KitIDForm
+            'id', 'expiration_date', 'status', 'note', 'location')
+        # child_model = Kit
+        # child_form_class = KitIDForm
+
 
 class KitOrderForm(forms.ModelForm):
     class Meta:
         model = KitOrder
         fields = '__all__'
 
+
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = '__all__'
+
 
 class KitInstanceEditForm(forms.ModelForm):
     class Meta:

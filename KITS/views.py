@@ -16,6 +16,7 @@ from simple_history.signals import (
 from datetime import datetime, timedelta
 from django.contrib import messages
 
+
 @receiver(post_create_historical_record)
 def post_create_historical_record_callback(sender, **kwargs):
     t_user_t = kwargs["history_user"]
@@ -37,7 +38,6 @@ now = timezone.now()
 
 def index(request):
     return render(request, 'registration/login.html')
-
 
 
 def login(request):
@@ -78,8 +78,17 @@ def study_detail(request, pk):
         no_of_kits=Count('kit', filter=Q(kit__status='a'))) \
         .annotate(no_of_kits_exp=Count('kit', filter=Q(kit__status='e'))) \
         .annotate(exp=Max('kit__expiration_date'))
-    #kit_order = KitOrder.objects.filter(study=pk)
+
     req = Requisition.objects.filter(study=pk)
+    if req.exists():
+        req_exist = True
+        type_qs = Requisition.objects.filter(study=pk).values('type')
+        type_list = type_qs[0]['type']
+        req = Requisition.objects.filter(study=pk).values(type_list)
+        req = req[0][type_list]
+    else:
+        req_exist = False
+        req = 'No requisition details have been added.'
 
     kit_order = KitOrder.objects.filter(study=pk)
     if kit_order.exists():
@@ -91,7 +100,7 @@ def study_detail(request, pk):
 
     else:
         test = 'False'
-        kit_order ="No order details have been added"
+        kit_order = "No order details have been added."
 
     kit_exist = str(kits)
     if kit_exist == '<QuerySet []>':
@@ -99,7 +108,8 @@ def study_detail(request, pk):
     else:
         kit_exist = 'True'
 
-    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'req': req, 'kit_order': kit_order, 'test':test, 'kit_exist': kit_exist})
+    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'req': req, 'kit_order': kit_order,
+                                                      'test': test, 'kit_exist': kit_exist, 'req_exist': req_exist})
 
 
 @login_required
@@ -171,14 +181,15 @@ def study_archive(request, pk):
 
 @login_required
 def create_req(request, pk):
+
     study = get_object_or_404(Study, pk=pk)
 
     if request.method == "POST":
-        form = RequisitionForm(request.POST)
+        form = RequisitionForm(request.POST, request.FILES)
         if form.is_valid():
             new_req = form.save(commit=False)
             new_req.save()
-            return render(request, 'KITS/study_detail.html', {'study': study, 'new_req': new_req})
+            return redirect('KITS:study_detail', pk=pk)
     else:
         form = RequisitionForm()
     return render(request, 'KITS/create_req.html', {'form': form, 'study': study})
@@ -186,23 +197,19 @@ def create_req(request, pk):
 
 @login_required
 def req_edit(request, pk):
-    study = get_object_or_404(Study, pk=pk)
     req = get_object_or_404(Requisition, pk=pk)
 
     if request.method == "POST":
-        # update
-        form = RequisitionForm(request.POST, instance=req)
+        form = RequisitionForm(request.POST, request.FILES, instance=req)
         if form.is_valid():
             req = form.save(commit=False)
-            req.updated_date = timezone.now()
+            req.update_date = timezone.now()
             req.save()
-            # req = Requisition.objects.filter(start_date__lte=timezone.now())
-            return render(request, 'KITS/study_detail.html', {'study': study, 'req': req})
-
+            return redirect('KITS:study_detail', pk=pk)
     else:
         # edit
         form = RequisitionForm(instance=req)
-        return render(request, 'KITS/req_edit.html', {'form': form})
+    return render(request, 'KITS/req_edit.html', {'form': form})
 
 
 @login_required
@@ -227,7 +234,6 @@ def kit_list(request):
     # Filter bar
     myFilter = KitFilter(request.GET, queryset=kit)
     kit = myFilter.qs
-
 
     return render(request, 'KITS/kit_list.html', {'kit': kit, 'myFilter': myFilter})
 
@@ -363,9 +369,8 @@ def kit_ordering(request, pk):
 
     kitorder = get_object_or_404(KitOrder, pk=pk)
 
-
     if request.method == "POST":
-        form = KitOrderForm(request.POST, instance=kitorder)
+        form = KitOrderForm(request.POST, request.FILES, instance=kitorder)
         if form.is_valid():
             kitorder = form.save(commit=False)
             kitorder.update_date = timezone.now()
@@ -378,13 +383,14 @@ def kit_ordering(request, pk):
 
     return render(request, 'KITS/kit_ordering.html', {'form': form})
 
+
 @login_required
 def kit_ordering_add(request, pk):
-    #new_kitorder = get_object_or_404(Study, pk=pk)
+    # new_kitorder = get_object_or_404(Study, pk=pk)
     study = get_object_or_404(Study, pk=pk)
 
     if request.method == "POST":
-        form = KitOrderForm(request.POST)
+        form = KitOrderForm(request.POST, request.FILES)
         if form.is_valid():
             new_kitorder = form.save(commit=False)
             new_kitorder.save()
@@ -392,6 +398,7 @@ def kit_ordering_add(request, pk):
     else:
         form = KitOrderForm()
     return render(request, 'KITS/kit_ordering_add.html', {'form': form, 'study':study})
+
 
 @login_required
 def kit_addlocation(request):

@@ -11,10 +11,9 @@ import uuid  # Required for unique study instances
 # Create your models here.
 
 
-
 class Study(models.Model):
     id = models.AutoField(primary_key=True)
-    #kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
+    # kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
     IRB_number = models.CharField(max_length=50)
     pet_name = models.CharField(max_length=50)
     comment = models.CharField(max_length=100, blank=True)
@@ -53,17 +52,20 @@ class Study(models.Model):
     def __str__(self):
         return str(self.IRB_number)
 
+
 class KitOrder(models.Model):
-    #id = models.AutoField(primary_key=True)
+    # id = models.AutoField(primary_key=True)
     study = models.OneToOneField(Study, on_delete=models.CASCADE, primary_key=True)
-    TYPE = (('link', 'link'), ('file', 'file'), ('description', 'description'))
-    type = models.CharField(max_length=32, choices=TYPE, default='See description')
+    TYPE = (('link', 'Link'), ('file', 'File'), ('description', 'Description'))
+    type = models.CharField(max_length=32, choices=TYPE, default='description')
     link = models.URLField(max_length=200, blank=True)
-    file = models.FileField(max_length=100, blank=True)
+    file = models.FileField(blank=True, null=True, upload_to='kit_order/')
     description = models.TextField(max_length=100, blank=True)
     history = HistoricalRecords()
+
     def __str__(self):
         return str(self.type)
+
 
 class Location(models.Model):
     id = models.AutoField(primary_key=True)
@@ -81,6 +83,7 @@ class Location(models.Model):
 
     class Meta:
         unique_together = ['building', 'room', 'shelf_number']
+
 
 class Kit(models.Model):
     IRB_number = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='studies')
@@ -148,9 +151,11 @@ class KitInstance(models.Model):
 
 
 class Requisition(models.Model):
-    id = models.AutoField(primary_key=True)
-    study = models.ForeignKey(Study, on_delete=models.CASCADE, null=True, blank=True)
+    # id = models.AutoField(primary_key=True)
+    study = models.OneToOneField(Study, on_delete=models.CASCADE, primary_key=True)
+    TYPE = (('link', 'Link'), ('file', 'File'), ('description', 'Description'))
     link = models.URLField(max_length=200, blank=True, null=True)
+    type = models.CharField(max_length=32, choices=TYPE, default='description')
     description = models.CharField(max_length=200, default='TBD')
     file = models.FileField(blank=True, null=True, upload_to='req/')
 

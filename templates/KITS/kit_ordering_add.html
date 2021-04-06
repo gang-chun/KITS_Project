@@ -14,7 +14,7 @@
         <H1><b style="font-size: .75em;">Add kit ordering details for {{study.IRB_number}}</b></H1>
 
         <hr>
-        <form method="POST" class="kit-form">{% csrf_token %}
+        <form method="POST" class="kit-form" enctype="multipart/form-data">{% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Add</button>
         </form>

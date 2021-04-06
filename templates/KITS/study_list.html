@@ -44,8 +44,7 @@
                 <td>{{ study.IRB_number }}</td>
                 <td>{{ study.pet_name }}</td>
                 <td>{{ study.status }}</td>
-                <td><a href="{% url 'KITS:study_detail' pk=study.pk %}" class="btn btn-warning">View Details</a>
-                    <a class="btn btn-warning" href="{% url 'KITS:study_edit' pk=study.pk %}">Edit</a>
+                <td><a href="{% url 'KITS:study_detail' pk=study.pk %}" class="btn btn-info">View Details</a>
                     <a href="{% url 'KITS:study_archive' pk=study.pk %}"
                         onclick="return confirm('Are you sure you want to archive {{ study.pet_name }}?')"
                         class="btn btn-danger">Archive</a></td>

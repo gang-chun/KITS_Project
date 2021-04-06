@@ -17,7 +17,7 @@
     <div class="box">
 
     <h1>Change Requisition Details</h1>
-    <form method="POST" class="">{% csrf_token %}
+    <form method="POST" class="" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-success">Confirm</button>
     </form>
