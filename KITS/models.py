@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.contrib.auth.models import User  # So we can test if authenticated
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
+# from django.contrib.contenttypes.fields import GenericForeignKey
 from datetime import date, timedelta
 from django.db import models
 from simple_history.models import HistoricalRecords

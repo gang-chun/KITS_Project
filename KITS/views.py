@@ -63,11 +63,11 @@ def study_list(request):
     studies = Study.objects.exclude(status='Closed')
 
     # Filter bar
-    myFilter = StudyFilter(request.GET, queryset=Study.objects.all())
+    study_filter = StudyFilter(request.GET, queryset=Study.objects.all())
     if request.GET:
-        studies = myFilter.qs
+        studies = study_filter.qs
 
-    return render(request, 'KITS/study_list.html', {'studies': studies, 'myFilter': myFilter})
+    return render(request, 'KITS/study_list.html', {'studies': studies, 'study_filter': study_filter})
 
 
 @login_required
@@ -117,9 +117,11 @@ def study_detail_seeallkits(request, pk):
     study = get_object_or_404(Study, pk=pk)
 
     status = 'a or e'
-    kits = KitInstance.objects.filter(kit__IRB_number=pk).filter(status__in=status).order_by('kit__id','expiration_date')
+    kits = KitInstance.objects.filter(kit__IRB_number=pk).filter(status__in=status).order_by('kit__id',
+                                                                                             'expiration_date')
 
     return render(request, 'KITS/study_detail_seeallkits.html', {'study': study, 'kits': kits})
+
 
 @login_required
 def create_study(request):
@@ -160,7 +162,7 @@ def study_edit(request, pk):
                 return redirect('KITS:study_detail', pk=pk)
             else:
                 return render(request, 'KITS/study_list.html',
-                          {'studies': study})
+                              {'studies': study})
 
     else:
         # edit
@@ -232,10 +234,10 @@ def kit_addkittype(request):
 def kit_list(request):
     kit = Kit.objects.exclude(IRB_number__status='Closed')
     # Filter bar
-    myFilter = KitFilter(request.GET, queryset=kit)
-    kit = myFilter.qs
+    kit_filter = KitFilter(request.GET, queryset=kit)
+    kit = kit_filter.qs
 
-    return render(request, 'KITS/kit_list.html', {'kit': kit, 'myFilter': myFilter})
+    return render(request, 'KITS/kit_list.html', {'kit': kit, 'kit_filter': kit_filter})
 
 
 @login_required
@@ -262,8 +264,7 @@ def kit_edit(request, pk):
     else:
         # edit
         form = KitForm(instance=kit)
-    return render(request, 'KITS/kit_edit.html', {'form': form, 'kit':kit})
-
+    return render(request, 'KITS/kit_edit.html', {'form': form, 'kit': kit})
 
 
 @login_required
@@ -337,7 +338,6 @@ def report_expiredkits(request):
 
     kits = KitInstance.objects.filter(status='e')
 
-
     # To grab the IRB numbers and put them into a list
     kits2 = list(kits)
     test = []
@@ -347,13 +347,13 @@ def report_expiredkits(request):
         test.append(test1)
 
     # To GET the IRB_number from the user's search
-    myFilter = KitReportFilter(request.GET)
-    test = myFilter.qs
+    kit_report_filter = KitReportFilter(request.GET)
+    test = kit_report_filter.qs
 
     # To redo the 'kits' after the user searches
     kits = KitInstance.objects.filter(status='e').filter(kit__in=test)
 
-    return render(request, 'KITS/report_expiredkits.html', {'kits': kits, 'myFilter': myFilter})
+    return render(request, 'KITS/report_expiredkits.html', {'kits': kits, 'kit_report_filter': kit_report_filter})
 
 
 @login_required
@@ -397,7 +397,7 @@ def kit_ordering_add(request, pk):
             return redirect('KITS:study_detail', pk=pk)
     else:
         form = KitOrderForm()
-    return render(request, 'KITS/kit_ordering_add.html', {'form': form, 'study':study})
+    return render(request, 'KITS/kit_ordering_add.html', {'form': form, 'study': study})
 
 
 @login_required
@@ -414,13 +414,15 @@ def kit_addlocation(request):
         form = LocationForm()
     return render(request, 'KITS/kit_addlocation.html', {'form': form})
 
+
 @login_required
 def kit_checkout(request):
     kitinstance = KitInstance.objects.all()
     # Filter bar
-    myFilter = KitInstanceFilter(request.GET, queryset=kitinstance)
-    kitinstance = myFilter.qs
-    return render(request, 'KITS/kit_checkout.html', {'kitinstance': kitinstance, 'myFilter': myFilter})
+    kit_instance_filter = KitInstanceFilter(request.GET, queryset=kitinstance)
+    kitinstance = kit_instance_filter.qs
+    return render(request, 'KITS/kit_checkout.html', {'kitinstance': kitinstance,
+                                                      'kit_instance_filter': kit_instance_filter})
 
 
 @login_required
@@ -438,4 +440,3 @@ def kitinstance_statusedit(request):
         kit.save()
         return render(request, 'KITS/kit_checkout.html', {'kit': kit})
 '''
-

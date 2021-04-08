@@ -1,6 +1,6 @@
 import django_filters
 from .models import *
-from django.db.models import F
+# from django.db.models import F
 
 
 class StudyFilter(django_filters.FilterSet):
@@ -22,12 +22,13 @@ class KitFilter(django_filters.FilterSet):
 class KitReportFilter(django_filters.FilterSet):
     class Meta:
         model = Kit
-        #fields = 'IRB_number'
+        # fields = 'IRB_number'
         fields = '__all__'
         exclude = 'description', 'date_added', 'type_name'
+
 
 class KitInstanceFilter(django_filters.FilterSet):
     class Meta:
         model = KitInstance
         fields = '__all__'
-        exclude = 'id','scanner_id','note','expiration_date','kit_id','location_id',
+        exclude = 'id', 'scanner_id', 'note', 'expiration_date', 'kit_id', 'location_id',
