@@ -3,9 +3,9 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from django.db.models import Count, Max, Q, F, Sum
-from django.db.models.functions import Greatest
-from django.shortcuts import render
+from django.db.models import Count, Max, Q
+# from django.db.models import F, Sum
+# from django.db.models.functions import Greatest
 from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter
 
 from django.dispatch import receiver
@@ -94,9 +94,9 @@ def study_detail(request, pk):
     if kit_order.exists():
         test = 'True'
         type_qs = KitOrder.objects.filter(study=pk).values('type')
-        type = type_qs[0]['type']
-        kit_order = KitOrder.objects.filter(study=pk).values(type)
-        kit_order = kit_order[0][type]
+        type_list = type_qs[0]['type']
+        kit_order = KitOrder.objects.filter(study=pk).values(type_list)
+        kit_order = kit_order[0][type_list]
 
     else:
         test = 'False'
@@ -426,7 +426,7 @@ def kit_checkout(request):
 
 
 @login_required
-def help(request):
+def help_page(request):
     return render(request, 'KITS/help.html')
 
 
