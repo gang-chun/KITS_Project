@@ -1,8 +1,8 @@
 from django.utils import timezone
 from django.contrib.auth.models import User  # So we can test if authenticated
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
-from datetime import date
+# from django.contrib.contenttypes.fields import GenericForeignKey
+from datetime import date, timedelta
 from django.db import models
 from simple_history.models import HistoricalRecords
 import uuid  # Required for unique study instances
@@ -10,19 +10,10 @@ import uuid  # Required for unique study instances
 
 # Create your models here.
 
-class KitOrder(models.Model):
-    id = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=100)
-    description = models.TextField(max_length=100, blank=True)
-    web_address = models.URLField(max_length=200, blank=True)
-    history = HistoricalRecords()
-    def __str__(self):
-        return str(self.type)
-
 
 class Study(models.Model):
     id = models.AutoField(primary_key=True)
-    kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
+    # kit_order = models.ForeignKey(KitOrder, on_delete=models.CASCADE, related_name='kit_orders')
     IRB_number = models.CharField(max_length=50)
     pet_name = models.CharField(max_length=50)
     comment = models.CharField(max_length=100, blank=True)
@@ -58,19 +49,40 @@ class Study(models.Model):
         self.updated_date = timezone.now()
         self.save()
 
-
-
     def __str__(self):
         return str(self.IRB_number)
 
 
+class KitOrder(models.Model):
+    # id = models.AutoField(primary_key=True)
+    study = models.OneToOneField(Study, on_delete=models.CASCADE, primary_key=True)
+    TYPE = (('link', 'Link'), ('file', 'File'), ('description', 'Description'))
+    type = models.CharField(max_length=32, choices=TYPE, default='description')
+    link = models.URLField(max_length=200, blank=True)
+    file = models.FileField(blank=True, null=True, upload_to='kit_order/')
+    description = models.TextField(max_length=100, blank=True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return str(self.type)
+
+
 class Location(models.Model):
+    id = models.AutoField(primary_key=True)
     building = models.CharField(max_length=100)
     room = models.CharField(max_length=100)
     shelf_number = models.CharField(max_length=100, blank=True)
     history = HistoricalRecords()
+
     def __str__(self):
-        return f'{self.building} ({self.room})'
+        return f'{self.building} - {self.room} - {self.shelf_number}'
+
+    def created(self):
+        self.created_date = timezone.now()
+        self.save()
+
+    class Meta:
+        unique_together = ['building', 'room', 'shelf_number']
 
 
 class Kit(models.Model):
@@ -78,10 +90,15 @@ class Kit(models.Model):
     description = models.CharField(max_length=100, blank=True)
     date_added = models.DateTimeField(
         default=timezone.now)
-    type_name = models.CharField(max_length=32,blank=True)
+    type_name = models.CharField(max_length=32, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
     # history = HistoricalRecords()
+
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
+
+    class Meta:
+        unique_together = ['IRB_number', 'type_name']
 
 
 class KitInstance(models.Model):
@@ -111,6 +128,7 @@ class KitInstance(models.Model):
         help_text='Kit Availability',
     )
     # history = HistoricalRecords()
+
     class Meta:
         ordering = ['expiration_date']
         permissions = (("can_mark_demolished", "Set kit as demolished"),)
@@ -118,6 +136,12 @@ class KitInstance(models.Model):
     @property
     def is_expired(self):
         if date.today() > self.expiration_date:
+            self.status = 'e'
+            self.save()
+
+    @property
+    def expired_soon(self):
+        if date.today() < self.expiration_date + timedelta(days=30):
             return True
         return False
 
@@ -127,16 +151,28 @@ class KitInstance(models.Model):
 
 
 class Requisition(models.Model):
-    id = models.AutoField(primary_key=True)
-    study = models.ForeignKey(Study, on_delete=models.CASCADE)
-    link = models.URLField(max_length=200, blank=True)
+    # id = models.AutoField(primary_key=True)
+    study = models.OneToOneField(Study, on_delete=models.CASCADE, primary_key=True)
+    TYPE = (('link', 'Link'), ('file', 'File'), ('description', 'Description'))
+    link = models.URLField(max_length=200, blank=True, null=True)
+    type = models.CharField(max_length=32, choices=TYPE, default='description')
+    description = models.CharField(max_length=200, default='TBD')
+    file = models.FileField(blank=True, null=True, upload_to='req/')
+
+    def updated(self):
+        self.updated_date = timezone.now()
+        self.save()
+
     # history = HistoricalRecords()
+
 
 class UserHistoryManager(models.Manager):
     def create_user_history(self, user, the_object, changed_on, history_instance):
-        user_hisx = self.create(user=user, the_object=the_object, changed_on=changed_on, history_instance=history_instance)
+        user_hisx = self.create(user=user, the_object=the_object, changed_on=changed_on,
+                                history_instance=history_instance)
         # do something with the user_hisx object if needed
         return user_hisx
+
 
 class UserHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -147,6 +183,7 @@ class UserHistory(models.Model):
 #    content_object = GenericForeignKey()  # Exact names used so no need to pass 'obj_id', 'cont_obj' in ctor
     changed_on = models.DateTimeField(auto_now_add=True)
     objects = UserHistoryManager()
+
     def __str__(self):
         return str(self.history_instance + self.the_object)
 

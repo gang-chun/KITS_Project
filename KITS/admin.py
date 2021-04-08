@@ -1,6 +1,5 @@
 from django.contrib import admin
-# from .models import Study, KitOrder, KitInstance, Kit
-from .models import Study, KitOrder, KitInstance, Kit, Location
+from .models import Study, KitOrder, KitInstance, Kit, Location, Requisition
 from simple_history.admin import SimpleHistoryAdmin
 from .models import UserHistory
 
@@ -8,6 +7,7 @@ from .models import UserHistory
 class KitInstanceInline(admin.TabularInline):
     model = KitInstance
     extra = 0
+
 
 @admin.register(Kit)
 class KitList(admin.ModelAdmin):
@@ -36,11 +36,20 @@ class LocationList(admin.ModelAdmin):
 #    search_fields = ('building', )
 #    ordering = ['building']
 
+
 @admin.register(KitOrder)
 class KitOrderList(admin.ModelAdmin):
-    list_display = ('id','type', 'web_address', 'description' )
-    list_filter = ('id','type', 'web_address')
+    list_display = ('type', 'link', 'description' )
+    list_filter = ('type', 'link')
     search_fields = ('type', )
+    ordering = ['type']
+
+
+@admin.register(Requisition)
+class RequisitionList(admin.ModelAdmin):
+    list_display = ('type', 'link', 'description')
+    list_filter = ('type', 'link')
+    search_fields = ('type',)
     ordering = ['type']
 
 # @admin.register(Study)
