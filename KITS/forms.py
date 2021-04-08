@@ -10,10 +10,10 @@ class StudyForm(forms.ModelForm):
             'start_date', 'end_date')
 
 
-class RequisitionForm(forms.ModelForm):
-    class Meta:
-        model = Requisition
-        fields = ('link', 'file', 'description')
+# class RequisitionForm(forms.ModelForm):
+#    class Meta:
+#        model = Requisition
+#        fields = ('link', 'file', 'description')
 
 
 class KitForm(forms.ModelForm):
