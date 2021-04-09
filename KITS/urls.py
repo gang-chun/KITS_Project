@@ -1,8 +1,6 @@
 # from django.conf.urls import url
 from . import views
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 
 app_name = 'KITS'
 name: object
@@ -12,8 +10,7 @@ urlpatterns = [
     path('study_list/', views.study_list, name='study_list'),
     path('study/<int:pk>/study_detail/', views.study_detail, name='study_detail'),
     path('study/<int:pk>/study_detail/kit_edit/', views.kit_edit, name='kit_edit_from_study'),
-    path('study/<int:pk>/study_detail/study_detail_seeallkits/', views.study_detail_seeallkits,
-         name='study_detail_seeallkits'),
+    path('study/<int:pk>/study_detail/study_detail_seeallkits/', views.study_detail_seeallkits, name='study_detail_seeallkits'),
     path('study/<int:pk>/study_detail/study_edit', views.study_edit, name='study_detail_study_edit'),
 
     path('create_study/', views.create_study, name='create_study'),
@@ -37,12 +34,12 @@ urlpatterns = [
 
     path('study/<int:pk>/study_detail/kit_ordering', views.kit_ordering, name='kit_ordering'),
     path('study/<int:pk>/kit_ordering_add/', views.kit_ordering_add, name='kit_ordering_add'),
-    # path('kit_list/kitinstance/<int:pk>/addkitinstance', views.kitinstance_add, name='kitinstance_add'),
+    #path('kit_list/kitinstance/<int:pk>/addkitinstance', views.kitinstance_add, name='kitinstance_add'),
 
-    path('help/', views.help_page, name='help_page'),
+    path('help/', views.help, name='help'),
 
     path('kit_checkout/', views.kit_checkout, name='kit_checkout'),
-    # path('kitinstance_statusedit/', views.kitinstance_statusedit, name= 'kitinstance_statusedit'),
+    path('kitinstance_statusedit/<int:kit_id>/', views.kitinstance_statusedit, name= 'kitinstance_statusedit'),
 
 
     # path('kit_list/kitinstance/<int:pk>/addkitinstance', views.kitinstance_add, name='kitinstance_add'),
@@ -51,4 +48,4 @@ urlpatterns = [
 
 
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
