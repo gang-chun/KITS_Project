@@ -39,7 +39,6 @@ def index(request):
     return render(request, 'registration/login.html')
 
 
-
 def login(request):
     return render(request, 'registration/login.html',
                   {'kits': login})
@@ -111,6 +110,7 @@ def study_detail_seeallkits(request, pk):
 
     return render(request, 'KITS/study_detail_seeallkits.html', {'study': study, 'kits': kits})
 
+
 @login_required
 def create_study(request):
     if request.method == "POST":
@@ -169,7 +169,7 @@ def study_archive(request, pk):
     return redirect('KITS:study_list')
 
 
-@login_required
+@login_required # TEST COMMENT
 def create_req(request, pk):
     study = get_object_or_404(Study, pk=pk)
 
