@@ -426,7 +426,7 @@ def kit_checkout(request):
 
 
 @login_required
-def help_page(request):
+def help(request):
     return render(request, 'KITS/help.html')
 
 
