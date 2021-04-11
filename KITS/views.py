@@ -3,9 +3,9 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from django.db.models import Count, Max, Q
-# from django.db.models import F, Sum
-# from django.db.models.functions import Greatest
+from django.db.models import Count, Max, Q, F, Sum
+from django.db.models.functions import Greatest
+from django.shortcuts import render
 from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter
 
 from django.dispatch import receiver
@@ -15,7 +15,6 @@ from simple_history.signals import (
 )
 from datetime import datetime, timedelta
 from django.contrib import messages
-
 
 @receiver(post_create_historical_record)
 def post_create_historical_record_callback(sender, **kwargs):
@@ -38,6 +37,7 @@ now = timezone.now()
 
 def index(request):
     return render(request, 'registration/login.html')
+
 
 
 def login(request):
@@ -63,11 +63,11 @@ def study_list(request):
     studies = Study.objects.exclude(status='Closed')
 
     # Filter bar
-    study_filter = StudyFilter(request.GET, queryset=Study.objects.all())
+    myFilter = StudyFilter(request.GET, queryset=Study.objects.all())
     if request.GET:
-        studies = study_filter.qs
+        studies = myFilter.qs
 
-    return render(request, 'KITS/study_list.html', {'studies': studies, 'study_filter': study_filter})
+    return render(request, 'KITS/study_list.html', {'studies': studies, 'myFilter': myFilter})
 
 
 @login_required
@@ -78,29 +78,20 @@ def study_detail(request, pk):
         no_of_kits=Count('kit', filter=Q(kit__status='a'))) \
         .annotate(no_of_kits_exp=Count('kit', filter=Q(kit__status='e'))) \
         .annotate(exp=Max('kit__expiration_date'))
-
+    #kit_order = KitOrder.objects.filter(study=pk)
     req = Requisition.objects.filter(study=pk)
-    if req.exists():
-        req_exist = True
-        type_qs = Requisition.objects.filter(study=pk).values('type')
-        type_list = type_qs[0]['type']
-        req = Requisition.objects.filter(study=pk).values(type_list)
-        req = req[0][type_list]
-    else:
-        req_exist = False
-        req = 'No requisition details have been added.'
 
     kit_order = KitOrder.objects.filter(study=pk)
     if kit_order.exists():
         test = 'True'
         type_qs = KitOrder.objects.filter(study=pk).values('type')
-        type_list = type_qs[0]['type']
-        kit_order = KitOrder.objects.filter(study=pk).values(type_list)
-        kit_order = kit_order[0][type_list]
+        type = type_qs[0]['type']
+        kit_order = KitOrder.objects.filter(study=pk).values(type)
+        kit_order = kit_order[0][type]
 
     else:
         test = 'False'
-        kit_order = "No order details have been added."
+        kit_order ="No order details have been added"
 
     kit_exist = str(kits)
     if kit_exist == '<QuerySet []>':
@@ -108,8 +99,7 @@ def study_detail(request, pk):
     else:
         kit_exist = 'True'
 
-    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'req': req, 'kit_order': kit_order,
-                                                      'test': test, 'kit_exist': kit_exist, 'req_exist': req_exist})
+    return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'req': req, 'kit_order': kit_order, 'test':test, 'kit_exist': kit_exist})
 
 
 @login_required
@@ -117,11 +107,9 @@ def study_detail_seeallkits(request, pk):
     study = get_object_or_404(Study, pk=pk)
 
     status = 'a or e'
-    kits = KitInstance.objects.filter(kit__IRB_number=pk).filter(status__in=status).order_by('kit__id',
-                                                                                             'expiration_date')
+    kits = KitInstance.objects.filter(kit__IRB_number=pk).filter(status__in=status).order_by('kit__id','expiration_date')
 
     return render(request, 'KITS/study_detail_seeallkits.html', {'study': study, 'kits': kits})
-
 
 @login_required
 def create_study(request):
@@ -162,7 +150,7 @@ def study_edit(request, pk):
                 return redirect('KITS:study_detail', pk=pk)
             else:
                 return render(request, 'KITS/study_list.html',
-                              {'studies': study})
+                          {'studies': study})
 
     else:
         # edit
@@ -183,15 +171,14 @@ def study_archive(request, pk):
 
 @login_required
 def create_req(request, pk):
-
     study = get_object_or_404(Study, pk=pk)
 
     if request.method == "POST":
-        form = RequisitionForm(request.POST, request.FILES)
+        form = RequisitionForm(request.POST)
         if form.is_valid():
             new_req = form.save(commit=False)
             new_req.save()
-            return redirect('KITS:study_detail', pk=pk)
+            return render(request, 'KITS/study_detail.html', {'study': study, 'new_req': new_req})
     else:
         form = RequisitionForm()
     return render(request, 'KITS/create_req.html', {'form': form, 'study': study})
@@ -199,19 +186,23 @@ def create_req(request, pk):
 
 @login_required
 def req_edit(request, pk):
+    study = get_object_or_404(Study, pk=pk)
     req = get_object_or_404(Requisition, pk=pk)
 
     if request.method == "POST":
-        form = RequisitionForm(request.POST, request.FILES, instance=req)
+        # update
+        form = RequisitionForm(request.POST, instance=req)
         if form.is_valid():
             req = form.save(commit=False)
-            req.update_date = timezone.now()
+            req.updated_date = timezone.now()
             req.save()
-            return redirect('KITS:study_detail', pk=pk)
+            # req = Requisition.objects.filter(start_date__lte=timezone.now())
+            return render(request, 'KITS/study_detail.html', {'study': study, 'req': req})
+
     else:
         # edit
         form = RequisitionForm(instance=req)
-    return render(request, 'KITS/req_edit.html', {'form': form})
+        return render(request, 'KITS/req_edit.html', {'form': form})
 
 
 @login_required
@@ -234,10 +225,11 @@ def kit_addkittype(request):
 def kit_list(request):
     kit = Kit.objects.exclude(IRB_number__status='Closed')
     # Filter bar
-    kit_filter = KitFilter(request.GET, queryset=kit)
-    kit = kit_filter.qs
+    myFilter = KitFilter(request.GET, queryset=kit)
+    kit = myFilter.qs
 
-    return render(request, 'KITS/kit_list.html', {'kit': kit, 'kit_filter': kit_filter})
+
+    return render(request, 'KITS/kit_list.html', {'kit': kit, 'myFilter': myFilter})
 
 
 @login_required
@@ -264,7 +256,8 @@ def kit_edit(request, pk):
     else:
         # edit
         form = KitForm(instance=kit)
-    return render(request, 'KITS/kit_edit.html', {'form': form, 'kit': kit})
+    return render(request, 'KITS/kit_edit.html', {'form': form, 'kit':kit})
+
 
 
 @login_required
@@ -338,6 +331,7 @@ def report_expiredkits(request):
 
     kits = KitInstance.objects.filter(status='e')
 
+
     # To grab the IRB numbers and put them into a list
     kits2 = list(kits)
     test = []
@@ -347,13 +341,13 @@ def report_expiredkits(request):
         test.append(test1)
 
     # To GET the IRB_number from the user's search
-    kit_report_filter = KitReportFilter(request.GET)
-    test = kit_report_filter.qs
+    myFilter = KitReportFilter(request.GET)
+    test = myFilter.qs
 
     # To redo the 'kits' after the user searches
     kits = KitInstance.objects.filter(status='e').filter(kit__in=test)
 
-    return render(request, 'KITS/report_expiredkits.html', {'kits': kits, 'kit_report_filter': kit_report_filter})
+    return render(request, 'KITS/report_expiredkits.html', {'kits': kits, 'myFilter': myFilter})
 
 
 @login_required
@@ -369,8 +363,9 @@ def kit_ordering(request, pk):
 
     kitorder = get_object_or_404(KitOrder, pk=pk)
 
+
     if request.method == "POST":
-        form = KitOrderForm(request.POST, request.FILES, instance=kitorder)
+        form = KitOrderForm(request.POST, instance=kitorder)
         if form.is_valid():
             kitorder = form.save(commit=False)
             kitorder.update_date = timezone.now()
@@ -383,22 +378,20 @@ def kit_ordering(request, pk):
 
     return render(request, 'KITS/kit_ordering.html', {'form': form})
 
-
 @login_required
 def kit_ordering_add(request, pk):
-    # new_kitorder = get_object_or_404(Study, pk=pk)
+    #new_kitorder = get_object_or_404(Study, pk=pk)
     study = get_object_or_404(Study, pk=pk)
 
     if request.method == "POST":
-        form = KitOrderForm(request.POST, request.FILES)
+        form = KitOrderForm(request.POST)
         if form.is_valid():
             new_kitorder = form.save(commit=False)
             new_kitorder.save()
             return redirect('KITS:study_detail', pk=pk)
     else:
         form = KitOrderForm()
-    return render(request, 'KITS/kit_ordering_add.html', {'form': form, 'study': study})
-
+    return render(request, 'KITS/kit_ordering_add.html', {'form': form, 'study':study})
 
 @login_required
 def kit_addlocation(request):
@@ -414,29 +407,45 @@ def kit_addlocation(request):
         form = LocationForm()
     return render(request, 'KITS/kit_addlocation.html', {'form': form})
 
-
 @login_required
 def kit_checkout(request):
     kitinstance = KitInstance.objects.all()
     # Filter bar
-    kit_instance_filter = KitInstanceFilter(request.GET, queryset=kitinstance)
-    kitinstance = kit_instance_filter.qs
-    return render(request, 'KITS/kit_checkout.html', {'kitinstance': kitinstance,
-                                                      'kit_instance_filter': kit_instance_filter})
+    myFilter = KitInstanceFilter(request.GET, queryset=kitinstance)
+    kitinstance = myFilter.qs
+    return render(request, 'KITS/kit_checkout.html', {'kitinstance': kitinstance, 'myFilter': myFilter})
 
 
 @login_required
-def help_page(request):
+def help(request):
     return render(request, 'KITS/help.html')
 
 
-'''
+
+
 @login_required
 def kitinstance_statusedit(request):
-    print("test")
+
+    #kitinstance = get_object_or_404(KitInstance, pk=kit_id)
+    if request.method == "POST":
+        if KitInstance.status == "a":
+            form = KitInstanceForm(request.POST)
+            KitInstance.status = "c"
+            kitinstance = form.save(commit=False)
+            kitinstance.save()
+            return redirect('KITS:kit_checkout')
+    else:
+        form = KitInstanceForm()
+    return render(request, 'KITS/kit_checkout.html', {'form': form})
+
+
+
+
+'''print("test")
 
     if KitInstance.status == "a":
         kit = KitInstance.status == "c"
         kit.save()
-        return render(request, 'KITS/kit_checkout.html', {'kit': kit})
-'''
+        return render(request, 'KITS/kit_checkout.html', {'kit': kit})'''
+
+
