@@ -421,31 +421,17 @@ def help(request):
     return render(request, 'KITS/help.html')
 
 
-
-
 @login_required
-def kitinstance_statusedit(request):
-
-    #kitinstance = get_object_or_404(KitInstance, pk=kit_id)
+def kitinstance_statusedit(request, kitinstance_id):
+    kit = get_object_or_404(KitInstance, pk=kitinstance_id)
     if request.method == "POST":
-        if KitInstance.status == "a":
-            form = KitInstanceForm(request.POST)
-            KitInstance.status = "c"
-            kitinstance = form.save(commit=False)
-            kitinstance.save()
+        form = KitInstanceEditForm(request.POST)
+        if form.is_valid():
+            kit = form.save(commit=False)
+            kit.updated_date = timezone.now()
+            kit.save()
             return redirect('KITS:kit_checkout')
     else:
-        form = KitInstanceForm()
-    return render(request, 'KITS/kit_checkout.html', {'form': form})
-
-
-
-
-'''print("test")
-
-    if KitInstance.status == "a":
-        kit = KitInstance.status == "c"
-        kit.save()
-        return render(request, 'KITS/kit_checkout.html', {'kit': kit})'''
-
+        form = KitInstanceEditForm()
+    return render(request, 'KITS/kitinstance_statusedit.html', {'kit': kit, 'form': form})
 

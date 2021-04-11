@@ -15,7 +15,7 @@
 
         <hr>
         <form method="get">
-           {{ kitinstance_filter.form }}
+           {{ kit_instance_filter.form }}
             <button class="btn btn-primary" type="submit">Search</button>
         </form>
 
@@ -38,8 +38,8 @@
                 <td>{{ kitinstance.id }}</td>
                 <td>{{ kitinstance.status}}</td>
                 <td>{{ kitinstance.expiration_date}}</td>
-                <td><a href="{% url 'KITS:kitinstance_statusedit' kitinstance.kit_id%}"
-                    onclick="return confirm('Are you sure you want to checkout Kit {{ kitinstance.kit_id }}?')"
+                <td><a href="{% url 'KITS:kitinstance_statusedit' kitinstance.id%}"
+                    onclick="return confirm('Are you sure you want to checkout this Kit {{ kitinstance.kit_id }}?')"
                     class="btn btn-warning">Checkout</a></td>
 
 
