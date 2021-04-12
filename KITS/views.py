@@ -475,3 +475,4 @@ def kitinstance_statusedit(request, pk):
     return render(request, 'KITS/kitinstance_statusedit.html', {'kit': kit, ,'form': form, })'''
 
 
+
