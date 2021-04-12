@@ -436,8 +436,17 @@ def help(request):
 def kitinstance_statusedit(request,pk):
     kit = get_object_or_404(KitInstance, pk=pk)
     kitinstance = KitInstance.objects.all()
-
-    return render(request, 'KITS/kitinstance_statusedit.html', {'kit': kit,'kitinstance': kit})
+    if request.method == "POST":
+        form = KitInstanceEditForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.created_date = timezone.now()
+            instance.save()
+            #form.save()
+            return redirect('KITS:kit_checkout')
+    else:
+        form = KitInstanceEditForm()
+    return render(request, 'KITS/kitinstance_statusedit.html', {'form': form, 'kit': kit, 'kitinstance': kit})
 
 def kitinstance_statusconfirm(request, pk):
     kit = get_object_or_404(KitInstance, pk=pk)

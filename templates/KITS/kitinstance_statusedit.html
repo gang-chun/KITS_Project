@@ -27,13 +27,13 @@
 
         <p><b>Current Status:</b> {{ kitinstance.status}}</p>
 
-        <p><b style="font-size: 1.2em;">Checking out this kit will change its status to Checked Out</b></p>
+        <p><b style="font-size: 1.2em;">When checking out this kit, change its status to "Checked Out"</b></p>
 
-    <form method="POST" class="">{% csrf_token %}
+     <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}
-        <td><a href="{% url 'KITS:kitinstance_statusconfirm' pk=kitinstance.pk%}"
-                    onclick="return confirm('Are you sure you want to checkout this Kit {{ kitinstance.kit_id }}?')"
-                    class="btn btn-warning">Checkout</a></td>
+        <button type="submit" class="save btn btn-success">Update</button>
+
+
 
     </form>
     </div>
