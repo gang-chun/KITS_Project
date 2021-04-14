@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.db.models import Count, Max, Q
 # from django.db.models import F, Sum
 # from django.db.models.functions import Greatest
-from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter
+from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter
 
 from django.dispatch import receiver
 from simple_history.signals import (
@@ -423,8 +423,14 @@ def kit_checkout(request):
     # Filter bar
     kit_instance_filter = KitInstanceFilter(request.GET, queryset=kitinstance)
     kitinstance = kit_instance_filter.qs
+    study = Study.objects.all()
+    # Filter bar
+    study_filter = StudyOnKitInstanceFilter(request.GET, queryset=study)
+    study = study_filter.qs
+    kit = Kit.objects.all()
     return render(request, 'KITS/kit_checkout.html', {'kitinstance': kitinstance,
-                                                      'kit_instance_filter': kit_instance_filter})
+                                                      'kit_instance_filter': kit_instance_filter,
+                                                      'study': study, 'study_filter': study_filter, 'kit': kit})
 
 
 @login_required
@@ -470,17 +476,4 @@ def kitinstance_demolish(request, pk):
     return render(request, 'KITS/kitinstance_statusedit.html', {'form': form, 'kitinstance': kiti})
 
 
-@login_required
-def kitinstance_statusconfirm(request, pk):
-    kit = get_object_or_404(KitInstance, pk=pk)
-    if request.method == "POST":
-        form = KitInstanceEditForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.created_date = timezone.now()
-            instance.save()
-        return redirect('KITS:kit_checkout')
-    else:
-        form = KitInstanceEditForm()
 
-    return render(request, 'KITS/kitinstance_statusconfirm.html', {'kit': kit, 'form': form})

@@ -16,6 +16,9 @@
         <hr>
         <form method="get">
            {{ kit_instance_filter.form }}
+           {{ study_filter.form }}
+
+
             <button class="btn btn-primary" type="submit">Search</button>
         </form>
 
@@ -25,6 +28,9 @@
             <tr class="bg-info">
                 <th>Kit ID</th>
                 <th>KitInstance ID</th>
+                <th>Kit Type</th>
+                <th>Pet Name</th>
+                <th>IRB #</th>
                 <th>Status</th>
                 <th>Expiration Date</th>
                 <th>Checkout Confirm</th>
@@ -35,10 +41,15 @@
             <tbody>
             <tr>
             {% for kitinstance in kitinstance %}
+                {%  for study in study %}
+                    {%  for kit in kit %}
 
 
                 <td>{{ kitinstance.kit_id}}</td>
                 <td>{{ kitinstance.id }}</td>
+                <td>{{ kit.type_name }}</td>
+                <td>{{ study.pet_name }}</td>
+                <td>{{ study.IRB_number }}</td>
                 <td>{% if kitinstance.status == 'a' %}
                         Available
                     {% elif kitinstance.status == 'c' %}
@@ -65,6 +76,8 @@
 
 
             </tr>
+            {% endfor %}
+            {% endfor %}
             {% endfor %}
             </tbody>
         </table>

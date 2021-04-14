@@ -1,5 +1,7 @@
 import django_filters
 from .models import *
+
+
 # from django.db.models import F
 
 
@@ -32,3 +34,9 @@ class KitInstanceFilter(django_filters.FilterSet):
         model = KitInstance
         fields = '__all__'
         exclude = 'id', 'scanner_id', 'note', 'expiration_date', 'kit_id', 'location_id',
+
+
+class StudyOnKitInstanceFilter(django_filters.FilterSet):
+    class Meta:
+        model = Study
+        fields = 'pet_name', 'IRB_number',
