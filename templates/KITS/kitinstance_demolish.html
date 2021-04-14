@@ -25,13 +25,13 @@
         <p><b>Kit ID: </b>{{ kitinstance.kit_id }}</p>
         <p><b>Location ID: </b>{{ kitinstance.location_id }}</p>
 
-        <p><b>Current Status:</b> {{ kitinstance.status}}</p>
+        <p><b>Current Status:</b> {{ kitinstance.status }}</p>
 
-        <p><b style="font-size: 1.2em;">Please confirm all details before checking this Kit out.</b></p>
+        <p><b style="font-size: 1.2em;">Please confirm all details before demolishing this Kit.</b></p>
 
      <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="save btn btn-success">Check-out Kit</button>
+        <button type="submit" class="save btn btn-success">Demolish</button>
 
 
 

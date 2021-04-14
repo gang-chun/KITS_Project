@@ -2,6 +2,7 @@ from django import forms
 from .models import KitInstance, Kit, Study, Location, Requisition, KitOrder
 
 
+
 class StudyForm(forms.ModelForm):
     class Meta:
         model = Study
@@ -26,7 +27,7 @@ class KitForm(forms.ModelForm):
 class KitIDForm(forms.ModelForm):
     class Meta:
         model = Kit
-        fields = ('id', )
+        fields = ('id',)
 
 
 class KitInstanceForm(forms.ModelForm):
@@ -50,18 +51,31 @@ class LocationForm(forms.ModelForm):
         fields = '__all__'
 
 
-class KitInstanceEditForm(forms.ModelForm):
+'''class KitInstanceEditForm(forms.ModelForm):
     class Meta:
         model = KitInstance
-        child_model = Kit
-        fields = ('status',)
-        child_field = ('id')
-# id = forms.ModelChoiceField(queryset=Kit.objects.values('id'), to_field_name='id',empty_label="Select Kit")
-        # id= forms.ModelChoiceField(queryset=Kit.objects.values('id'))
-        #fields = forms.ModelChoiceField(queryset=KitInstance.objects.all(),
-#                                       limit_choices_to='status', widget=forms.Select(attrs={'onchange': 'submit();'}))
+        fields = forms.CharField(choices= KitInstance.objects.filter(status__startswith='c').values('status'))'''
 
-class KitInstanceKitIDEditForm(forms.ModelForm):
+class KitInstanceEditForm(forms.ModelForm):
+    KIT_STATUS = (
+        ('c', 'Checked Out'),
+    )
+
+    status = forms.TypedChoiceField(choices=KIT_STATUS, coerce=str, initial=1)
+
     class Meta:
-        model = Kit
-        fields = ('id',)
+        model = KitInstance
+        fields = ['status']
+
+
+
+class KitInstanceDemolishForm(forms.ModelForm):
+    KIT_STATUS = (
+        ('d', 'Demolished'),
+    )
+
+    status = forms.TypedChoiceField(choices=KIT_STATUS, coerce=str, initial=1)
+
+    class Meta:
+        model = KitInstance
+        fields = ['status']

@@ -133,6 +133,8 @@ class KitInstance(models.Model):
         default='a',
         help_text='Kit Availability',
     )
+
+
     # history = HistoricalRecords()
 
     class Meta:

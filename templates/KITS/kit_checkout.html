@@ -33,17 +33,27 @@
             </tr>
             </thead>
             <tbody>
+            <tr>
             {% for kitinstance in kitinstance %}
 
 
                 <td>{{ kitinstance.kit_id}}</td>
                 <td>{{ kitinstance.id }}</td>
-                <td>{{ kitinstance.status}}</td>
+                <td>{% if kitinstance.status == 'a' %}
+                        Available
+                    {% elif kitinstance.status == 'c' %}
+                        Checked Out
+                    {% elif kitinstance.status == 'd' %}
+                        Demolished
+                    {% elif kitinstance.status == 'e' %}
+                        Expired
+                {% endif %}</td>
                 <td>{{ kitinstance.expiration_date}}</td>
 
 
 
                 <td><a href="{% url 'KITS:kitinstance_statusedit' pk=kitinstance.pk%}" class="btn btn-success">Checkout</a>
+                <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-success">Demolish</a></td>
 
 
 
