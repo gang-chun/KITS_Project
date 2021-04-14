@@ -63,7 +63,7 @@
                         <td>{{ kit.location }}
                         <td>{{ new_req.description }}</td>
                         <td>{{ kit.description }}</td>
-                        <td><a href="{% url 'KITS:kit_edit_from_study' pk=kit.pk %}" class="btn btn-warning">Edit kit details</a></td>
+                        <td><a href="{% url 'KITS:kit_edit_from_study' pk=kit.pk %}" class="btn btn-warning">Edit Kit Details</a></td>
 
 
                     </tr>
@@ -73,7 +73,7 @@
             </table>
 
 
-            <a href="{% url 'KITS:study_detail_seeallkits' pk=study.pk %}" class="btn btn-warning">See all kits in inventory</a>
+            <a href="{% url 'KITS:study_detail_seeallkits' pk=study.pk %}" class="btn btn-warning">See All Kits in Inventory</a>
             <p style="padding-top:10px;">To add more kits, please go to 'Check-In Kits' page.</p>
 
         {% endif %}

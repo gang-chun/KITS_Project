@@ -59,10 +59,9 @@ def home2(request):
 
 
 def list_history(request):
-    header = "Action Key: +=created ~=changed"
+    #header = "Action Key: +=created ~=changed"
     queryset = KitInstance.objects.raw("SELECT * FROM KITS_historicalkitinstance")
     context = {
-        "header": header,
         "queryset": queryset,
     }
     return render(request, "KITS/list_history.html", context)

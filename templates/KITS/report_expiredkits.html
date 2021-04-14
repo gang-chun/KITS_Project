@@ -25,7 +25,7 @@
             <tr class="bg-info">
                 <th>IRB</th>
                 <th>Kit Type</th>
-                <th>Kit Barcode Number</th>
+                <th>Kit Barcode ID</th>
                 <th>Kit Expiration Date</th>
 
             </tr>
@@ -35,7 +35,7 @@
             <tr>
                 <td>{{ kitinstance.kit.IRB_number }}</td>
                 <td>{{ kitinstance.kit.type_name }}</td>
-                <td>{{ kitinstance.status }}</td>
+                <td>{{ kitinstance.scanner_id }}</td>
                 <td>{{ kitinstance.expiration_date }}</td>
 
             </tr>

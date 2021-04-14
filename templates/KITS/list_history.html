@@ -10,10 +10,12 @@
     border-radius: 4px;
 }
     </style>
-    <div class="header">{{ header }}</div>
     <div class="box">
         <H1><b style="font-size: .75em;">Kit Instance History</b></H1>
         <hr>
+        <p><b style="font-size: 1.4em;">Action Key:</b></p>
+        <p><b style="font-size: 1.2em;">&emsp;+ = Created</b></p>
+        <p><b style="font-size: 1.2em;">&emsp;~ = Changed</b></p>
         <table class="table table-striped table-bordered table-hover">
             <thead>
             <tr class="bg-info">
@@ -31,7 +33,15 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ instances.id }}</td>
-                <td>{{ instances.status }}</td>
+                <td>{% if instances.status == 'a' %}
+                        <p><b style="color:green">Available</b></p>
+                    {% elif instances.status == 'c' %}
+                     <p><b style="color:yellow">Checked-Out</b></p>
+                    {% elif instances.status == 'd' %}
+                    <p><b style="color:red">Demolished</b></p>
+                    {% elif instances.status == 'e' %}
+                         <p><b style="color:black">Expired</b></p>
+                {% endif %}</td>
                 <td>{{ instances.expiration_date }}</td>
                 <td>{{ instances.history_user_id }}</td>
                 <td>{{ instances.history_type }}</td>

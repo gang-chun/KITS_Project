@@ -51,13 +51,13 @@
                 <td>{{ study.pet_name }}</td>
                 <td>{{ study.IRB_number }}</td>
                 <td>{% if kitinstance.status == 'a' %}
-                        <p><b style="color:lawngreen">Available</b></p>
+                        <p><b style="color:green">Available</b></p>
                     {% elif kitinstance.status == 'c' %}
                      <p><b style="color:yellow">Checked-Out</b></p>
                     {% elif kitinstance.status == 'd' %}
                     <p><b style="color:red">Demolished</b></p>
                     {% elif kitinstance.status == 'e' %}
-                        Expired
+                         <p><b style="color:black">Expired</b></p>
                 {% endif %}</td>
                 <td>{{ kitinstance.expiration_date}}</td>
 
@@ -67,8 +67,6 @@
                     <a href="{% url 'KITS:kitinstance_statusedit' pk=kitinstance.pk%}" class="btn btn-success">Checkout</a>
                       {% endif %}
                       {% if kitinstance.status == 'a' %}
-                          <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-danger">Demolish</a></td>
-                          {% elif kitinstance.status == 'c' %}
                           <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-danger">Demolish</a></td>
                           {% elif kitinstance.status == 'e' %}
                           <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-danger">Demolish</a></td>
