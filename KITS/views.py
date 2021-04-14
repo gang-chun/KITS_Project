@@ -439,16 +439,58 @@ def help(request):
     return render(request, 'KITS/help.html')
 
 
+
+
 @login_required
-def kitinstance_statusedit(request, kitinstance_id):
-    kit = get_object_or_404(KitInstance, pk=kitinstance_id)
+def kitinstance_statusedit(request,pk):
+    kit = get_object_or_404(KitInstance, pk=pk)
+    kitinstance = KitInstance.objects.all()
     if request.method == "POST":
         form = KitInstanceEditForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.created_date = timezone.now()
+            instance.save()
+            #form.save()
+            return redirect('KITS:kit_checkout')
+    else:
+        form = KitInstanceEditForm()
+    return render(request, 'KITS/kitinstance_statusedit.html', {'form': form, 'kit': kit, 'kitinstance': kit})
+
+def kitinstance_statusconfirm(request, pk):
+    kit = get_object_or_404(KitInstance, pk=pk)
+    if request.method == "POST":
+        form = KitInstanceEditForm(request.POST)
+        if KitInstance.objects.values(status="a"):
+            KitInstance.objects.values(status="c")
+            kit = form.save(commit=False)
+            kit.save()
+            form.save()
+            return redirect('KITS:kit_checkout')
+    else:
+        form = KitInstanceEditForm()
+    return redirect(request, 'KITS:kit_checkout', {'form': form, 'kit': kit})
+
+'''@login_required
+def kitinstance_statusedit(request, pk):
+    kit = get_object_or_404(Kit, pk=pk)
+    kit2 = get_object_or_404(Kit, pk= kit.id)
+    if request.method == "POST":
+        form = KitInstanceEditForm(request.POST)
+        form2 = KitInstanceKitIDEditForm(request.POST)
+
         if form.is_valid():
             kit = form.save(commit=False)
             kit.updated_date = timezone.now()
             kit.save()
+            kit2 = form.save(commit=False)
+            kit2.updated_date = timezone.now()
+            kit2.save()
             return redirect('KITS:kit_checkout')
     else:
         form = KitInstanceEditForm()
-    return render(request, 'KITS/kitinstance_statusedit.html', {'kit': kit, 'form': form})
+        form2 = KitInstanceKitIDEditForm()
+    return render(request, 'KITS/kitinstance_statusedit.html', {'kit': kit, ,'form': form, })'''
+
+
+

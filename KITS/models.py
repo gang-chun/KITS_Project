@@ -86,6 +86,7 @@ class Location(models.Model):
 
 
 class Kit(models.Model):
+    id = models.AutoField(primary_key=True)
     IRB_number = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='studies')
     description = models.CharField(max_length=100, blank=True)
     date_added = models.DateTimeField(
@@ -99,6 +100,11 @@ class Kit(models.Model):
 
     class Meta:
         unique_together = ['IRB_number', 'type_name']
+
+
+
+
+
 
 
 class KitInstance(models.Model):

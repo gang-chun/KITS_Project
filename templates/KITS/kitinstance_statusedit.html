@@ -15,12 +15,26 @@
     </style>
 
     <div class="box">
+        <H1><b style="font-size: .75em;">Kit: {{ kitinstance.kit_id }} </b></H1>
 
-    <H1><b style="font-size: .75em;">checking out kit{{kitinstance.kit_id}}</b></H1>
+        <hr>
+        <p><b>Kit Instance ID: </b>{{ kitinstance.id}}</p>
+        <p><b>Scanner ID: </b>{{ kitinstance.scanner_id}}</p>
+        <p><b>Note: </b>{{ kitinstance.note }}</p>
+        <p><b>Expiration Date </b>{{ kitinstance.expiration_date }}</p>
+        <p><b>Kit ID: </b>{{ kitinstance.kit_id }}</p>
+        <p><b>Location ID: </b>{{ kitinstance.location_id }}</p>
 
-    <form method="POST" class="">{% csrf_token %}
+        <p><b>Current Status:</b> {{ kitinstance.status}}</p>
+
+        <p><b style="font-size: 1.2em;">When checking out this kit, change its status to "Checked Out"</b></p>
+
+     <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-success">Update</button>
+
+
+
     </form>
     </div>
 

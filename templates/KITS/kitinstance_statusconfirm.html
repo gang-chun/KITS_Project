@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends 'KITS/base.html' %}
+
+{% block content %}
+
+    <style>
+    .box {
+    margin: 8px;
+    border: 1px solid silver;
+    padding: 8px;
+    border-radius: 4px;
+}
+    </style>
+
+    <div class="box">
+
+    <form method="POST" class="">{% csrf_token %}
+        {{ form.as_p }}
+    </form>
+    </div>
+
+{% endblock %}
+</html>

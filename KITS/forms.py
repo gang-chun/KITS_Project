@@ -53,4 +53,15 @@ class LocationForm(forms.ModelForm):
 class KitInstanceEditForm(forms.ModelForm):
     class Meta:
         model = KitInstance
-        fields = '__all__'
+        child_model = Kit
+        fields = ('status',)
+        child_field = ('id')
+# id = forms.ModelChoiceField(queryset=Kit.objects.values('id'), to_field_name='id',empty_label="Select Kit")
+        # id= forms.ModelChoiceField(queryset=Kit.objects.values('id'))
+        #fields = forms.ModelChoiceField(queryset=KitInstance.objects.all(),
+#                                       limit_choices_to='status', widget=forms.Select(attrs={'onchange': 'submit();'}))
+
+class KitInstanceKitIDEditForm(forms.ModelForm):
+    class Meta:
+        model = Kit
+        fields = ('id',)

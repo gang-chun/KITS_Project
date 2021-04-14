@@ -40,7 +40,8 @@ urlpatterns = [
     path('help/', views.help, name='help'),
 
     path('kit_checkout/', views.kit_checkout, name='kit_checkout'),
-    path('kitinstance_statusedit/<int:kit_id>/', views.kitinstance_statusedit, name= 'kitinstance_statusedit'),
+    path('kitinstance_statusedit/<uuid:pk>/', views.kitinstance_statusedit, name='kitinstance_statusedit'),
+    path('kitinstance_statusconfirm/<uuid:pk>/', views.kitinstance_statusconfirm, name='kitinstance_statusconfirm'),
 
 
     # path('kit_list/kitinstance/<int:pk>/addkitinstance', views.kitinstance_add, name='kitinstance_add'),
