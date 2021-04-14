@@ -154,7 +154,7 @@ class KitInstance(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.id} ({self.kit}) {self.status} {self.expiration_date}'
+        return f'{self.id} ({self.kit_id}) {self.status} {self.expiration_date}'
 
 
 class Requisition(models.Model):

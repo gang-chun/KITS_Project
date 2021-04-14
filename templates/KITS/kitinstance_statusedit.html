@@ -22,16 +22,22 @@
         <p><b>Scanner ID: </b>{{ kitinstance.scanner_id}}</p>
         <p><b>Note: </b>{{ kitinstance.note }}</p>
         <p><b>Expiration Date </b>{{ kitinstance.expiration_date }}</p>
-        <p><b>Kit ID: </b>{{ kitinstance.kit_id }}</p>
         <p><b>Location ID: </b>{{ kitinstance.location_id }}</p>
-
-        <p><b>Current Status:</b> {{ kitinstance.status}}</p>
+        <p><b>Current Status:</b> {% if kitinstance.status == 'a' %}
+                                     Available
+                                  {% elif kitinstance.status == 'c' %}
+                                    Checked Out
+                                  {% elif kitinstance.status == 'd' %}
+                                    Demolished
+                                  {% elif kitinstance.status == 'e' %}
+                                    Expired
+                                  {% endif %}</p>
 
         <p><b style="font-size: 1.2em;">Please confirm all details before checking this Kit out.</b></p>
 
      <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="save btn btn-success">Check-out Kit</button>
+            <button type="submit" class="save btn btn-success">Check-out Kit</button>
 
 
 

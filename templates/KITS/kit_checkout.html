@@ -52,10 +52,16 @@
 
 
 
-                <td><a href="{% url 'KITS:kitinstance_statusedit' pk=kitinstance.pk%}" class="btn btn-success">Checkout</a>
-                <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-success">Demolish</a></td>
-
-
+                <td>  {% if kitinstance.status == 'a' %}
+                    <a href="{% url 'KITS:kitinstance_statusedit' pk=kitinstance.pk%}" class="btn btn-success">Checkout</a>
+                      {% endif %}
+                      {% if kitinstance.status == 'a' %}
+                          <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-danger">Demolish</a></td>
+                          {% elif kitinstance.status == 'c' %}
+                          <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-danger">Demolish</a></td>
+                          {% elif kitinstance.status == 'e' %}
+                          <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-danger">Demolish</a></td>
+                        {% endif %}
 
 
             </tr>

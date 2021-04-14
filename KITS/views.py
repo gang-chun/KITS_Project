@@ -8,7 +8,6 @@ from django.db.models import Count, Max, Q
 # from django.db.models.functions import Greatest
 from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter
 
-
 from django.dispatch import receiver
 from simple_history.signals import (
     pre_create_historical_record,
@@ -67,6 +66,7 @@ def list_history(request):
         "queryset": queryset,
     }
     return render(request, "KITS/list_history.html", context)
+
 
 @login_required
 def study_list(request):
@@ -151,7 +151,6 @@ def create_study(request):
 
 @login_required
 def study_edit(request, pk):
-
     # To redirect to the study details page if the request came from the study details page
     test = request
     if 'study_detail' in str(test):
@@ -193,7 +192,6 @@ def study_archive(request, pk):
 
 @login_required
 def create_req(request, pk):
-
     study = get_object_or_404(Study, pk=pk)
 
     if request.method == "POST":
@@ -226,7 +224,6 @@ def req_edit(request, pk):
 
 @login_required
 def kit_addkittype(request):
-
     if request.method == "POST":
         form = KitForm(request.POST)
         if form.is_valid():
@@ -252,7 +249,6 @@ def kit_list(request):
 
 @login_required
 def kit_edit(request, pk):
-
     test = request
     if 'study_detail' in str(test):
         test = 'study_detail'
@@ -289,6 +285,7 @@ def kit_delete(request, pk):
 
     return redirect('KITS:kit_list')
 
+
 # kits = Kit.objects.filter(id=pk)
 
 
@@ -300,7 +297,6 @@ def kit_addkitinstance(request, pk):
     if request.method == "POST":
         form = KitInstanceForm(request.POST)
         if form.is_valid():
-
             # new_kitinstance = KitInstance.objects.get(form.cleaned_data['pk'])
             new_kitinstance = form.save(commit=False)
             new_kitinstance.kit_id = pk
@@ -317,7 +313,6 @@ def kit_addkitinstance(request, pk):
 
 @login_required
 def kitinstance_add(request, pk):
-
     new_kitinstance = get_object_or_404(KitInstance, pk=pk)
     if request.method == "POST":
         form = KitInstanceForm(request.POST)
@@ -339,7 +334,6 @@ def report(request):
 
 @login_required
 def report_expiredkits(request):
-
     today = date.today()
     in1month = today + timedelta(days=30)
     i = today.strftime('%Y-%m-%d')
@@ -368,7 +362,7 @@ def report_expiredkits(request):
 
 @login_required
 def report_expiredkits_studies(request):
-    kits = Kit.objects.filter(kit__status='e').values('IRB_number__IRB_number')\
+    kits = Kit.objects.filter(kit__status='e').values('IRB_number__IRB_number') \
         .annotate(qty=Count('kit')).values('IRB_number__IRB_number', 'qty', 'IRB_number__pet_name')
 
     return render(request, 'KITS/report_expiredkits_studies.html', {'kits': kits})
@@ -376,7 +370,6 @@ def report_expiredkits_studies(request):
 
 @login_required
 def kit_ordering(request, pk):
-
     kitorder = get_object_or_404(KitOrder, pk=pk)
 
     if request.method == "POST":
@@ -412,7 +405,6 @@ def kit_ordering_add(request, pk):
 
 @login_required
 def kit_addlocation(request):
-
     if request.method == "POST":
         form = LocationForm(request.POST)
         if form.is_valid():
@@ -440,45 +432,55 @@ def help(request):
     return render(request, 'KITS/help.html')
 
 
+@login_required
+def kitinstance_statusedit(request, pk):
+    kiti = get_object_or_404(KitInstance, pk=pk)
+    kitname = get_object_or_404(Kit, pk=kiti.kit_id)
+    # kit = get_object_or_404(KitInstance.objects.values('kit__id'), pk=pk)
+    if request.method == "POST":
+        form = KitInstanceEditForm(request.POST, instance=kiti)
+        if form.is_valid():
+            kiti = form.save(commit=False)
+            kiti.created_date = timezone.now()
+            kiti.save()
+            # form.save()
+        return redirect('KITS:kit_checkout')
+    else:
+        form = KitInstanceEditForm(instance=kiti)
+
+    return render(request, 'KITS/kitinstance_statusedit.html', {'form': form, 'kitinstance': kiti})
 
 
 @login_required
-def kitinstance_statusedit(request,pk):
+def kitinstance_demolish(request, pk):
+    kiti = get_object_or_404(KitInstance, pk=pk)
+    kitname = get_object_or_404(Kit, pk=kiti.kit_id)
+    # kit = get_object_or_404(KitInstance.objects.values('kit__id'), pk=pk)
+    if request.method == "POST":
+        form = KitInstanceDemolishForm(request.POST, instance=kiti)
+        if form.is_valid():
+            kiti = form.save(commit=False)
+            kiti.created_date = timezone.now()
+            kiti.save()
+            # form.save()
+        return redirect('KITS:kit_checkout')
+    else:
+        form = KitInstanceDemolishForm(instance=kiti)
+
+    return render(request, 'KITS/kitinstance_statusedit.html', {'form': form, 'kitinstance': kiti})
+
+
+@login_required
+def kitinstance_statusconfirm(request, pk):
     kit = get_object_or_404(KitInstance, pk=pk)
-    kitinstance = KitInstance.objects.all()
-    #kit = get_object_or_404(KitInstance.objects.values('kit__id'), pk=pk)
     if request.method == "POST":
         form = KitInstanceEditForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.created_date = timezone.now()
             instance.save()
-            #form.save()
         return redirect('KITS:kit_checkout')
     else:
         form = KitInstanceEditForm()
 
-    return render(request, 'KITS/kitinstance_statusedit.html', {'kit': kit, 'form': form, 'kitinstance': kit})
-
-
-
-
-@login_required
-def kitinstance_demolish(request,pk):
-    kit = get_object_or_404(KitInstance, pk=pk)
-    kitinstance = KitInstance.objects.all()
-    #kit = get_object_or_404(KitInstance.objects.values('kit__id'), pk=pk)
-    if request.method == "POST":
-        form = KitInstanceDemolishForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.created_date = timezone.now()
-            instance.save()
-            #form.save()
-        return redirect('KITS:kit_checkout')
-    else:
-        form = KitInstanceDemolishForm()
-
-    return render(request, 'KITS/kitinstance_demolish.html', {'kit': kit, 'form': form, 'kitinstance': kit})
-
-
+    return render(request, 'KITS/kitinstance_statusconfirm.html', {'kit': kit, 'form': form})

@@ -2,7 +2,6 @@ from django import forms
 from .models import KitInstance, Kit, Study, Location, Requisition, KitOrder
 
 
-
 class StudyForm(forms.ModelForm):
     class Meta:
         model = Study
@@ -56,6 +55,7 @@ class LocationForm(forms.ModelForm):
         model = KitInstance
         fields = forms.CharField(choices= KitInstance.objects.filter(status__startswith='c').values('status'))'''
 
+
 class KitInstanceEditForm(forms.ModelForm):
     KIT_STATUS = (
         ('c', 'Checked Out'),
@@ -65,8 +65,7 @@ class KitInstanceEditForm(forms.ModelForm):
 
     class Meta:
         model = KitInstance
-        fields = ['status']
-
+        fields = ("status",)
 
 
 class KitInstanceDemolishForm(forms.ModelForm):
