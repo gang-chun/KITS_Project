@@ -51,11 +51,11 @@
                 <td>{{ study.pet_name }}</td>
                 <td>{{ study.IRB_number }}</td>
                 <td>{% if kitinstance.status == 'a' %}
-                        Available
+                        <p><b style="color:lawngreen">Available</b></p>
                     {% elif kitinstance.status == 'c' %}
-                        Checked Out
+                     <p><b style="color:yellow">Checked-Out</b></p>
                     {% elif kitinstance.status == 'd' %}
-                        Demolished
+                    <p><b style="color:red">Demolished</b></p>
                     {% elif kitinstance.status == 'e' %}
                         Expired
                 {% endif %}</td>
