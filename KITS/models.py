@@ -127,7 +127,7 @@ class KitInstance(models.Model):
         default='a',
         help_text='Kit Availability',
     )
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ['expiration_date']
