@@ -21,6 +21,7 @@
             <tr class="bg-info">
                 <th>#</th>
                 <th>Instance ID</th>
+                <th>Barcode ID</th>
                 <th>Status</th>
                 <th>Expires</th>
                 <th>User ID</th>
@@ -33,6 +34,7 @@
             <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ instances.id }}</td>
+                <td>{{ instances.scanner_id }}</td>
                 <td>{% if instances.status == 'a' %}
                         <p><b style="color:green">Available</b></p>
                     {% elif instances.status == 'c' %}
