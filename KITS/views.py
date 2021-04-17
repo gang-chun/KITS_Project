@@ -422,14 +422,9 @@ def kit_checkout(request):
     # Filter bar
     kit_instance_filter = KitInstanceFilter(request.GET, queryset=kitinstance)
     kitinstance = kit_instance_filter.qs
-    study = Study.objects.all()
-    # Filter bar
-    study_filter = StudyOnKitInstanceFilter(request.GET, queryset=study)
-    study = study_filter.qs
-    kit = Kit.objects.all()
+
     return render(request, 'KITS/kit_checkout.html', {'kitinstance': kitinstance,
-                                                      'kit_instance_filter': kit_instance_filter,
-                                                      'study': study, 'study_filter': study_filter, 'kit': kit})
+                                                      'kit_instance_filter': kit_instance_filter})
 
 
 @login_required

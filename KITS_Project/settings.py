@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '(j%taiszjwtnbj#_=p^h2=+kx2bln6ymbusgp&%9k$xnw3_nr6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 # Allowed hosts when Debug = False. Local machine and deployment links allowed.
