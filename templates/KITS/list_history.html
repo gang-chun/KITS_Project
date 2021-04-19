@@ -36,11 +36,11 @@
                 <td>{{ instances.id }}</td>
                 <td>{{ instances.scanner_id }}</td>
                 <td>{% if instances.status == 'a' %}
-                        <p><b style="color:green">Available</b></p>
+                        <p><b style="color:forestgreen">Available</b></p>
                     {% elif instances.status == 'c' %}
-                     <p><b style="color:yellow">Checked-Out</b></p>
+                     <p><b style="color:orange">Checked-Out</b></p>
                     {% elif instances.status == 'd' %}
-                    <p><b style="color:red">Demolished</b></p>
+                    <p><b style="color:orangered">Demolished</b></p>
                     {% elif instances.status == 'e' %}
                          <p><b style="color:black">Expired</b></p>
                 {% endif %}</td>
