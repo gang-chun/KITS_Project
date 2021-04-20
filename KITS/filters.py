@@ -40,3 +40,4 @@ class StudyOnKitInstanceFilter(django_filters.FilterSet):
     class Meta:
         model = Study
         fields = 'pet_name', 'IRB_number',
+

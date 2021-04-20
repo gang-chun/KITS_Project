@@ -81,6 +81,7 @@ class Location(models.Model):
         self.created_date = timezone.now()
         self.save()
 
+
     class Meta:
         unique_together = ['building', 'room', 'shelf_number']
 
@@ -94,13 +95,13 @@ class Kit(models.Model):
     type_name = models.CharField(max_length=32, blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
     # history = HistoricalRecords()
+    created_date = models.DateField(default=timezone.now())
 
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
 
     class Meta:
         unique_together = ['IRB_number', 'type_name']
-
 
 
 
@@ -115,10 +116,10 @@ class KitInstance(models.Model):
     scanner_id = models.CharField(max_length=100)
     kit = models.ForeignKey('Kit', on_delete=models.RESTRICT, related_name='kit')
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
-
     note = models.CharField(max_length=100, blank=True)
-
     expiration_date = models.DateField(null=True, blank=True)
+    created_date = models.DateField(default=timezone.now())
+
     KIT_STATUS = (
         ('a', 'Available'),
         ('c', 'Checked Out'),
@@ -139,6 +140,7 @@ class KitInstance(models.Model):
         ordering = ['expiration_date']
         permissions = (("can_mark_demolished", "Set kit as demolished"),)
 
+
     # Function is currently not returning anything, is this intentional?
     @property
     def is_expired(self):
@@ -154,7 +156,7 @@ class KitInstance(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.id} ({self.kit_id}) {self.status} {self.expiration_date}'
+        return f'{self.id} ({self.kit_id}) {self.status} {self.expiration_date} {self.created_date}'
 
 
 class Requisition(models.Model):
@@ -196,3 +198,8 @@ class UserHistory(models.Model):
 
     class Meta:
         verbose_name_plural = "UserHistories"
+
+
+#class KitInstanceStatusHistory(models.Model):
+
+
