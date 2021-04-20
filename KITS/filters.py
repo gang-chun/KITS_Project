@@ -41,3 +41,7 @@ class StudyOnKitInstanceFilter(django_filters.FilterSet):
         model = Study
         fields = 'pet_name', 'IRB_number',
 
+class DateRangeFilter(django_filters.FilterSet):
+    class Meta:
+        model = KitInstance
+        fields = '__all__'
