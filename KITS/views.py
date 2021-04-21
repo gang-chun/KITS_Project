@@ -6,16 +6,19 @@ from django.shortcuts import redirect
 from django.db.models import Count, Max, Q
 # from django.db.models import F, Sum
 # from django.db.models.functions import Greatest
-from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter
+from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter, \
+    DateRangeFilter
 
 from django.dispatch import receiver
 from simple_history.signals import (
     pre_create_historical_record,
     post_create_historical_record
 )
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.contrib import messages
+import collections
 
+from .reports import query_active_studies
 
 @receiver(post_create_historical_record)
 def post_create_historical_record_callback(sender, **kwargs):
@@ -59,7 +62,7 @@ def home2(request):
 
 @login_required
 def list_history(request):
-    #header = "Action Key: +=created ~=changed"
+    # header = "Action Key: +=created ~=changed"
     queryset = KitInstance.objects.raw("SELECT * FROM KITS_historicalkitinstance")
     context = {
         "queryset": queryset,
@@ -138,7 +141,7 @@ def create_study(request):
         form = StudyForm(request.POST)
         if form.is_valid():
             new_study = form.save(commit=False)
-            new_study.created_date = timezone.now()
+            new_study.create_date = timezone.now()
             new_study.save()
             studies = Study.objects.filter(start_date__lte=timezone.now())
             return render(request, 'KITS/study_list.html',
@@ -299,8 +302,7 @@ def kit_addkitinstance(request, pk):
             # new_kitinstance = KitInstance.objects.get(form.cleaned_data['pk'])
             new_kitinstance = form.save(commit=False)
             new_kitinstance.kit_id = pk
-            # new_kitinstance.created_date = timezone.now()
-            new_kitinstance.kit_id = pk
+            new_kitinstance.created_date = timezone.now()
             new_kitinstance.save()
             # KitInstance.objects.filter(date_added__lte=timezone.now())
 
@@ -470,4 +472,67 @@ def kitinstance_demolish(request, pk):
     return render(request, 'KITS/kitinstance_statusedit.html', {'form': form, 'kitinstance': kiti})
 
 
+def sortQty(study):
+    return study[2]
 
+@login_required
+def report_activestudies(request):
+
+    startdate = date.today() - timedelta(days=30)
+    enddate = startdate + timedelta(days=365)
+
+    if request.POST:
+        startdate = request.POST['startdate']
+        enddate = request.POST['enddate']
+
+        if startdate == '':
+            message = "Please enter in a start date"
+            messages.error(request, message)
+            return redirect('KITS:report_activestudies')
+        elif enddate == '':
+            message = "Please enter in an end date"
+            messages.error(request, message)
+            return redirect('KITS:report_activestudies')
+
+
+
+    # Make a list counting all kit instances that have been checked out by kit type
+    checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
+
+    test = []
+    studies = []
+    # Go through each kit type
+    for kit in checkedout_kits:
+
+        # If the kit type belongs to a study that has not been added to the list:
+        if str(kit.IRB_number) not in studies:
+            studies.append(str(kit.IRB_number))
+
+            t = []
+            t.append(str(kit.IRB_number))
+            study = get_object_or_404(Study, IRB_number=kit.IRB_number)
+            t.append(str(study.pet_name))
+            t.append(kit.kiti_count)
+            test.append(t)
+
+        # If the kit type belongs to a study that was already added in the list
+        elif str(kit.IRB_number) in studies:
+            # Find the index value from the studies list
+            index = studies.index(str(kit.IRB_number))
+            # Add checked out kits to the right IRB
+            test[index][2] = int(kit.kiti_count) + test[index][2]
+
+    test1 = test
+    test1.sort(key=sortQty)
+    active_studies = test1
+
+    test2 = test
+    test2.sort(key=sortQty, reverse=True)
+    notactive_studies = test2
+
+    graph_data = []
+    kits = query_active_studies(startdate, enddate) #query function defined in reports.py
+    graph_data.append(kits)
+
+    return render(request, 'KITS/report_activestudies.html',
+                  {'active_studies': active_studies, 'notactive_studies':notactive_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph_data': graph_data})

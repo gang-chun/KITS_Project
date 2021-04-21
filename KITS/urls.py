@@ -31,6 +31,9 @@ urlpatterns = [
 
     path('report/', views.report, name='report'),
     path('report/report_expiredkits/', views.report_expiredkits, name='report_expiredkits'),
+
+    path('report/report_activestudies/', views.report_activestudies, name='report_activestudies'),
+
     path('report/report_expiredkits/studies', views.report_expiredkits_studies, name='report_expiredkits_studies'),
 
     path('study/<int:pk>/study_detail/kit_ordering', views.kit_ordering, name='kit_ordering'),
