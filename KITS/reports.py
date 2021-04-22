@@ -1,49 +1,45 @@
 from .models import KitInstance
 from django.shortcuts import render, get_object_or_404
 from datetime import datetime, timedelta, date
-
+from .datavisualization import get_month, get_year
 
 
 def query_active_studies(startdate, enddate):
     qs = KitInstance.objects.values('id', 'created_date', 'status')
 
     list = []
-    added_list = ['added']
-    checked_out_list = ['checked out']
-    demolished_list = ['demolished']
 
     #Iterate through each kit instance to check if the date created is within date range
     for q in qs:
+
+        #If kit instance was created within date range, add to the list
         if check_date(q['created_date'], startdate, enddate) == True:
-            #If yes, add this kit instance to the added_list
-            added_list.append(q['id'])
+            list.append((q['id'], q['created_date'], 'added'))
 
-
-        # Check if a kit instance has had a status change
+        # Check if a kit instance had a status change
         kit_inst = historical_status_change(q['id'])
+
         if kit_inst is not None:
             # If historical_status_change returns with values (i.e. not None)
             # Then check the date of that status change
             if check_date(kit_inst[1], startdate, enddate) == True:
-                # If status change within date range, add thes instances to their respective list
+
+                # If status change within date range
                 if kit_inst[0] == 'demolished':
-                    demolished_list.append(q['id'])
+                    list.append((q['id'], kit_inst[1], 'demolished'))
                 elif kit_inst[0] == 'checked-out':
-                    checked_out_list.append(q['id'])
-                else:
-                    break
+                    list.append((q['id'], kit_inst[1], 'checked_out'))
 
-    #Combine all the lists together
-    list.append(added_list)
-    list.append(checked_out_list)
-    list.append(demolished_list)
-
-    #Create a dictionary for future graphing
-    dict = {}
-    for row in list:
-        dict[row[0]] = len(row)-1
-
-    return dict
+        outfile = "kitactivity.csv"
+        file = open(outfile, 'w')
+        file.write("ID,Date,Action\n")
+        for entry in list:
+            id, date, action = entry
+            month = get_month(date)
+            year = get_year(date)
+            file.write(str(id) + "," + str(month) + "-" + str(year) + "," + action + "\n")
+        file.close()
+    return outfile
 
 # To check each historical event for a status change for each kit instance event
 # If there is a status change, return new status (i.e. demolished or checked out)
@@ -51,8 +47,9 @@ def query_active_studies(startdate, enddate):
 def historical_status_change(id):
 
     #Get the one kit instance objects
-    #Then get all of the historical events associated with that object
     kit = get_object_or_404(KitInstance, pk=id)
+
+    # Then get all of the historical events associated with that object
     kit = kit.history.all()
 
     # Iterate through all the historical instances for that specific kit instance
@@ -68,9 +65,9 @@ def historical_status_change(id):
                 else:
                     return False
 
+                # Get the date of the kit instance history status change
                 hist = kit[i+1].history_date
                 date = datetime.date(hist)
-                #date = date.strftime('%Y-%m-%d')
 
                 return [event, date]
 

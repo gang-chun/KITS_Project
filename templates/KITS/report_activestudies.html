@@ -22,7 +22,7 @@
 
     .column3 {
         float: left;
-        margin: 8px;
+        margin: 0px;
         width: 46%;}
 
 
@@ -109,8 +109,7 @@
         </div>
 
         <div class="column3" style="background-color:#ccc;">
-        <h2>Overall Activity</h2>
-        <p>{{ graph_data }}</p>
+            {{ graph|safe }}
         </div>
         </div>
 
