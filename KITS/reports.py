@@ -18,9 +18,7 @@ def query_active_studies(startdate, enddate):
 
         # Check if a kit instance had a status change
         kit_inst = historical_status_change(q['id'])
-        #if kit_inst is None:
-          #  kit['checked_out'] = ''
-           # kit['demolished'] = ''
+
         if kit_inst is not None:
             # If historical_status_change returns with values (i.e. not None)
             # Then check the date of that status change
@@ -31,7 +29,6 @@ def query_active_studies(startdate, enddate):
                     list.append((q['id'], kit_inst[1], 'demolished'))
                 elif kit_inst[0] == 'checked-out':
                     list.append((q['id'], kit_inst[1], 'checked_out'))
-
 
         outfile = "kitactivity.csv"
         file = open(outfile, 'w')
@@ -50,8 +47,9 @@ def query_active_studies(startdate, enddate):
 def historical_status_change(id):
 
     #Get the one kit instance objects
-    #Then get all of the historical events associated with that object
     kit = get_object_or_404(KitInstance, pk=id)
+
+    # Then get all of the historical events associated with that object
     kit = kit.history.all()
 
     # Iterate through all the historical instances for that specific kit instance
@@ -67,9 +65,9 @@ def historical_status_change(id):
                 else:
                     return False
 
+                # Get the date of the kit instance history status change
                 hist = kit[i+1].history_date
                 date = datetime.date(hist)
-                #date = date.strftime('%Y-%m-%d')
 
                 return [event, date]
 
