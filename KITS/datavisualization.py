@@ -9,7 +9,7 @@ def get_year(datetime):
     year = datetime.strftime("%Y")
     return year
 
-def bar_graph_active_studies(file, start, end):
+def bar_graph_kit_activity(csv_file, startdate, enddate):
 
     df = pd.read_csv(file)
 

@@ -19,7 +19,7 @@ from django.contrib import messages
 import collections
 
 from .reports import query_active_studies
-from .datavisualization import bar_graph_active_studies
+from .datavisualization import bar_graph_kit_activity
 
 @receiver(post_create_historical_record)
 def post_create_historical_record_callback(sender, **kwargs):
@@ -486,6 +486,7 @@ def report_activestudies(request):
         startdate = request.POST['startdate']
         enddate = request.POST['enddate']
 
+        #TODO validate date inputs
         if startdate == '':
             message = "Please enter in a start date"
             messages.error(request, message)
@@ -521,17 +522,19 @@ def report_activestudies(request):
             # Add checked out kits to the right IRB
             test[index][2] = int(kit.kiti_count) + test[index][2]
 
+    # Sort studies by number of kits checked out
     test1 = test
     test1.sort(key=sortQty)
     active_studies = test1
 
     test2 = test
     test2.sort(key=sortQty, reverse=True)
-    notactive_studies = test2
+    not_active_studies = test2
 
-    kitsactivity_file_csv = query_active_studies(startdate, enddate) #query function defined in reports.py
-    file = kitsactivity_file_csv
-    graph = bar_graph_active_studies(file, startdate, enddate)
+    kits_activity_csv = query_active_studies(startdate, enddate) #query function defined in reports.py
+    graph = bar_graph_kit_activity(kits_activity_csv, startdate, enddate)
+
+    file = kits_activity_csv
 
     return render(request, 'KITS/report_activestudies.html',
-                  {'active_studies': active_studies, 'notactive_studies':notactive_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'file': file, 'graph':graph})
+                  {'active_studies': active_studies, 'not_active_studies':not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'file': file, 'graph':graph})
