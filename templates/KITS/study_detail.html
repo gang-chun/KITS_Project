@@ -81,27 +81,25 @@
 
         <div class="column">
         {% if test == 'True' %}
-            <h3> Kit Ordering Info</h3>
-            <p> {{ kit_order }} </p>
+            <h3>Kit Ordering Info</h3>
 
-                {% if study.kitorder.type == 'link' or study.kitorder.type == 'file'%}
-
-                        {% if study.kitorder.description == ''%}
-                                <p></p>
-                        {% else %}
-                            <p><b>Description:</b> {{ study.kitorder.description }}</p>
-                        {% endif %}
-
+                {% if study.kitorder.description != '' %}
+                    <p><b>Description:</b> {{ study.kitorder.description }}</p>
                 {% endif %}
 
-            <a href="{% url 'KITS:kit_ordering' pk=study.pk %}" class="btn btn-info">Edit kit ordering details</a>
+                <p>
+                    {% if study.kitorder.type == 'file' %}
+                        <a class="btn btn-success" href="{{ MEDIA_URL }}{{ kit_order }}" download>Download File</a>
+                    {% elif study.kitorder.type == 'link' %}
+                        <a class="btn btn-success" href="{{ kit_order }}" target="_blank">Visit URL</a>
+                    {% endif %}
 
+                    <a href="{% url 'KITS:kit_ordering' pk=study.pk %}" class="btn btn-info">Edit Kit Ordering Info</a>
+                </p>
 
-        {% elif test == 'False' %}
-
+        {% else %}
             <p>{{ kit_order }}</p>
             <a href="{% url 'KITS:kit_ordering_add' pk=study.pk %}" class="btn btn-success">Add Kit Ordering Info</a>
-
         {% endif %}
 
         </div>
@@ -110,14 +108,19 @@
         {% if req_exist %}
             <h3>Requisition Info</h3>
 
-                {% if study.requisition.type == 'link' %}
-                    <p>{{ study.requisition.link }}</p>
-                {% elif study.requisition.type == 'file' %}
-                    <p>{{ study.requisition.file }}</p>
+                {% if study.requisition.description != '' %}
+                    <p><b>Description:</b> {{ study.requisition.description }}</p>
                 {% endif %}
 
-            <p><b>Description:</b> {{ study.requisition.description }}</p>
-            <a href="{% url 'KITS:req_edit' pk=study.pk %}" class="btn btn-info">Edit Requisition Info</a>
+                <p>
+                    {% if study.requisition.type == 'file' %}
+                        <a class="btn btn-success" href="{{ MEDIA_URL }}{{ req }}" download>Download File</a>
+                    {% elif study.requisition.type == 'link' %}
+                        <a class="btn btn-success" href="{{ req }}" target="_blank">Visit URL</a>
+                    {% endif %}
+
+                    <a href="{% url 'KITS:req_edit' pk=study.pk %}" class="btn btn-info">Edit Requisition Info</a>
+                </p>
 
         {% else %}
             <p>{{ req }}</p>
