@@ -11,7 +11,7 @@ def get_year(datetime):
 
 def bar_graph_kit_activity(csv_file, startdate, enddate):
 
-    df = pd.read_csv(file)
+    df = pd.read_csv(csv_file)
 
     # Count kits that have the same date and action
     data = df.groupby(['Date', 'Action']).size().reset_index().rename(columns={0:'count'})

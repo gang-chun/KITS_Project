@@ -479,14 +479,16 @@ def sortQty(study):
 @login_required
 def report_activestudies(request):
 
+    #Set default date when user first clicks on active studies reports button
     startdate = date.today() - timedelta(days=30)
     enddate = startdate + timedelta(days=365)
+
 
     if request.POST:
         startdate = request.POST['startdate']
         enddate = request.POST['enddate']
 
-        #TODO validate date inputs
+        #TODO validate user date inputs
         if startdate == '':
             message = "Please enter in a start date"
             messages.error(request, message)
@@ -534,7 +536,6 @@ def report_activestudies(request):
     kits_activity_csv = query_active_studies(startdate, enddate) #query function defined in reports.py
     graph = bar_graph_kit_activity(kits_activity_csv, startdate, enddate)
 
-    file = kits_activity_csv
 
     return render(request, 'KITS/report_activestudies.html',
-                  {'active_studies': active_studies, 'not_active_studies':not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'file': file, 'graph':graph})
+                  {'active_studies': active_studies, 'not_active_studies':not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph':graph})
