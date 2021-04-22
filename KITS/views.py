@@ -19,6 +19,7 @@ from django.contrib import messages
 import collections
 
 from .reports import query_active_studies
+from .datavisualization import bar_graph_active_studies
 
 @receiver(post_create_historical_record)
 def post_create_historical_record_callback(sender, **kwargs):
@@ -494,8 +495,6 @@ def report_activestudies(request):
             messages.error(request, message)
             return redirect('KITS:report_activestudies')
 
-
-
     # Make a list counting all kit instances that have been checked out by kit type
     checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
 
@@ -530,9 +529,9 @@ def report_activestudies(request):
     test2.sort(key=sortQty, reverse=True)
     notactive_studies = test2
 
-    graph_data = []
-    kits = query_active_studies(startdate, enddate) #query function defined in reports.py
-    graph_data.append(kits)
+    kitsactivity_file_csv = query_active_studies(startdate, enddate) #query function defined in reports.py
+    file = kitsactivity_file_csv
+    graph = bar_graph_active_studies(file, startdate, enddate)
 
     return render(request, 'KITS/report_activestudies.html',
-                  {'active_studies': active_studies, 'notactive_studies':notactive_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph_data': graph_data})
+                  {'active_studies': active_studies, 'notactive_studies':notactive_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'file': file, 'graph':graph})
