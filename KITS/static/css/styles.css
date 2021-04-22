@@ -39,7 +39,7 @@
 }
 
 .topnav {
-    background-color: powderblue;
+    background-color: #dce4e4;
     overflow: hidden;
     border-style: solid;
     border-radius: 0px;
@@ -54,7 +54,7 @@
     text-align: center;
     padding: 14px 26px;
     text-decoration: none;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 /* Change the color of links on hover */
