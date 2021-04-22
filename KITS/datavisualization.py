@@ -1,6 +1,5 @@
 import pandas as pd
 import plotly.express as px
-from datetime import datetime, timedelta, date
 
 def get_month(datetime):
     month = datetime.strftime("%m")
