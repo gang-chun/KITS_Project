@@ -10,7 +10,6 @@ def get_year(datetime):
     return year
 
 def bar_graph_active_studies(file, start, end):
-    entries = []
 
     df = pd.read_csv(file)
 
