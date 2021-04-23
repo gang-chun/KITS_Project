@@ -59,7 +59,7 @@ class KitOrder(models.Model):
     TYPE = (('link', 'Link'), ('file', 'File'), ('description', 'Description'))
     type = models.CharField(max_length=32, choices=TYPE, default='description')
     link = models.URLField(max_length=200, blank=True)
-    file = models.FileField(blank=True, null=True, upload_to='kit_order/')
+    file = models.FileField(blank=True, null=True)
     description = models.TextField(max_length=100, blank=True)
     history = HistoricalRecords()
 
@@ -166,7 +166,7 @@ class Requisition(models.Model):
     link = models.URLField(max_length=200, blank=True, null=True)
     type = models.CharField(max_length=32, choices=TYPE, default='description')
     description = models.CharField(max_length=200, default='TBD')
-    file = models.FileField(blank=True, null=True, upload_to='req/')
+    file = models.FileField(blank=True, null=True)
 
     def updated(self):
         self.updated_date = timezone.now()

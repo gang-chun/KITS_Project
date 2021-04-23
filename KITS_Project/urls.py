@@ -17,12 +17,14 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('KITS/', include('KITS.urls')),
     path('', RedirectView.as_view(url='KITS/')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 # Django site authentication URLs (login, logout, password reset)
