@@ -141,5 +141,5 @@ EMAIL_HOST_USER = 'deletelater023@gmail.com'
 EMAIL_HOST_PASSWORD = 'deletePass023'
 
 # Overrides login and logout redirects
-# LOGIN_REDIRECT_URL = '/'
-# LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
