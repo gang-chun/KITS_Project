@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-{% extends 'KITS/base.html' %}
+{% extends 'KITS/base2.html' %}
 {% block content %}
     <style>
     .box {
@@ -80,7 +80,7 @@
         <hr>
 
         <div class="column">
-        {% if test == 'True' %}
+        {% if kit_order_exist %}
             <h3>Kit Ordering Info</h3>
 
                 {% if study.kitorder.description != '' %}
@@ -88,9 +88,9 @@
                 {% endif %}
 
                 <p>
-                    {% if study.kitorder.type == 'file' %}
+                    {% if study.kitorder.type == 'file' and study.kitorder.file %}
                         <a class="btn btn-success" href="{{ MEDIA_URL }}{{ kit_order }}" download>Download File</a>
-                    {% elif study.kitorder.type == 'link' %}
+                    {% elif study.kitorder.type == 'link' and study.kitorder.link != '' %}
                         <a class="btn btn-success" href="{{ kit_order }}" target="_blank">Visit URL</a>
                     {% endif %}
 
@@ -113,9 +113,9 @@
                 {% endif %}
 
                 <p>
-                    {% if study.requisition.type == 'file' %}
+                    {% if study.requisition.type == 'file' and study.requisition.file %}
                         <a class="btn btn-success" href="{{ MEDIA_URL }}{{ req }}" download>Download File</a>
-                    {% elif study.requisition.type == 'link' %}
+                    {% elif study.requisition.type == 'link' and study.requisition.link != '' %}
                         <a class="btn btn-success" href="{{ req }}" target="_blank">Visit URL</a>
                     {% endif %}
 

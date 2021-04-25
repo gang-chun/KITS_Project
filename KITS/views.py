@@ -105,14 +105,14 @@ def study_detail(request, pk):
 
     kit_order = KitOrder.objects.filter(study=pk)
     if kit_order.exists():
-        test = 'True'
+        kit_order_exist = True
         type_qs = KitOrder.objects.filter(study=pk).values('type')
         type_list = type_qs[0]['type']
         kit_order = KitOrder.objects.filter(study=pk).values(type_list)
         kit_order = kit_order[0][type_list]
 
     else:
-        test = 'False'
+        kit_order_exist = False
         kit_order = "No order details have been added."
 
     kit_exist = str(kits)
@@ -122,7 +122,8 @@ def study_detail(request, pk):
         kit_exist = 'True'
 
     return render(request, 'KITS/study_detail.html', {'study': study, 'kits': kits, 'req': req, 'kit_order': kit_order,
-                                                      'test': test, 'kit_exist': kit_exist, 'req_exist': req_exist})
+                                                      'kit_order_exist': kit_order_exist, 'kit_exist': kit_exist,
+                                                      'req_exist': req_exist})
 
 
 @login_required
