@@ -25,7 +25,7 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand flex-grow-1" href="{% url 'KITS:home2' %}">
+    <a class="navbar-brand flex-grow-1" href="{% url 'KITS:home' %}">
       <img src="{% static 'images/logo_med.png' %}" alt="" width="30" height="30" class="d-inline-block align-self-center">
       KITS
     </a>
@@ -39,10 +39,12 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="{% url 'KITS:kit_list' %}">Check In</a></li>
-            <li><a class="dropdown-item" href="{% url 'KITS:home' %}">Check Out</a></li>
+            <li><a class="dropdown-item" href="{% url 'KITS:kit_checkout' %}">Check Out</a></li>
           </ul>
         </div>
-        <a class="nav-link" href="{% url 'KITS:home' %}">Reports</a>
+        <a class="nav-link" href="{% url 'KITS:report' %}">Reports</a>
+        <a class="nav-link" href="{% url 'KITS:list_history' %}">Kit Instance Changes</a>
+        <a class="nav-link" href="{% url 'KITS:help' %}">Help</a>
       </div>
     </div>
       {% if user.is_authenticated %}
