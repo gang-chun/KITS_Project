@@ -36,6 +36,27 @@ def post_create_historical_record_callback(sender, **kwargs):
     user_history_instance.save()
     print("Sent after saving historical record")
 
+@login_required
+def report_userstudies(request):
+
+    # header = "Action Key: +=created ~=changed"
+    checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
+
+    # queryset = UserHistory.objects.raw("SELECT * FROM KITS_userhistory")
+    # queryset = StudyHistory.
+    qs = Study.history.all()
+    qs = qs.order_by('history_user_id')
+    # qs.sort(qs.history_user_id)
+    for instance in qs:
+        print(instance.history_user_id)
+        print(instance.IRB_number)
+        print(instance.history_date)
+    print(qs)
+    context = {
+        "queryset": qs,
+    }
+    return render(request, "KITS/report_userstudies.html", context)
+
 
 now = timezone.now()
 
@@ -545,4 +566,4 @@ def report_activestudies(request):
         graph = "No graph can be produced because there was no activity between " + str(startdate) + " and " + str(enddate) + "."
 
     return render(request, 'KITS/report_activestudies.html',
-                  {'active_studies': active_studies, 'not_active_studies':not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph':graph})
+                  {'active_studies': active_studies, 'not_active_studies': not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph':graph})
