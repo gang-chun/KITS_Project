@@ -516,7 +516,7 @@ def kitinstance_demolish(request, pk):
     else:
         form = KitInstanceDemolishForm(instance=kiti)
 
-    return render(request, 'KITS/kitinstance_statusedit.html', {'form': form, 'kitinstance': kiti})
+    return render(request, 'KITS/kitinstance_demolish.html', {'form': form, 'kitinstance': kiti})
 
 
 @login_required
