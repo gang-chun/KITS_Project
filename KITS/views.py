@@ -8,7 +8,9 @@ from django.db.models import Count, Max, Q
 # from django.db.models.functions import Greatest
 from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter, \
     DateRangeFilter
-
+from django.contrib.auth import get_user_model
+User = get_user_model()
+users = User.objects.all()
 from django.dispatch import receiver
 from simple_history.signals import (
     pre_create_historical_record,
@@ -37,20 +39,40 @@ def post_create_historical_record_callback(sender, **kwargs):
     print("Sent after saving historical record")
 
 @login_required
-def report_userstudies(request):
+def user_list(request):
 
+    User = get_user_model()
+    users = User.objects.all()
+    # Filter bar
+    study_filter = StudyFilter(request.GET, queryset=Study.objects.all())
+    if request.GET:
+        studies = study_filter.qs
+
+    return render(request, 'KITS/user_list.html', {'users': users})
+
+@login_required
+def report_userstudies(request, pk):
+    in_pk = pk
+    print(in_pk)
+    # get the username back
+    User = get_user_model()
+    users = User.objects.all()
+    print(in_pk)
+    # username is from filter
+    user_str = users.filter(pk=in_pk)
+    print(user_str)
     # header = "Action Key: +=created ~=changed"
-    checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
+    # checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
 
-    # queryset = UserHistory.objects.raw("SELECT * FROM KITS_userhistory")
-    # queryset = StudyHistory.
+
+    #Need to constrain to the history_user_id
     qs = Study.history.all()
     qs = qs.order_by('history_user_id')
     # qs.sort(qs.history_user_id)
     for instance in qs:
         print(instance.history_user_id)
         print(instance.IRB_number)
-        print(instance.history_date)
+        print(instance.pet_name)
     print(qs)
     context = {
         "queryset": qs,
