@@ -2,42 +2,24 @@
 <html lang="en">
 {% extends 'KITS/base2.html' %}
 {% block content %}
-    <style>
-    .box {
-        margin: 8px;
-        border: 1px solid silver;
-        padding: 8px;
-        border-radius: 4px;
-    }
 
-    .headline {
-        font-size: 23px;
-        '''font-color: blue;
-    }
-
-    </style>
-    <div class="box">
-
-        <H1><b style="font-size: .75em;">Help</b></H1>
+    <div class="container-fluid">
+        <H2>Help</H2>
         <hr>
 
-        <div class="headline"><p><b>Understanding the function of each page in the navigation bar</b></p></div>
+        <h4>Understanding the function of each page in the navigation bar</h4>
         <ul>
-
             <li><p><b>Studies: </b>to REVIEW the inventory by a specific study</p></li>
             <li><p><b>Check-In Kits: </b>to ADD kits into the inventory</p></li>
             <li><p><b>Check-Out Kits: </b>to REMOVE kits from the inventory</p></li>
             <li><p><b>Reports: </b>to REVIEW reports about all studies </p></li>
         </ul>
 
-        <div class="headline"><p><b>Understanding how to add kits to the inventory</b></p></div>
+        <h4>Understanding how to add kits to the inventory</h4>
             <ol>
                 <li>Go to the 'Check-In Kits' page</li>
                 <li>Click on the 'Add Kit Type' button that will allow you to add a type of kit for a specific study</li>
-
-
             </ol>
-
     </div>
 {% endblock %}
 

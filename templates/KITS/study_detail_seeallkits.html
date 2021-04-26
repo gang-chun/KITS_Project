@@ -2,20 +2,11 @@
 <html lang="en">
 {% extends 'KITS/base2.html' %}
 {% block content %}
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-    </style>
-    <div class="box">
-        <H1><b style="font-size: .75em;">Study {{ study.IRB_number }} {{ study.pet_name }} > All Kits In Inventory</b></H1>
-        <hr>
 
+    <div class="container-fluid">
+        <H2>Study {{ study.IRB_number }} "{{ study.pet_name }}" > All Kits</H2>
 
-        <table class="table table-striped table-bordered table-hover">
+        <table class="table table-striped table-bordered table-hover table-secondary">
             <thead>
             <tr class="bg-info">
                 <th>Kit Type</th>

@@ -2,22 +2,13 @@
 <html lang="en">
 {% extends 'KITS/base2.html' %}
 {% block content %}
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-   </style>
-    <div class="box">
-        <H1><b style="font-size: .75em;">Adding a "{{ kit_instance.type_name }}" kit for study: {{ kit_instance.IRB_number }}</b></H1>
 
+    <div class="container-fluid">
+        <H2>Adding a "{{ kit_instance.type_name }}" kit for study: {{ kit_instance.IRB_number }}</H2>
 
-        <hr>
         <form method="POST" class="kitinstance-form">{% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-success">Add</button>
         </form>
     </div>
 {% endblock %}
