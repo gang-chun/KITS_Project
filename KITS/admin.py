@@ -17,11 +17,11 @@ class KitList(admin.ModelAdmin):
 
 @admin.register(KitInstance)
 class KitInstanceAdmin(admin.ModelAdmin):
-    list_display = ('kit', 'scanner_id', 'location', 'expiration_date')
+    list_display = ('kit', 'scanner_id', 'expiration_date')
     list_filter = ('expiration_date', 'kit')
     fieldsets = (
         (None, {
-            'fields': ('kit', 'id', 'location')
+            'fields': ('kit', 'id',)
         }),
         ('Availability', {
             'fields': ('status', 'expiration_date')

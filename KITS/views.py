@@ -20,7 +20,7 @@ from datetime import datetime, timedelta, date
 from django.contrib import messages
 import collections
 
-from .reports import query_active_studies, validate_date
+from .reports import query_active_studies, validate_date, query_checked_out_kits
 from .datavisualization import bar_graph_kit_activity
 
 @receiver(post_create_historical_record)
@@ -489,7 +489,8 @@ def kitinstance_statusedit(request, pk):
         form = KitInstanceEditForm(request.POST, instance=kiti)
         if form.is_valid():
             kiti = form.save(commit=False)
-            kiti.created_date = timezone.now()
+            #kiti.created_date = timezone.now()
+            kiti.checked_out_date = timezone.now()
             kiti.save()
             # form.save()
         return redirect('KITS:kit_checkout')
@@ -518,9 +519,6 @@ def kitinstance_demolish(request, pk):
     return render(request, 'KITS/kitinstance_statusedit.html', {'form': form, 'kitinstance': kiti})
 
 
-def sortQty(study):
-    return study[2]
-
 @login_required
 def report_activestudies(request):
 
@@ -546,47 +544,22 @@ def report_activestudies(request):
             startdate = datetime.strptime(startdate, format).date()
             enddate = datetime.strptime(enddate, format).date()
 
-
-    # Make a list counting all kit instances that have been checked out by kit type
-    checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
-
-    test = []
-    studies = []
-    # Go through each kit type
-    for kit in checkedout_kits:
-
-        # If the kit type belongs to a study that has not been added to the list:
-        if str(kit.IRB_number) not in studies:
-            studies.append(str(kit.IRB_number))
-
-            t = []
-            t.append(str(kit.IRB_number))
-            study = get_object_or_404(Study, IRB_number=kit.IRB_number)
-            t.append(str(study.pet_name))
-            t.append(kit.kiti_count)
-            test.append(t)
-
-        # If the kit type belongs to a study that was already added in the list
-        elif str(kit.IRB_number) in studies:
-            # Find the index value from the studies list
-            index = studies.index(str(kit.IRB_number))
-            # Add checked out kits to the right IRB
-            test[index][2] = int(kit.kiti_count) + test[index][2]
+    checked_test = query_checked_out_kits(startdate, enddate)
 
     # Sort studies by number of kits checked out
-    test1 = test
-    test1.sort(key=sortQty)
-    active_studies = test1
+    active_studies = checked_test
+    active_studies.sort(key=lambda i: i[2], reverse=True)
 
-    test2 = test
-    test2.sort(key=sortQty, reverse=True)
-    not_active_studies = test2
+    not_active_studies = checked_test
+    not_active_studies.sort(key=lambda i: i[2])
+
 
     kits_activity_csv = query_active_studies(startdate, enddate) #query function defined in reports.py
-
     graph = bar_graph_kit_activity(kits_activity_csv)
     if graph == False:
         graph = "No graph can be produced because there was no activity between " + str(startdate) + " and " + str(enddate) + "."
+
+    test = checked_test
 
     return render(request, 'KITS/report_activestudies.html',
                   {'active_studies': active_studies, 'not_active_studies': not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph':graph})
