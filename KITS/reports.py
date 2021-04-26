@@ -73,8 +73,25 @@ def historical_status_change(id):
 
 # Check if date falls between the start and end date
 def check_date(date, startdate, enddate):
+
     if date > startdate and date < enddate:
         return True
     else:
         return False
 
+
+def validate_date(startdate, enddate):
+    if startdate == '':
+        message = "Please enter in a start date"
+        return message
+    elif enddate == '':
+        message = "Please enter in an end date"
+        return message
+    try:
+        format = "%m-%d-%Y"
+        startdate = datetime.strptime(startdate, format)
+        enddate = datetime.strptime(enddate, format)
+        return True
+    except ValueError:
+        message = "Please format date entries correctly to MM-DD-YYYY"
+        return message

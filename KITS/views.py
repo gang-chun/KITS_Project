@@ -8,7 +8,9 @@ from django.db.models import Count, Max, Q
 # from django.db.models.functions import Greatest
 from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter, \
     DateRangeFilter
-
+from django.contrib.auth import get_user_model
+User = get_user_model()
+users = User.objects.all()
 from django.dispatch import receiver
 from simple_history.signals import (
     pre_create_historical_record,
@@ -18,7 +20,7 @@ from datetime import datetime, timedelta, date
 from django.contrib import messages
 import collections
 
-from .reports import query_active_studies
+from .reports import query_active_studies, validate_date
 from .datavisualization import bar_graph_kit_activity
 
 @receiver(post_create_historical_record)
@@ -35,6 +37,47 @@ def post_create_historical_record_callback(sender, **kwargs):
                                                 kwargs["history_date"])
     user_history_instance.save()
     print("Sent after saving historical record")
+
+@login_required
+def user_list(request):
+
+    User = get_user_model()
+    users = User.objects.all()
+    # Filter bar
+    study_filter = StudyFilter(request.GET, queryset=Study.objects.all())
+    if request.GET:
+        studies = study_filter.qs
+
+    return render(request, 'KITS/user_list.html', {'users': users})
+
+@login_required
+def report_userstudies(request, pk):
+    in_pk = pk
+    print(in_pk)
+    # get the username back
+    User = get_user_model()
+    users = User.objects.all()
+    print(in_pk)
+    # username is from filter
+    user_str = users.filter(pk=in_pk)
+    print(user_str)
+    # header = "Action Key: +=created ~=changed"
+    # checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
+
+
+    #Need to constrain to the history_user_id
+    qs = Study.history.all()
+    qs = qs.order_by('history_user_id')
+    # qs.sort(qs.history_user_id)
+    for instance in qs:
+        print(instance.history_user_id)
+        print(instance.IRB_number)
+        print(instance.pet_name)
+    print(qs)
+    context = {
+        "queryset": qs,
+    }
+    return render(request, "KITS/report_userstudies.html", context)
 
 
 now = timezone.now()
@@ -485,20 +528,24 @@ def report_activestudies(request):
     startdate = date.today() - timedelta(days=30)
     enddate = startdate + timedelta(days=365)
 
-
     if request.POST:
         startdate = request.POST['startdate']
         enddate = request.POST['enddate']
 
-        #TODO validate user date inputs
-        if startdate == '':
-            message = "Please enter in a start date"
+        #Check if user's date input are correct
+        message = validate_date(startdate, enddate)
+
+        #If user's input are not correct, return error page with the message
+        if message != True:
+            message = validate_date(startdate, enddate)
             messages.error(request, message)
             return redirect('KITS:report_activestudies')
-        elif enddate == '':
-            message = "Please enter in an end date"
-            messages.error(request, message)
-            return redirect('KITS:report_activestudies')
+        elif message == True:
+            # Convert date string to date time object
+            format = "%m-%d-%Y"
+            startdate = datetime.strptime(startdate, format).date()
+            enddate = datetime.strptime(enddate, format).date()
+
 
     # Make a list counting all kit instances that have been checked out by kit type
     checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
@@ -536,8 +583,10 @@ def report_activestudies(request):
     not_active_studies = test2
 
     kits_activity_csv = query_active_studies(startdate, enddate) #query function defined in reports.py
-    graph = bar_graph_kit_activity(kits_activity_csv, startdate, enddate)
 
+    graph = bar_graph_kit_activity(kits_activity_csv)
+    if graph == False:
+        graph = "No graph can be produced because there was no activity between " + str(startdate) + " and " + str(enddate) + "."
 
     return render(request, 'KITS/report_activestudies.html',
-                  {'active_studies': active_studies, 'not_active_studies':not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph':graph})
+                  {'active_studies': active_studies, 'not_active_studies': not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph':graph})
