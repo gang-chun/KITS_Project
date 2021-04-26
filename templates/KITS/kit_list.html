@@ -2,15 +2,6 @@
 <html lang="en">
 {% extends 'KITS/base2.html' %}
 {% block content %}
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-    </style>
-
 
     {% if messages %}
         {% for message in messages %}
@@ -20,18 +11,15 @@
         {% endfor %}
     {% endif %}
 
-
-    <div class="box">
-        <H1><b style="font-size: .75em;">Types of Kits</b></H1>
-        <p></p>
-        <hr>
+    <div class="container-fluid">
+        <H2>Types of Kits</H2>
          <form method="get">
            {{ kit_filter.form }}
             <button class="btn btn-primary" type="submit">Search</button>
         </form>
 
 
-        <table class="table table-striped table-bordered table-hover">
+        <table class="table table-striped table-bordered table-secondary">
             <thead>
             <tr class="bg-info">
                 <th>IRB_number</th>
@@ -50,11 +38,12 @@
                 <td>{{ kit.type_name }}</td>
 
 
-                <td><a href="{% url 'KITS:kit_edit' pk=kit.pk%}" class="btn btn-warning">Edit</a>
-                <a href="{% url 'KITS:kit_addkitinstance' pk=kit.pk %}" class="btn btn-warning">Add Kit Instance</a>
-                <a href="{% url 'KITS:kit_delete' pk=kit.pk%}"
-                    onclick="return confirm('Are you sure you want to delete Kit {{ kit.id }} under IRB#{{ kit.IRB_number }}? Do you have proper authorization?')"
-                       class="btn btn-danger">Delete</a>
+                <td>
+                    <a href="{% url 'KITS:kit_addkitinstance' pk=kit.pk %}" class="btn-sm btn-success">Add Kit Instance</a>
+                    <a href="{% url 'KITS:kit_edit' pk=kit.pk%}" class="btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'KITS:kit_delete' pk=kit.pk%}"
+                        onclick="return confirm('Are you sure you want to delete Kit {{ kit.id }} under IRB#{{ kit.IRB_number }}? Do you have proper authorization?')"
+                        class="btn-sm btn-danger">Delete</a>
                 </td>
 
 

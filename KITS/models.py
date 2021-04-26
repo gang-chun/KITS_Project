@@ -113,10 +113,10 @@ class KitInstance(models.Model):
                           help_text='Unique ID for this particular kit used in any Study')
     scanner_id = models.CharField(max_length=100)
     kit = models.ForeignKey('Kit', on_delete=models.RESTRICT, related_name='kit')
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
     note = models.CharField(max_length=100, blank=True)
     expiration_date = models.DateField(null=True, blank=True)
     created_date = models.DateField(auto_now_add=True)
+    checked_out_date = models.DateField(null=True, blank=True)
 
     KIT_STATUS = (
         ('a', 'Available'),

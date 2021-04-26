@@ -5,18 +5,9 @@
 
 {% block content %}
 
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-    </style>
+    <div class="container-fluid">
 
-    <div class="box">
-
-    <H1><b style="font-size: .75em;">Editing the "{{ kit.type_name }}" kit for IRB: {{ kit.IRB_number }}</b></H1>
+    <H2>Editing the "{{ kit.type_name }}" kit for IRB: {{ kit.IRB_number }}</H2>
 
     <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}

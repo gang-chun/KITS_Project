@@ -5,17 +5,9 @@
 
 {% block content %}
 
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-    </style>
+    <div class="container-fluid">
+    <h2>Edit Kit Order Details</h2>
 
-    <div class="box">
-    <h1>Edit Kit Ordering</h1>
     <form method="POST" class="" enctype="multipart/form-data">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-success">Update</button>
