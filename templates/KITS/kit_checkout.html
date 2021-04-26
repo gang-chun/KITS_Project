@@ -2,80 +2,62 @@
 <html lang="en">
 {% extends 'KITS/base2.html' %}
 {% block content %}
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-    </style>
-    <div class="box">
-        <H1><b style="font-size: .75em;">Kit Checkout</b></H1>
 
-        <hr>
+    <div class="container-fluid">
+        <H2>Kit Checkout</H2>
+
         <form method="get">
-           {{ kit_instance_filter.form }}
-
-
+            {{ kit_instance_filter.form }}
             <button class="btn btn-primary" type="submit">Search</button>
         </form>
 
-    <table class="table table-striped table-bordered table-hover">
+        <table class="table table-striped table-bordered table-hover table-secondary">
             <thead>
-
-            <tr class="bg-info">
-                <th>Kit Type ID</th>
-                <th>Kit ID</th>
-                <th>Kit Type</th>
-                <th>IRB #</th>
-                <th>Status</th>
-                <th>Expiration Date</th>
-                <th>Actions</th>
-
-
-            </tr>
+                <tr class="bg-info">
+                    <th>Kit Type ID</th>
+                    <th>Kit ID</th>
+                    <th>Kit Type</th>
+                    <th>IRB #</th>
+                    <th>Status</th>
+                    <th>Expiration Date</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
-            <tr>
-            {% for kitinstance in kitinstance %}
-
-                <td>{{ kitinstance.kit_id}}</td>
-                <td>{{ kitinstance.id }}</td>
-                <td>{{ kitinstance.kit.type_name}}</td>
-                <td>{{ kitinstance.kit.IRB_number }}</td>
-                <td>{% if kitinstance.status == 'a' %}
-                        <p><b style="color:green">Available</b></p>
-                    {% elif kitinstance.status == 'c' %}
-                     <p><b style="color:yellow">Checked-Out</b></p>
-                    {% elif kitinstance.status == 'd' %}
-                    <p><b style="color:red">Demolished</b></p>
-                    {% elif kitinstance.status == 'e' %}
-                         <p><b style="color:black">Expired</b></p>
-                {% endif %}</td>
-                <td>{{ kitinstance.expiration_date}}</td>
-
-
-
-                <td>  {% if kitinstance.status == 'a' %}
-                    <a href="{% url 'KITS:kitinstance_statusedit' pk=kitinstance.pk%}" class="btn btn-success">Checkout</a>
-                      {% endif %}
-                      {% if kitinstance.status == 'a' %}
-                          <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-danger">Demolish</a></td>
-                          {% elif kitinstance.status == 'e' %}
-                          <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk%}" class="btn btn-danger">Demolish</a></td>
+                <tr>
+                {% for kitinstance in kitinstance %}
+                    <td>{{ kitinstance.kit_id }}</td>
+                    <td>{{ kitinstance.id }}</td>
+                    <td>{{ kitinstance.kit.type_name }}</td>
+                    <td>{{ kitinstance.kit.IRB_number }}</td>
+                    <td>
+                        {% if kitinstance.status == 'a' %}
+                            <p><b class="text-success">Available</b></p>
+                        {% elif kitinstance.status == 'c' %}
+                            <p><b class="text-warning">Checked-Out</b></p>
+                        {% elif kitinstance.status == 'd' %}
+                            <p><b class="text-danger">Demolished</b></p>
+                        {% elif kitinstance.status == 'e' %}
+                            <p><b class="text-dark">Expired</b></p>
+                    {% endif %}
+                    </td>
+                    <td>{{ kitinstance.expiration_date }}</td>
+                    <td>
+                        {% if kitinstance.status == 'a' %}
+                            <a href="{% url 'KITS:kitinstance_statusedit' pk=kitinstance.pk %}" class="btn-sm btn-success">Checkout</a>
                         {% endif %}
 
-
-            </tr>
-            {% endfor %}
+                        {% if kitinstance.status == 'a' %}
+                            <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk %}" class="btn-sm btn-danger">Demolish</a>
+                        {% elif kitinstance.status == 'e' %}
+                            <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk %}" class="btn-sm btn-danger">Demolish</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
-
-
-
     </div>
 {% endblock %}
 
 </html>
-

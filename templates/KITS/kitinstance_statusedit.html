@@ -5,19 +5,9 @@
 
 {% block content %}
 
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-    </style>
+    <div class="container-fluid">
+        <H2>Kit: {{ kitinstance.kit_id }}</H2>
 
-    <div class="box">
-        <H1><b style="font-size: .75em;">Kit: {{ kitinstance.kit_id }} </b></H1>
-
-        <hr>
         <p><b>Kit Instance ID: </b>{{ kitinstance.id}}</p>
         <p><b>Scanner ID: </b>{{ kitinstance.scanner_id}}</p>
         <p><b>Note: </b>{{ kitinstance.note }}</p>
@@ -37,10 +27,7 @@
 
      <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}
-            <button type="submit" class="save btn btn-success">Check-out Kit</button>
-
-
-
+            <button type="submit" class="save btn btn-success">Check Out</button>
     </form>
     </div>
 

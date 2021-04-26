@@ -10,14 +10,15 @@
     border-radius: 4px;
 }
     </style>
-    <div class="box">
-        <H1><b style="font-size: .75em;">Reports</b></H1>
+    <div class="container-fluid">
+        <H2>Reports</H2>
         <hr>
-
-        <H2>Expired Kits</H2>
-        <a href="{%  url 'KITS:report_expiredkits' %}" class="btn btn-success">List of all expired kits</a>
-        <a href="{%  url 'KITS:report_expiredkits_studies' %}" class="btn btn-success">List of studies with expired kits</a>
-        <a href="{%  url 'KITS:report_activestudies' %}" class="btn btn-success">Active and Less Active Studies</a>
+        <div class="container">
+            <H5>Expired Kits</H5>
+            <a href="{%  url 'KITS:report_expiredkits' %}" class="btn btn-success">List of all expired kits</a>
+            <a href="{%  url 'KITS:report_expiredkits_studies' %}" class="btn btn-success">List of studies with expired kits</a>
+            <a href="{%  url 'KITS:report_activestudies' %}" class="btn btn-success">Active and Less Active Studies</a>
+        </div>
 
     </div>
 {% endblock %}
