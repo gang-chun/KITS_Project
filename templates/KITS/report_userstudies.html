@@ -11,7 +11,7 @@
 }
 
     </style>
-            <p> Kit Activity from {{ startdate }} to {{ enddate }}</p>
+    <h2> Study from {{ startdate }} to {{ enddate }}</h2>
 
         <div class="row">
         <div class="column12" style="background-color:#aaa; margin-left: 12px;">
@@ -56,13 +56,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for study in notactive_studies %}
-                    <tr>
-                        {% for s in study %}
-                        <td>{{ s }}</td>
-                        {% endfor %}
-                    </tr>
+                {% for instances in queryset %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ instances.IRB_number }}</td>
+                    <td>{{ instances.pet_name }}</td>
+                    <td>{{ instances.history_user_id }}</td>
 
+                </tr>
                 {% endfor %}
                 </tbody>
             </table>
@@ -156,5 +157,5 @@
             </table>
         </div>
 {% endblock %}
-
+</div>
 </html>
