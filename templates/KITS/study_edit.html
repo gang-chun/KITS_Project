@@ -5,18 +5,9 @@
 
 {% block content %}
 
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-    </style>
+    <div class="container-fluid">
 
-    <div class="box">
-
-    <h1>Edit Study</h1>
+    <h2>Edit Study</h2>
     <form method="POST" class="">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-success">Update</button>

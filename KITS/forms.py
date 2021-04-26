@@ -33,7 +33,7 @@ class KitInstanceForm(forms.ModelForm):
     class Meta:
         model = KitInstance
         fields = '__all__'
-        exclude = ('created_date',)
+        exclude = ('created_date', 'checked_out_date', 'status', 'kit',)
         # child_model = Kit
         # child_form_class = KitIDForm
 

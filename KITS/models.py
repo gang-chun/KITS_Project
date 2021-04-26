@@ -1,4 +1,6 @@
 from django.utils import timezone
+import datetime
+
 from django.contrib.auth.models import User  # So we can test if authenticated
 from django.contrib.contenttypes.models import ContentType
 # from django.contrib.contenttypes.fields import GenericForeignKey
@@ -94,8 +96,8 @@ class Kit(models.Model):
         default=timezone.now)
     type_name = models.CharField(max_length=32, blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    # history = HistoricalRecords()
-    created_date = models.DateField(default=timezone.now())
+    history = HistoricalRecords()
+    created_date = models.DateField(datetime.date.today())
 
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
@@ -111,10 +113,10 @@ class KitInstance(models.Model):
                           help_text='Unique ID for this particular kit used in any Study')
     scanner_id = models.CharField(max_length=100)
     kit = models.ForeignKey('Kit', on_delete=models.RESTRICT, related_name='kit')
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='location')
     note = models.CharField(max_length=100, blank=True)
     expiration_date = models.DateField(null=True, blank=True)
-    created_date = models.DateField(default=timezone.now())
+    created_date = models.DateField(auto_now_add=True)
+    checked_out_date = models.DateField(null=True, blank=True)
 
     KIT_STATUS = (
         ('a', 'Available'),
@@ -141,7 +143,9 @@ class KitInstance(models.Model):
     def is_expired(self):
         if date.today() > self.expiration_date:
             self.status = 'e'
-            self.save()
+            return True
+        else:
+            return False
 
     @property
     def expired_soon(self):
@@ -170,7 +174,7 @@ class Requisition(models.Model):
     #     self.updated_date = timezone.now()
     #     self.save()
 
-    # history = HistoricalRecords()
+    history = HistoricalRecords()
 
 
 class UserHistoryManager(models.Manager):

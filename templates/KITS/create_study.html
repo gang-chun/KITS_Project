@@ -2,20 +2,12 @@
 <html lang="en">
 {% extends 'KITS/base2.html' %}
 {% block content %}
-    <style>
-    .box {
-    margin: 8px;
-    border: 1px solid silver;
-    padding: 8px;
-    border-radius: 4px;
-}
-    </style>
-    <div class="box">
-        <H1><b style="font-size: .75em;">Create Study</b></H1>
-        <hr>
-        <form method="POST" class="study-form">{% csrf_token %}
+    <div class="container-fluid">
+        <H2>Create Study</H2>
+
+        <form method="POST">{% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-success">Submit</button>
         </form>
     </div>
 {% endblock %}
