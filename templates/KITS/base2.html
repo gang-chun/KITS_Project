@@ -25,7 +25,7 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand flex-grow-1" href="{% url 'KITS:home' %}">
+    <a class="navbar-brand flex-grow-1">
       <img src="{% static 'images/logo_med.png' %}" alt="" width="30" height="30" class="d-inline-block align-self-center">
       KITS
     </a>
@@ -49,9 +49,9 @@
     </div>
       {% if user.is_authenticated %}
         <span class="navbar-text">Welcome, {{ user.get_username }}.</span>
-        <a class="btn-sm btn-outline-danger" href="{% url 'logout' %}?next={{request.path}}">Log Out</a>
+        <a class="btn-sm btn-outline-danger" href="{% url 'logout' %}">Log Out</a>
       {% else %}
-        <a class="btn-sm btn-outline-success" href="{% url 'login' %}?next={{request.path}}">Log In</a>
+        <a class="btn-sm btn-outline-success" href="{% url 'login' %}">Log In</a>
       {% endif %}
   </div>
 </nav>

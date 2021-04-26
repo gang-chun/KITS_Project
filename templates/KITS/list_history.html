@@ -30,15 +30,17 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ instances.id }}</td>
                 <td>{{ instances.scanner_id }}</td>
-                <td>{% if instances.status == 'a' %}
-                        <p><b style="color:green">Available</b></p>
+                <td>
+                    {% if instances.status == 'a' %}
+                        <p><b class="text-success">Available</b></p>
                     {% elif instances.status == 'c' %}
-                     <p><b style="color:yellow">Checked-Out</b></p>
+                        <p><b class="text-warning">Checked-Out</b></p>
                     {% elif instances.status == 'd' %}
-                    <p><b style="color:red">Demolished</b></p>
+                        <p><b class="text-danger">Demolished</b></p>
                     {% elif instances.status == 'e' %}
-                         <p><b style="color:black">Expired</b></p>
-                {% endif %}</td>
+                        <p><b class="text-dark">Expired</b></p>
+                    {% endif %}
+                </td>
                 <td>{{ instances.expiration_date }}</td>
                 <td>{{ instances.history_user_id }}</td>
                 <td>{{ instances.history_type }}</td>
