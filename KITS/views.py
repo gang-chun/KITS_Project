@@ -20,7 +20,7 @@ from datetime import datetime, timedelta, date
 from django.contrib import messages
 import collections
 
-from .reports import query_active_studies
+from .reports import query_active_studies, validate_date
 from .datavisualization import bar_graph_kit_activity
 
 @receiver(post_create_historical_record)
@@ -527,20 +527,24 @@ def report_activestudies(request):
     startdate = date.today() - timedelta(days=30)
     enddate = startdate + timedelta(days=365)
 
-
     if request.POST:
         startdate = request.POST['startdate']
         enddate = request.POST['enddate']
 
-        #TODO validate user date inputs
-        if startdate == '':
-            message = "Please enter in a start date"
+        #Check if user's date input are correct
+        message = validate_date(startdate, enddate)
+
+        #If user's input are not correct, return error page with the message
+        if message != True:
+            message = validate_date(startdate, enddate)
             messages.error(request, message)
             return redirect('KITS:report_activestudies')
-        elif enddate == '':
-            message = "Please enter in an end date"
-            messages.error(request, message)
-            return redirect('KITS:report_activestudies')
+        elif message == True:
+            # Convert date string to date time object
+            format = "%m-%d-%Y"
+            startdate = datetime.strptime(startdate, format).date()
+            enddate = datetime.strptime(enddate, format).date()
+
 
     # Make a list counting all kit instances that have been checked out by kit type
     checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
@@ -578,8 +582,10 @@ def report_activestudies(request):
     not_active_studies = test2
 
     kits_activity_csv = query_active_studies(startdate, enddate) #query function defined in reports.py
-    graph = bar_graph_kit_activity(kits_activity_csv, startdate, enddate)
 
+    graph = bar_graph_kit_activity(kits_activity_csv)
+    if graph == False:
+        graph = "No graph can be produced because there was no activity between " + str(startdate) + " and " + str(enddate) + "."
 
     return render(request, 'KITS/report_activestudies.html',
                   {'active_studies': active_studies, 'not_active_studies': not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph':graph})
