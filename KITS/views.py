@@ -23,6 +23,7 @@ import collections
 from .reports import query_active_studies, validate_date, query_checked_out_kits
 from .datavisualization import bar_graph_kit_activity
 
+
 @receiver(post_create_historical_record)
 def post_create_historical_record_callback(sender, **kwargs):
     t_user_t = kwargs["history_user"]
@@ -38,6 +39,7 @@ def post_create_historical_record_callback(sender, **kwargs):
     user_history_instance.save()
     print("Sent after saving historical record")
 
+
 @login_required
 def user_list(request):
 
@@ -49,6 +51,7 @@ def user_list(request):
         studies = study_filter.qs
 
     return render(request, 'KITS/user_list.html', {'users': users})
+
 
 @login_required
 def report_userstudies(request, pk):
@@ -64,8 +67,7 @@ def report_userstudies(request, pk):
     # header = "Action Key: +=created ~=changed"
     # checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
 
-
-    #Need to constrain to the history_user_id
+    # Need to constrain to the history_user_id
     qs = Study.history.all()
     qs = qs.order_by('history_user_id')
     # qs.sort(qs.history_user_id)
@@ -99,10 +101,6 @@ def logout(request):
 
 def home(request):
     return render(request, 'KITS/home.html')
-
-
-def home2(request):
-    return render(request, 'KITS/home2.html')
 
 
 @login_required
@@ -489,7 +487,7 @@ def kitinstance_statusedit(request, pk):
         form = KitInstanceEditForm(request.POST, instance=kiti)
         if form.is_valid():
             kiti = form.save(commit=False)
-            #kiti.created_date = timezone.now()
+            # kiti.created_date = timezone.now()
             kiti.checked_out_date = timezone.now()
             kiti.save()
             # form.save()
@@ -522,7 +520,7 @@ def kitinstance_demolish(request, pk):
 @login_required
 def report_activestudies(request):
 
-    #Set default date when user first clicks on active studies reports button
+    # Set default date when user first clicks on active studies reports button
     startdate = date.today() - timedelta(days=30)
     enddate = startdate + timedelta(days=365)
 
@@ -530,15 +528,15 @@ def report_activestudies(request):
         startdate = request.POST['startdate']
         enddate = request.POST['enddate']
 
-        #Check if user's date input are correct
+        # Check if user's date input are correct
         message = validate_date(startdate, enddate)
 
-        #If user's input are not correct, return error page with the message
-        if message != True:
+        # If user's input are not correct, return error page with the message
+        if not message:
             message = validate_date(startdate, enddate)
             messages.error(request, message)
             return redirect('KITS:report_activestudies')
-        elif message == True:
+        elif message:
             # Convert date string to date time object
             format = "%m-%d-%Y"
             startdate = datetime.strptime(startdate, format).date()
@@ -553,13 +551,14 @@ def report_activestudies(request):
     not_active_studies = checked_test
     not_active_studies.sort(key=lambda i: i[2])
 
-
-    kits_activity_csv = query_active_studies(startdate, enddate) #query function defined in reports.py
+    kits_activity_csv = query_active_studies(startdate, enddate)  # query function defined in reports.py
     graph = bar_graph_kit_activity(kits_activity_csv)
-    if graph == False:
-        graph = "No graph can be produced because there was no activity between " + str(startdate) + " and " + str(enddate) + "."
+    if not graph:
+        graph = "No graph can be produced because there was no activity between " + str(startdate) + " and " + \
+                str(enddate) + "."
 
     test = checked_test
 
     return render(request, 'KITS/report_activestudies.html',
-                  {'active_studies': active_studies, 'not_active_studies': not_active_studies, 'startdate': startdate, 'enddate': enddate, 'test': test, 'graph':graph})
+                  {'active_studies': active_studies, 'not_active_studies': not_active_studies, 'startdate': startdate,
+                   'enddate': enddate, 'test': test, 'graph': graph})
