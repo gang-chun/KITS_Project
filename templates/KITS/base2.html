@@ -25,11 +25,11 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand flex-grow-1">
-      <img src="{% static 'images/logo_med.png' %}" alt="" width="30" height="30" class="d-inline-block align-self-center">
+    <a class="navbar-brand" href="{% url 'KITS:home' %}">
+      <img src="{% static '' %}" alt="" width="30" height="30" class="d-inline-block align-self-center"> <!-- LOGO HERE -->
       KITS
     </a>
-    <div class="collapse navbar-collapse" id="navbarText">
+    <div class="collapse navbar-collapse justify-content-center" id="navbarText">
       <div class="navbar-nav mb-2 mb-lg-0">
         <a class="nav-link active" aria-current="page" href="{% url 'KITS:home' %}">Home</a>
         <a class="nav-link" href="{% url 'KITS:study_list' %}">Studies</a>
@@ -42,17 +42,30 @@
             <li><a class="dropdown-item" href="{% url 'KITS:kit_checkout' %}">Check Out</a></li>
           </ul>
         </div>
-        <a class="nav-link" href="{% url 'KITS:report' %}">Reports</a>
+          <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Reports
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="{% url 'KITS:report_expiredkits' %}">Expired Kit List</a></li>
+              <li><a class="dropdown-item" href="{% url 'KITS:report_expiredkits_studies' %}">Studies w/ Expired Kits</a></li>
+              <li><a class="dropdown-item" href="{% url 'KITS:report_activestudies' %}">Study Activity</a></li>
+              <li><a class="dropdown-item" href="{% url 'KITS:user_list' %}">User Activity</a></li>
+          </ul>
+        </div>
         <a class="nav-link" href="{% url 'KITS:list_history' %}">Kit Instance Changes</a>
         <a class="nav-link" href="{% url 'KITS:help' %}">Help</a>
       </div>
     </div>
-      {% if user.is_authenticated %}
-        <span class="navbar-text">Welcome, {{ user.get_username }}.</span>
-        <a class="btn-sm btn-outline-danger" href="{% url 'logout' %}">Log Out</a>
-      {% else %}
-        <a class="btn-sm btn-outline-success" href="{% url 'login' %}">Log In</a>
-      {% endif %}
+        <div>
+            {% if user.is_authenticated %}
+            <span class="navbar-text">Welcome, {{ user.get_username }}.</span>
+            <a class="btn-sm btn-outline-danger" href="{% url 'logout' %}">Log Out</a>
+            {% else %}
+            <a class="btn-sm btn-outline-success" href="{% url 'login' %}">Log In</a>
+            {% endif %}
+        </div>
+
   </div>
 </nav>
 
