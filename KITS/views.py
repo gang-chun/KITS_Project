@@ -593,32 +593,36 @@ def export_expiredkits(request):
 
     return response
 
-
-'''def export_expiredkits(request):
-    import csv
-    from django.http import HttpResponse
-    import django
-    import os
-    from django.conf import settings
-    from django.urls import 
-    #data = open(os.path.join(settipathngs.UPLOAD_FOLDER, 'expired_kits_report/table.csv'), 'r').read()
-    #kitinstance = KitInstance.objects.filter(status='c')
-    #response = HttpResponse(content_type='text/csv')
-    #response = django.http.HttpResponse(data, mimetype='application/x-download')
-    #response['Content-Disposition'] = 'attachment; filename="expired_kits_report.csv"'
+@login_required
+def export_studieswithexpiredkits(request):
 
 
+    if request.method == "POST":
+        form = ExpiredReportDownloadForm(request.POST)
+
+        if form.is_valid():
+            csv_request = form.save(commit=False)
+            csv_request.requested_by = request.user
+            csv_request.requested_date= timezone.now()
+            csv_request.save()
+    else:
+        ExpiredReportDownloadForm()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Expired_Kits_In_Studies_Report.csv"'
+
+    writer = csv.writer(response)
+    #kit = Kit.objects.filter(kit__status='e')
+    kit = KitInstance.objects.filter(status='e')
+
+    with open("Expired_Kits_In_Studies_Report.csv", "w") as csvFile:
+        if kit:
+            writer.writerow(Study.objects.values('pet_name'))
+            writer.writerow(Study.objects.values('IRB_number'))
+            writer.writerow(Kit.objects.annotate(qty=Count('kit')).values('qty'))
 
 
 
-    writer = csv.writer(request)
-    writer.writerow(['IRB_number', 'type_name', 'scanner_id', 'expiration_date'])
+
+    return response
 
 
-    for kits in kitinstance:
-        writer.writerow(['kitinstance.kit.IRB_number', 'kitinstance.kit.type_name',
-                         'kitinstance.scanner_id', 'kitinstance.expiration_date'])
-
-    return render(request, 'KITS/report_expiredkits.html', {'writer': writer})
-    #return render(request, 'KITS/report_expiredkits.html', {'data': data, 'response': response,
-                                                           # 'writer': writer, 'kitinstance': kitinstance})'''

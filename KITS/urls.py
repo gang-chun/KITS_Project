@@ -47,4 +47,6 @@ urlpatterns = [
     path('kitinstance_demolish/<uuid:pk>/', views.kitinstance_demolish, name='kitinstance_demolish'),
 
     path('export_expiredkits/', views.export_expiredkits, name='export_expiredkits'),
+    path('export_studieswithexpiredkits/', views.export_studieswithexpiredkits, name='export_studieswithexpiredkits'),
+
 ]
