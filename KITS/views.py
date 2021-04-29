@@ -19,7 +19,8 @@ from simple_history.signals import (
 from datetime import datetime, timedelta, date
 from django.contrib import messages
 import collections
-
+import csv
+from django.http import HttpResponse
 from .reports import query_active_studies, validate_date, query_checked_out_kits
 from .datavisualization import bar_graph_kit_activity
 
@@ -562,3 +563,62 @@ def report_activestudies(request):
     return render(request, 'KITS/report_activestudies.html',
                   {'active_studies': active_studies, 'not_active_studies': not_active_studies, 'startdate': startdate,
                    'enddate': enddate, 'test': test, 'graph': graph})
+
+
+
+@login_required
+def export_expiredkits(request):
+    if request.method == "POST":
+        form = ExpiredReportDownloadForm(request.POST)
+
+        if form.is_valid():
+            csv_request = form.save(commit=False)
+            csv_request.requested_by = request.user
+            csv_request.requested_date= timezone.now()
+            csv_request.save()
+    else:
+        ExpiredReportDownloadForm()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="Expired_Kit_Report.csv"'
+
+    writer = csv.writer(response)
+
+
+    with open("Expired_Kit_Report.csv", "w") as csvFile:
+        writer.writerow(KitInstance.objects.filter(status='e').values('scanner_id'))
+        writer.writerow(KitInstance.objects.filter(status='e').values('expiration_date'))
+        writer.writerow(Kit.objects.values('type_name'))
+        writer.writerow(Kit.objects.values('IRB_number'))
+
+
+    return response
+
+
+'''def export_expiredkits(request):
+    import csv
+    from django.http import HttpResponse
+    import django
+    import os
+    from django.conf import settings
+    from django.urls import 
+    #data = open(os.path.join(settipathngs.UPLOAD_FOLDER, 'expired_kits_report/table.csv'), 'r').read()
+    #kitinstance = KitInstance.objects.filter(status='c')
+    #response = HttpResponse(content_type='text/csv')
+    #response = django.http.HttpResponse(data, mimetype='application/x-download')
+    #response['Content-Disposition'] = 'attachment; filename="expired_kits_report.csv"'
+
+
+
+
+
+    writer = csv.writer(request)
+    writer.writerow(['IRB_number', 'type_name', 'scanner_id', 'expiration_date'])
+
+
+    for kits in kitinstance:
+        writer.writerow(['kitinstance.kit.IRB_number', 'kitinstance.kit.type_name',
+                         'kitinstance.scanner_id', 'kitinstance.expiration_date'])
+
+    return render(request, 'KITS/report_expiredkits.html', {'writer': writer})
+    #return render(request, 'KITS/report_expiredkits.html', {'data': data, 'response': response,
+                                                           # 'writer': writer, 'kitinstance': kitinstance})'''

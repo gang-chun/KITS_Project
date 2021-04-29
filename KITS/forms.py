@@ -50,12 +50,6 @@ class LocationForm(forms.ModelForm):
         fields = '__all__'
 
 
-'''class KitInstanceEditForm(forms.ModelForm):
-    class Meta:
-        model = KitInstance
-        fields = forms.CharField(choices= KitInstance.objects.filter(status__startswith='c').values('status'))'''
-
-
 class KitInstanceEditForm(forms.ModelForm):
     KIT_STATUS = (
         ('c', 'Checked Out'),
@@ -78,3 +72,22 @@ class KitInstanceDemolishForm(forms.ModelForm):
     class Meta:
         model = KitInstance
         fields = ['status']
+
+
+class ExpiredReportDownloadForm(forms.ModelForm):
+    KIT_STATUS = (
+        ('e', 'Expired'),
+    )
+
+    status = forms.TypedChoiceField(choices=KIT_STATUS, coerce=str, initial=1)
+
+    class Meta:
+        model = KitInstance
+        fields = ['scanner_id', 'expiration_date']
+
+    class Meta1:
+        model = Kit
+        fields = ['type_name', 'IRB_number']
+
+
+

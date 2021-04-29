@@ -203,5 +203,3 @@ class UserHistory(models.Model):
 
 
 #class KitInstanceStatusHistory(models.Model):
-
-
