@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{% extends 'KITS/base2.html' %}
+{% extends 'KITS/base.html' %}
 
 {% block content %}
 
     <div class="container-fluid">
+        <h2>Edit Requisition Details</h2>
+        <hr>
 
-    <h2>Edit Requisition Details</h2>
-    <form method="POST" class="" enctype="multipart/form-data">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-success">Confirm</button>
-    </form>
+        <form method="POST" class="" enctype="multipart/form-data">{% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="save btn btn-success">Confirm</button>
+        </form>
     </div>
 {% endblock %}
 

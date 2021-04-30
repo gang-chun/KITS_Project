@@ -9,8 +9,6 @@ from django.db.models import Count, Max, Q
 from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter, \
     DateRangeFilter
 from django.contrib.auth import get_user_model
-User = get_user_model()
-users = User.objects.all()
 from django.dispatch import receiver
 from simple_history.signals import (
     pre_create_historical_record,
@@ -23,6 +21,9 @@ import csv
 from django.http import HttpResponse
 from .reports import query_active_studies, validate_date, query_checked_out_kits
 from .datavisualization import bar_graph_kit_activity
+
+User = get_user_model()
+users = User.objects.all()
 
 
 @receiver(post_create_historical_record)
@@ -358,22 +359,6 @@ def kit_addkitinstance(request, pk):
 
 
 @login_required
-def kitinstance_add(request, pk):
-    new_kitinstance = get_object_or_404(KitInstance, pk=pk)
-    if request.method == "POST":
-        form = KitInstanceForm(request.POST)
-        if form.is_valid():
-            new_kitinstance = form.save(commit=False)
-            new_kitinstance.created_date = timezone.now()
-            new_kitinstance.save()
-            KitInstance.objects.filter(date_added__lte=timezone.now())
-            return redirect('KITS:kitinstance')
-    else:
-        form = KitInstanceForm()
-    return render(request, 'KITS/kitinstance_add.html', {'form': form})
-
-
-@login_required
 def report(request):
     return render(request, 'KITS/report.html')
 
@@ -565,7 +550,6 @@ def report_activestudies(request):
                    'enddate': enddate, 'test': test, 'graph': graph})
 
 
-
 @login_required
 def export_expiredkits(request):
     if request.method == "POST":
@@ -574,7 +558,7 @@ def export_expiredkits(request):
         if form.is_valid():
             csv_request = form.save(commit=False)
             csv_request.requested_by = request.user
-            csv_request.requested_date= timezone.now()
+            csv_request.requested_date = timezone.now()
             csv_request.save()
     else:
         ExpiredReportDownloadForm()
@@ -583,19 +567,17 @@ def export_expiredkits(request):
 
     writer = csv.writer(response)
 
-
     with open("Expired_Kit_Report.csv", "w") as csvFile:
         writer.writerow(KitInstance.objects.filter(status='e').values('scanner_id'))
         writer.writerow(KitInstance.objects.filter(status='e').values('expiration_date'))
         writer.writerow(Kit.objects.values('type_name'))
         writer.writerow(Kit.objects.values('IRB_number'))
 
-
     return response
+
 
 @login_required
 def export_studieswithexpiredkits(request):
-
 
     if request.method == "POST":
         form = ExpiredReportDownloadForm(request.POST)
@@ -603,7 +585,7 @@ def export_studieswithexpiredkits(request):
         if form.is_valid():
             csv_request = form.save(commit=False)
             csv_request.requested_by = request.user
-            csv_request.requested_date= timezone.now()
+            csv_request.requested_date = timezone.now()
             csv_request.save()
     else:
         ExpiredReportDownloadForm()
@@ -611,7 +593,7 @@ def export_studieswithexpiredkits(request):
     response['Content-Disposition'] = 'attachment; filename="Expired_Kits_In_Studies_Report.csv"'
 
     writer = csv.writer(response)
-    #kit = Kit.objects.filter(kit__status='e')
+    # kit = Kit.objects.filter(kit__status='e')
     kit = KitInstance.objects.filter(status='e')
 
     with open("Expired_Kits_In_Studies_Report.csv", "w") as csvFile:
@@ -620,9 +602,4 @@ def export_studieswithexpiredkits(request):
             writer.writerow(Study.objects.values('IRB_number'))
             writer.writerow(Kit.objects.annotate(qty=Count('kit')).values('qty'))
 
-
-
-
     return response
-
-
