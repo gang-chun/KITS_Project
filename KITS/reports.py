@@ -31,15 +31,15 @@ def query_active_studies(startdate, enddate):
                 elif kit_inst[0] == 'checked-out':
                     list.append((q['id'], kit_inst[1], 'checked_out'))
 
-        outfile = "kitactivity.csv"
-        file = open(outfile, 'w')
-        file.write("ID,Date,Action\n")
-        for entry in list:
-            id, date, action = entry
-            month = get_month(date)
-            year = get_year(date)
-            file.write(str(id) + "," + str(month) + "-" + str(year) + "," + action + "\n")
-        file.close()
+    outfile = "kitactivity.csv"
+    file = open(outfile, 'w')
+    file.write("ID,Date,Action\n")
+    for entry in list:
+        id, date, action = entry
+        month = get_month(date)
+        year = get_year(date)
+        file.write(str(id) + "," + str(month) + "-" + str(year) + "," + action + "\n")
+    file.close()
     return outfile
 
 # To check each historical event for a status change for each kit instance event

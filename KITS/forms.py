@@ -20,7 +20,7 @@ class KitForm(forms.ModelForm):
     class Meta:
         model = Kit
         fields = (
-            'IRB_number', 'type_name', 'description', 'date_added', 'id', 'location')
+            'IRB_number', 'type_name', 'description', 'date_added', 'id',)
 
 
 class KitIDForm(forms.ModelForm):

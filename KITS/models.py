@@ -95,7 +95,6 @@ class Kit(models.Model):
     date_added = models.DateTimeField(
         default=timezone.now)
     type_name = models.CharField(max_length=32, blank=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
     history = HistoricalRecords()
     created_date = models.DateField(datetime.date.today())
 
@@ -117,6 +116,7 @@ class KitInstance(models.Model):
     expiration_date = models.DateField(null=True, blank=True)
     created_date = models.DateField(auto_now_add=True)
     checked_out_date = models.DateField(null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
 
     KIT_STATUS = (
         ('a', 'Available'),
