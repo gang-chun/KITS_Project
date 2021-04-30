@@ -39,7 +39,6 @@ urlpatterns = [
 
     path('study/<int:pk>/study_detail/kit_ordering', views.kit_ordering, name='kit_ordering'),
     path('study/<int:pk>/kit_ordering_add/', views.kit_ordering_add, name='kit_ordering_add'),
-    #path('kit_list/kitinstance/<int:pk>/addkitinstance', views.kitinstance_add, name='kitinstance_add'),
 
     path('help/', views.help, name='help'),
 

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{% extends 'KITS/base2.html' %}
+{% extends 'KITS/base.html' %}
 
 {% block content %}
 
     <div class="container-fluid">
         <H2>Kit: {{ kitinstance.kit_id }}</H2>
+        <hr>
 
         <p><b>Kit Instance ID: </b>{{ kitinstance.id}}</p>
         <p><b>Scanner ID: </b>{{ kitinstance.scanner_id}}</p>
