@@ -3,10 +3,10 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from django.db.models import Count, Max, Q
+from django.db.models import Count, Max, Q, Sum
 # from django.db.models import F, Sum
 # from django.db.models.functions import Greatest
-from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter, \
+from .filters import LocationFilter, StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter, \
     DateRangeFilter
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -21,7 +21,7 @@ from django.contrib import messages
 import collections
 import csv
 from django.http import HttpResponse
-from .reports import query_active_studies, validate_date, query_checked_out_kits
+from .reports import query_active_studies, validate_date, query_checked_out_kits, storage_tables
 from .datavisualization import bar_graph_kit_activity
 
 
@@ -565,6 +565,35 @@ def report_activestudies(request):
                    'enddate': enddate, 'test': test, 'graph': graph})
 
 
+def report_storageusage(request):
+
+    location = Location.objects.all()
+    location_filter = LocationFilter(request.GET, queryset=location)
+
+    # Filter by building and room number
+    if request.GET:
+
+        location = location_filter.qs
+        #location = request.GET[value=item]
+
+    studies = Study.objects.all()
+    closed_study = []
+    prep_to_open_study = []
+
+    for s in studies:
+        if s.status == 'Preparing to Open':
+            prep_to_open_study.append(s.id)
+        elif s.status == 'Closed':
+            closed_study.append(s.id)
+
+    study = prep_to_open_study
+
+    table1 = storage_tables(prep_to_open_study)
+    table2 = storage_tables(closed_study)
+
+
+
+    return render(request, 'KITS/report_storageusage.html', {'location': location, 'study':study, 'table1': table1, 'table2':table2})
 
 @login_required
 def export_expiredkits(request):
@@ -620,9 +649,4 @@ def export_studieswithexpiredkits(request):
             writer.writerow(Study.objects.values('IRB_number'))
             writer.writerow(Kit.objects.annotate(qty=Count('kit')).values('qty'))
 
-
-
-
     return response
-
-

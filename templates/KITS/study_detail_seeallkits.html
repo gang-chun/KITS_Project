@@ -34,7 +34,7 @@
                         {% elif kit.status == 'e' %}
                             <p>expired</p>
                         {% endif %}</th>
-                    <th>{{ kit.kit.location }}</th>
+                    <th>{{ kit.location }}</th>
                     <th><a href="" class="btn btn-warning">Edit</a>
                         <a href=""
                         onclick="return confirm('Are you sure you want to demolish the {{ kit.kit.type_name}} kit ?')"

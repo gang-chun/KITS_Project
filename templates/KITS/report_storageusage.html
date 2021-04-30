@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+{% extends 'KITS/base2.html' %}
+
+
+{% block content %}
+    <style>
+
+    .box {
+    margin: 8px;
+    border: 1px solid silver;
+    padding: 8px;
+    border-radius: 4px;}
+
+    .column12 {
+        float: left;
+        margin: 8px;
+        width: 48%;}
+
+    .column3 {
+        float: left;
+        margin: 0px;
+        width: 30%;}
+
+
+/* Clear floats after the columns */
+    .row:after {
+    content: "";
+    display: table;
+    clear: both;}
+
+    </style>
+
+{% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+            {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="box">
+        <H1><b style="font-size: .75em;">Reports > Storage Usage</b></H1>
+
+        <p>{{ location }}</p>
+
+
+        <hr>
+
+
+        <form method="get">
+        {% csrf_token %}
+
+
+
+                <select class="ui dropdown" id="building">
+                    <option value="location">Choose a location</option>
+                    {% for item in location %}
+                        <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+
+        <div class="row">
+
+        <div class="column12">
+        <hr>
+        <p><b>KITS IN STUDIES THAT ARE PREPARING TO OPEN</b></p>
+
+
+        <table class="table table-striped table-bordered table-hover table-secondary">
+                <thead>
+                <tr class="bg-info">
+                    <th>Location</th>
+                    <th>Study</th>
+                    <th>Kit Count</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for kit in table1 %}
+                    <td>{{ kit.0 }}</td>
+
+                    <td>{% for k in kit.1 %} {{ k }} <br>{% endfor %}</td>
+                    <td>{% for k in kit.2 %}{{ k }} <br>{% endfor %}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="column12">
+        <hr>
+
+        <p><b>KITS IN STUDIES THAT ARE CLOSED</b></p>
+
+        <table class="table table-striped table-bordered table-hover table-secondary">
+                <thead>
+                <tr class="bg-info">
+                    <th>Location</th>
+                    <th>Study</th>
+                    <th>Kit Count</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for kit in table2 %}
+                    <td>{{ kit.0 }}</td>
+
+                    <td>{% for k in kit.1 %} {{ k }} <br>{% endfor %}</td>
+                    <td>{% for k in kit.2 %}{{ k }} <br>{% endfor %}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+
+
+
+
+        <a href="" class="btn btn-success">Export Report</a>
+
+    </div>
+{% endblock %}
+
+</html>

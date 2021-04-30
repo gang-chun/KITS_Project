@@ -133,3 +133,43 @@ def query_checked_out_kits(startdate, enddate):
                 test.append(t)
 
     return test
+
+def storage_tables(queryset):
+    queryset_kits = KitInstance.objects.all().filter(kit__IRB_number_id__in=queryset).annotate(num_kit=Count('kit')).order_by('location_id')
+
+
+    location_list = []
+    location_study_list = []
+    kit_count = []
+
+    table1 = []
+
+    for kit in queryset_kits:
+        if str(kit.location) not in location_list:
+            location_list.append(str(kit.location))
+            entry = []
+            entry.append(str(kit.location))
+
+            entry1 = []
+            entry1.append(str(kit.kit.IRB_number))
+
+            entry2 = []
+            entry2.append(1)
+
+            entry.append(entry1)
+            entry.append(entry2)
+
+            table1.append(entry)
+
+        elif str(kit.location) in location_list:
+            index = location_list.index(str(kit.location))
+            if str(kit.kit.IRB_number) in table1[index][1]:
+                study_index = table1[index][1].index(str(kit.kit.IRB_number))
+                table1[index][2][study_index] = table1[index][2][study_index] + 1
+
+            elif str(kit.kit.IRB_number) not in table1[index][1]:
+
+                table1[index][1].append(str(kit.kit.IRB_number))
+                table1[index][2].append(1)
+
+    return table1
