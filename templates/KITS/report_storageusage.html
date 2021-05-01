@@ -17,13 +17,13 @@
 
     .column12 {
         float: left;
-        margin: 8px;
-        width: 48%;}
+        margin: 4px;
+        width: 30%;}
 
     .column3 {
-        float: left;
+        float: right;
         margin: 0px;
-        width: 30%;}
+        width: 36%;}
 
 
 /* Clear floats after the columns */
@@ -49,25 +49,9 @@
         <hr>
 
 
-        <form method="get">
-        {% csrf_token %}
-
-
-
-                <select class="ui dropdown" id="building">
-                    <option value="location">Choose a location</option>
-                    {% for item in location %}
-                        <option value="{{ item }}">{{ item }}</option>
-                    {% endfor %}
-                </select>
-
-            <button class="btn btn-primary" type="submit">Search</button>
-        </form>
-
         <div class="row">
 
         <div class="column12">
-        <hr>
         <p><b>KITS IN STUDIES THAT ARE PREPARING TO OPEN</b></p>
 
 
@@ -94,7 +78,6 @@
         </div>
 
         <div class="column12">
-        <hr>
 
         <p><b>KITS IN STUDIES THAT ARE CLOSED</b></p>
 
@@ -119,11 +102,15 @@
                 </tbody>
             </table>
         </div>
+
+
+
+        <div class="column3">
+        <p><b>OVERVIEW OF KITS IN INVENTORY</b></p>
+        <p>{{ graph|safe }}</p>
         </div>
 
-
-
-
+        </div>
 
         <a href="" class="btn btn-success">Export Report</a>
 

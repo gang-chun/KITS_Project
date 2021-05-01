@@ -173,3 +173,25 @@ def storage_tables(queryset):
                 table1[index][2].append(1)
 
     return table1
+
+def storage_data():
+    data = []
+
+    open_studies = Study.objects.all().filter(status='Open')
+    exp_kits = KitInstance.objects.all().filter(kit__IRB_number__in=open_studies).filter(status='e').count()
+    ava_kits = KitInstance.objects.all().filter(kit__IRB_number__in=open_studies).filter(status='a').count()
+
+    closed_studies = Study.objects.all().filter(status='Closed')
+    closed_kits = KitInstance.objects.all().filter(kit__IRB_number__in=closed_studies).count()
+
+    prep_studies = Study.objects.all().filter(status='Preparing to Open')
+    prep_exp_kits = KitInstance.objects.all().filter(kit__IRB_number__in=prep_studies).filter(status='e').count()
+    prep_ava_kits = KitInstance.objects.all().filter(kit__IRB_number__in=prep_studies).filter(status='a').count()
+
+    data.append(exp_kits)
+    data.append(ava_kits)
+    data.append(closed_kits)
+    data.append(prep_exp_kits)
+    data.append(prep_ava_kits)
+
+    return data

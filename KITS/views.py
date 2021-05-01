@@ -19,8 +19,8 @@ from django.contrib import messages
 import collections
 import csv
 from django.http import HttpResponse
-from .reports import query_active_studies, validate_date, query_checked_out_kits, storage_tables
-from .datavisualization import bar_graph_kit_activity
+from .reports import query_active_studies, validate_date, query_checked_out_kits, storage_tables, storage_data
+from .datavisualization import bar_graph_kit_activity, storage_graph
 
 User = get_user_model()
 users = User.objects.all()
@@ -576,9 +576,11 @@ def report_storageusage(request):
     table1 = storage_tables(prep_to_open_study)
     table2 = storage_tables(closed_study)
 
+    graph_data = storage_data()
+    graph = storage_graph(graph_data)
 
 
-    return render(request, 'KITS/report_storageusage.html', {'location': location, 'study':study, 'table1': table1, 'table2':table2})
+    return render(request, 'KITS/report_storageusage.html', {'location': location, 'study':study, 'table1': table1, 'table2':table2, 'graph_data':graph_data, 'graph':graph})
 
 
 @login_required

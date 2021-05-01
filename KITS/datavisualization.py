@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 def get_month(datetime):
     month = datetime.strftime("%m")
@@ -31,6 +32,20 @@ def bar_graph_kit_activity(csv_file):
         return False
     return html_graph
 
+def storage_graph(data):
 
+    labels = ['Exp Kits in Open Studies', 'Available Kits In Open Studies', 'Kits in Closed Studies', 'Exp Kits In Prep To Open', 'Ava. Kits In Prep To Open']
+
+    fig = go.Figure(data=[go.Pie(labels=labels, values=data)])
+
+    fig.update_layout(legend=dict(
+        yanchor="bottom",
+        y=-0.5,
+        xanchor="left",
+        x=0.75))
+
+    html_graph = fig.to_html(full_html=False)
+
+    return html_graph
 
 
