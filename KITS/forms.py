@@ -1,5 +1,5 @@
 from django import forms
-from .models import KitInstance, Kit, Study, Location, Requisition, KitOrder
+from .models import KitInstance, Kit, Study, Location, Requisition, KitOrder, User
 
 
 class StudyForm(forms.ModelForm):
@@ -90,4 +90,9 @@ class ExpiredReportDownloadForm(forms.ModelForm):
         fields = ['type_name', 'IRB_number']
 
 
+
+class UserReportForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = '__all__'
 

@@ -35,6 +35,7 @@ urlpatterns = [
     path('report/user_list/', views.user_list, name='user_list'),
     path('report/<int:pk>/report_userstudies/', views.report_userstudies, name='report_userstudies'),
     path('report/report_expiredkits/studies', views.report_expiredkits_studies, name='report_expiredkits_studies'),
+    path('report/report_storageusage/', views.report_storageusage, name='report_storageusage'),
 
     path('study/<int:pk>/study_detail/kit_ordering', views.kit_ordering, name='kit_ordering'),
     path('study/<int:pk>/kit_ordering_add/', views.kit_ordering_add, name='kit_ordering_add'),
@@ -47,5 +48,6 @@ urlpatterns = [
 
     path('export_expiredkits/', views.export_expiredkits, name='export_expiredkits'),
     path('export_studieswithexpiredkits/', views.export_studieswithexpiredkits, name='export_studieswithexpiredkits'),
+    path('export_user/', views.export_user, name='export_user'),
 
 ]

@@ -45,3 +45,11 @@ class DateRangeFilter(django_filters.FilterSet):
     class Meta:
         model = KitInstance
         fields = '__all__'
+
+class LocationFilter(django_filters.FilterSet):
+
+    #building = django_filters.ChoiceFilter(choices=FILTER_CHOICES)
+    class Meta:
+        model = Location
+        fields = '__all__'
+        #fields = ['building', 'room']

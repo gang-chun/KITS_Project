@@ -96,7 +96,8 @@ class Kit(models.Model):
         default=timezone.now)
     type_name = models.CharField(max_length=32, blank=True)
     history = HistoricalRecords()
-    created_date = models.DateField(datetime.date.today())
+    created_date = models.DateField(
+        default=timezone.now())
 
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
@@ -155,7 +156,7 @@ class KitInstance(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.id} ({self.kit_id}) {self.status} {self.expiration_date} {self.created_date}'
+        return f'{self.id} ({self.kit_id}) {self.status} {self.expiration_date} {self.created_date} {self.location}'
 
 
 class Requisition(models.Model):

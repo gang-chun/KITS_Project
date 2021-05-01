@@ -3,10 +3,11 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from django.db.models import Count, Max, Q
+from django.db.models import Count, Max, Q, Sum
 # from django.db.models import F, Sum
 # from django.db.models.functions import Greatest
-from .filters import StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, StudyOnKitInstanceFilter, \
+from .filters import LocationFilter, StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, \
+    StudyOnKitInstanceFilter, \
     DateRangeFilter
 from django.contrib.auth import get_user_model
 from django.dispatch import receiver
@@ -19,8 +20,8 @@ from django.contrib import messages
 import collections
 import csv
 from django.http import HttpResponse
-from .reports import query_active_studies, validate_date, query_checked_out_kits
-from .datavisualization import bar_graph_kit_activity
+from .reports import query_active_studies, validate_date, query_checked_out_kits, storage_tables, storage_data
+from .datavisualization import bar_graph_kit_activity, storage_graph
 
 User = get_user_model()
 users = User.objects.all()
@@ -44,7 +45,6 @@ def post_create_historical_record_callback(sender, **kwargs):
 
 @login_required
 def user_list(request):
-
     User = get_user_model()
     users = User.objects.all()
     # Filter bar
@@ -505,7 +505,6 @@ def kitinstance_demolish(request, pk):
 
 @login_required
 def report_activestudies(request):
-
     # Set default date when user first clicks on active studies reports button
     startdate = date.today() - timedelta(days=30)
     enddate = startdate + timedelta(days=365)
@@ -550,6 +549,38 @@ def report_activestudies(request):
                    'enddate': enddate, 'test': test, 'graph': graph})
 
 
+def report_storageusage(request):
+    location = Location.objects.all()
+    location_filter = LocationFilter(request.GET, queryset=location)
+
+    # Filter by building and room number
+    if request.GET:
+        location = location_filter.qs
+        # location = request.GET[value=item]
+
+    studies = Study.objects.all()
+    closed_study = []
+    prep_to_open_study = []
+
+    for s in studies:
+        if s.status == 'Preparing to Open':
+            prep_to_open_study.append(s.id)
+        elif s.status == 'Closed':
+            closed_study.append(s.id)
+
+    study = prep_to_open_study
+
+    table1 = storage_tables(prep_to_open_study)
+    table2 = storage_tables(closed_study)
+
+    graph_data = storage_data()
+    graph = storage_graph(graph_data)
+
+    return render(request, 'KITS/report_storageusage.html',
+                  {'location': location, 'study': study, 'table1': table1, 'table2': table2, 'graph_data': graph_data,
+                   'graph': graph})
+
+
 @login_required
 def export_expiredkits(request):
     if request.method == "POST":
@@ -566,19 +597,25 @@ def export_expiredkits(request):
     response['Content-Disposition'] = 'attachment; filename="Expired_Kit_Report.csv"'
 
     writer = csv.writer(response)
-
+    kit = KitInstance.objects.filter(status='e')
     with open("Expired_Kit_Report.csv", "w") as csvFile:
-        writer.writerow(KitInstance.objects.filter(status='e').values('scanner_id'))
-        writer.writerow(KitInstance.objects.filter(status='e').values('expiration_date'))
-        writer.writerow(Kit.objects.values('type_name'))
-        writer.writerow(Kit.objects.values('IRB_number'))
+        if kit:
+
+            writer.writerow(KitInstance.objects.filter(status='e').values('scanner_id'))
+            writer.writerow(KitInstance.objects.filter(status='e').values('expiration_date'))
+            writer.writerow(Study.objects.values('IRB_number'))
+            bruh = writer.writerow(Study.objects.values('IRB_number'))
+            if bruh is not None:
+                writer.writerow(Kit.objects.values('type_name'))
+
+
 
     return response
 
 
+
 @login_required
 def export_studieswithexpiredkits(request):
-
     if request.method == "POST":
         form = ExpiredReportDownloadForm(request.POST)
 
@@ -593,13 +630,41 @@ def export_studieswithexpiredkits(request):
     response['Content-Disposition'] = 'attachment; filename="Expired_Kits_In_Studies_Report.csv"'
 
     writer = csv.writer(response)
-    # kit = Kit.objects.filter(kit__status='e')
-    kit = KitInstance.objects.filter(status='e')
 
+    kits = KitInstance.objects.filter(status='e').values('status')
     with open("Expired_Kits_In_Studies_Report.csv", "w") as csvFile:
-        if kit:
+        if kits:
             writer.writerow(Study.objects.values('pet_name'))
             writer.writerow(Study.objects.values('IRB_number'))
             writer.writerow(Kit.objects.annotate(qty=Count('kit')).values('qty'))
+
+    return response
+
+
+@login_required
+def export_user(request):
+    if request.method == "POST":
+        form = UserReportForm(request.POST)
+
+        if form.is_valid():
+            csv_request = form.save(commit=False)
+            csv_request.requested_by = request.user
+            csv_request.requested_date = timezone.now()
+            csv_request.save()
+    else:
+        UserReportForm()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="User_Report.csv"'
+
+    writer = csv.writer(response)
+
+
+    with open("User_Report.csv", "w") as csvFile:
+        writer.writerow(Study.objects.values('IRB_number'))
+        ihatemylifesomuchsometimeslikehonestlyimnotjoking =Study.objects.values('pet_name')
+        writer.writerow(ihatemylifesomuchsometimeslikehonestlyimnotjoking)
+        writer.writerow(User.objects.values('id'))
+        writer.writerow(User.objects.values('username'))
+
 
     return response

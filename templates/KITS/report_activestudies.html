@@ -56,7 +56,7 @@
         <p> Kit Activity from {{ startdate }} to {{ enddate }}</p>
         <hr>
         <div class="row">
-        <div class="column12" style="background-color:#aaa; margin-left: 12px;">
+        <div class="column12" style="margin-left: 12px;">
         <h2>Most Active Studies</h2>
 
 
@@ -82,7 +82,7 @@
             </table>
         </div>
 
-        <div class="column12" style="background-color:#bbb;">
+        <div class="column12">
         <h2>Least Active Studies</h2>
 
              <table class="table table-striped table-bordered table-hover">
@@ -110,13 +110,9 @@
         <div class="column3" style="background-color:white;">
             {{ graph|safe }}
 
-            <hr>
-            {{ test }}
+
         </div>
         </div>
-
-
-        <a href="" class="btn btn-success">Export Report</a>
 
     </div>
 {% endblock %}

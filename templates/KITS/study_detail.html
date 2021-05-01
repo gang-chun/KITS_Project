@@ -31,7 +31,6 @@
                     <th>Available Kits</th>
                     <th>Expired Kits</th>
                     <th>Kit last to expire</th>
-                    <th>Location</th>
                     <th>Requisition</th>
                     <th>Additional notes</th>
                     <th>Actions</th>
@@ -44,7 +43,6 @@
                         <td>{{ kit.no_of_kits }}</td>
                         <td>{{ kit.no_of_kits_exp }}</td>
                         <td>{{ kit.exp }}</td>
-                        <td>{{ kit.location }}
                         <td>{{ new_req.description }}</td>
                         <td>{{ kit.description }}</td>
                         <td><a href="{% url 'KITS:kit_edit_from_study' pk=kit.pk %}" class="btn-sm btn-warning">Edit</a></td>
