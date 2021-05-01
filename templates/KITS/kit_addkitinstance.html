@@ -4,7 +4,7 @@
 {% block content %}
 
     <div class="container-fluid">
-        <H2>Adding a "{{ kit_instance.type_name }}" kit for study: {{ kit_instance.IRB_number }}</H2>
+        <H2>Adding a "{{ kit_instance.type_name }}" kit for IRB Number: {{ kit_instance.IRB_number }}</H2>
         <hr>
         
         <form method="POST" class="kitinstance-form">{% csrf_token %}
