@@ -7,6 +7,5 @@ local_settings.py
 db.sqlite3
 migrations/*
 !migrations/__init__.py
-uploads/kit_order/*
-uploads/req/*
+uploads/*
 kitactivity.csv
