@@ -77,8 +77,9 @@
 
 
         </div>
+
         <div class="box">
-        <H1><b style="font-size: .75em;">Study Status Activity-> USER_NAME</b></H1>
+        <H2>Study Status Activity - {{ user.get_username }}</H2>
         <hr>
         <p><b style="font-size: 1.4em;">Studies Created</b></p>
         <p><b style="font-size: 1.2em;">Studies Opened (2nd col)</b></p>
@@ -105,6 +106,7 @@
             </tbody>
         </table>
     </div>
+
         <div class="row">
         <div class="column12" style="background-color:#aaa; margin-left: 12px;">
         <h2>Most Active Studies</h2>
@@ -156,6 +158,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
 {% endblock %}
-</div>
 </html>

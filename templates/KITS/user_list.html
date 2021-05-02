@@ -4,19 +4,19 @@
 {% block content %}
 
     <div class="container-fluid">
-        <H2>User Activity</H2>
+        <H2>Reports - User Activity</H2>
 
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-success" role="alert">
-                {{ message }}
+                    {{ message }}
                 </div>
             {% endfor %}
         {% endif %}
 
         <hr>
         <form method="get">
-           {{ study_filter.form }}
+            {{ study_filter.form }}
             <button class="btn btn-primary" type="submit">Search</button>
         </form>
         <hr>
