@@ -34,7 +34,7 @@ def bar_graph_kit_activity(csv_file):
 
 def storage_graph(data):
 
-    labels = ['Exp Kits in Open Studies', 'Available Kits In Open Studies', 'Kits in Closed Studies', 'Exp Kits In Prep To Open', 'Ava. Kits In Prep To Open']
+    labels = ['Expired Kits in Open Studies', 'Available Kits In Open Studies', 'Kits in Closed Studies', 'Expired Kits in Preparing To Open Studies', 'Available Kits In Preparing To Open Studies']
 
     fig = go.Figure(data=[go.Pie(labels=labels, values=data)])
 

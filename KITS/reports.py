@@ -74,7 +74,6 @@ def historical_status_change(id):
 
 # Check if date falls between the start and end date
 def check_date(date, startdate, enddate):
-
     if date > startdate and date < enddate:
         return True
     else:
