@@ -59,28 +59,62 @@ def user_list(request):
 @login_required
 def report_userstudies(request, pk):
     in_pk = pk
-    print(in_pk)
+
     # get the username back
     User = get_user_model()
     users = User.objects.all()
-    print(in_pk)
     # username is from filter
     user_str = users.filter(pk=in_pk)
-    print(user_str)
+
+
+    # Set default date when user first clicks on active studies reports button
+    startdate = date.today() - timedelta(days=30)
+    enddate = startdate + timedelta(days=365)
+
+    if request.POST:
+        startdate = request.POST['startdate']
+        enddate = request.POST['enddate']
+
+        # Check if user's date input are correct
+        message = validate_date(startdate, enddate)
+
+        # If user's input are not correct, return error page with the message
+        if not message:
+            message = validate_date(startdate, enddate)
+            messages.error(request, message)
+            return redirect('KITS:report_userstudies')
+        elif message:
+            # Convert date string to date time object
+            format = "%m-%d-%Y"
+            startdate = datetime.strptime(startdate, format).date()
+            enddate = datetime.strptime(enddate, format).date()
+
+    # checked_test = query_checked_out_kits(startdate, enddate)
+
+
     # header = "Action Key: +=created ~=changed"
     # checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
 
-    # Need to constrain to the history_user_id
+    # Need to constrain to the history_user_id and date
     qs = Study.history.all()
-    qs = qs.order_by('history_user_id')
+    qs = qs.filter(history_user_id=in_pk)
+    start_dt = datetime.combine(startdate, datetime.min.time())
+    end_dt = datetime.combine(enddate, datetime.min.time())
+
+    #create just a list of the stuff?
+
+    for elem in qs:
+        if elem.history_date.date() < start_dt.date() or elem.history_date.date() > end_dt.date():
+            qs = qs.exclude(history_id=elem.history_id)
+    qs_changed = qs
+    qs = qs.filter(history_type='+')
+    qs_changed = qs_changed.filter(history_type='~')
+    # qs = qs.order_by('history_user_id')
     # qs.sort(qs.history_user_id)
-    for instance in qs:
-        print(instance.history_user_id)
-        print(instance.IRB_number)
-        print(instance.pet_name)
-    print(qs)
     context = {
         "queryset": qs,
+        "queryset_changed": qs_changed,
+        "user": user_str,
     }
     return render(request, "KITS/report_userstudies.html", context)
 
