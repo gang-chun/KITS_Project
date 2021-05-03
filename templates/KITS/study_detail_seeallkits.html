@@ -15,17 +15,16 @@
                 <th>Expiration Date</th>
                 <th>Status</th>
                 <th>Location</th>
-                <th>Actions</th>
             </tr>
             </thead>
 
             <tbody>
                 {% for kit in kits %}
                 <tr>
-                    <th>{{ kit.kit.type_name }}</th>
-                    <th>{{ kit.scanner_id }}</th>
-                    <th>{{ kit.expiration_date }}</th>
-                    <th>{% if kit.status == 'a'%}
+                    <td>{{ kit.kit.type_name }}</td>
+                    <td>{{ kit.scanner_id }}</td>
+                    <td>{{ kit.expiration_date }}</td>
+                    <td>{% if kit.status == 'a'%}
 
                             {% if kit.expired_soon == True %}
                                 <p style="color:red;">expiring soon</p>
@@ -34,12 +33,8 @@
                             {% endif %}
                         {% elif kit.status == 'e' %}
                             <p>expired</p>
-                        {% endif %}</th>
-                    <th>{{ kit.location }}</th>
-                    <th><a href="" class="btn btn-warning">Edit</a>
-                        <a href=""
-                        onclick="return confirm('Are you sure you want to demolish the {{ kit.kit.type_name}} kit ?')"
-                        class="btn btn-danger">Demolish</a></th>
+                        {% endif %}</td>
+                    <td>{{ kit.location }}</td>
 
                 </tbody>
                 {% endfor %}

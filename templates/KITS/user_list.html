@@ -2,7 +2,7 @@
 <html lang="en">
 {% extends 'KITS/base.html' %}
 {% block content %}
-
+    {% if request.user.is_staff %}
     <div class="container-fluid">
         <H2>Reports - User Activity</H2>
 
@@ -43,6 +43,10 @@
         </table>
             <a href="{% url 'KITS:export_user' %}" class="btn btn-success">Export Report</a>
     </div>
+    {% endif %}
+    {% if not request.user.is_staff %}
+        <p>Not authorized to access this page.</p>
+    {% endif %}
 {% endblock %}
 
 </html>

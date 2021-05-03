@@ -41,6 +41,7 @@ urlpatterns = [
     path('study/<int:pk>/kit_ordering_add/', views.kit_ordering_add, name='kit_ordering_add'),
 
     path('help/', views.help, name='help'),
+    path('refresh/', views.refresh, name='refresh'),
 
     path('kit_checkout/', views.kit_checkout, name='kit_checkout'),
     path('kitinstance_statusedit/<uuid:pk>', views.kitinstance_statusedit, name='kitinstance_statusedit'),
