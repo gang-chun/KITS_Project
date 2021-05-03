@@ -64,12 +64,15 @@ def report_userstudies(request, pk):
     User = get_user_model()
     users = User.objects.all()
     # username is from filter
-    user_str = users.filter(pk=in_pk)
+
+    user = users.filter(pk=in_pk)
+    user_str = user[0]
+
 
 
     # Set default date when user first clicks on active studies reports button
     startdate = date.today() - timedelta(days=30)
-    enddate = startdate + timedelta(days=365)
+    enddate = date.today()
 
     if request.POST:
         startdate = request.POST['startdate']
@@ -89,32 +92,28 @@ def report_userstudies(request, pk):
             startdate = datetime.strptime(startdate, format).date()
             enddate = datetime.strptime(enddate, format).date()
 
-    # checked_test = query_checked_out_kits(startdate, enddate)
-
-
-    # header = "Action Key: +=created ~=changed"
-    # checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
-
-    # Need to constrain to the history_user_id and date
+    # Need to constrain to the history_user_id, date range, change type (created, changed, deleted)
     qs = Study.history.all()
     qs = qs.filter(history_user_id=in_pk)
     start_dt = datetime.combine(startdate, datetime.min.time())
     end_dt = datetime.combine(enddate, datetime.min.time())
 
-    #create just a list of the stuff?
-
     for elem in qs:
         if elem.history_date.date() < start_dt.date() or elem.history_date.date() > end_dt.date():
             qs = qs.exclude(history_id=elem.history_id)
     qs_changed = qs
+    qs_deleted = qs
     qs = qs.filter(history_type='+')
     qs_changed = qs_changed.filter(history_type='~')
-    # qs = qs.order_by('history_user_id')
-    # qs.sort(qs.history_user_id)
+    qs_deleted = qs_deleted.filter(history_type='-')
+
     context = {
         "queryset": qs,
         "queryset_changed": qs_changed,
+        "queryset_deleted": qs_deleted,
         "user": user_str,
+        "startdate": startdate,
+        "enddate": enddate,
     }
     return render(request, "KITS/report_userstudies.html", context)
 
