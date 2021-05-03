@@ -34,15 +34,15 @@ def bar_graph_kit_activity(csv_file):
 
 def storage_graph(data):
 
-    labels = ['Expired Kits in Open Studies', 'Available Kits In Open Studies', 'Kits in Closed Studies', 'Expired Kits in Preparing To Open Studies', 'Available Kits In Preparing To Open Studies']
+    labels = ['Open studies: expired kits', 'Open studies: available kits', 'Closed Studies: all kits', 'Preparing to open studies: expired kits', 'Preparing to open studies: available kits']
 
     fig = go.Figure(data=[go.Pie(labels=labels, values=data)])
 
     fig.update_layout(legend=dict(
         yanchor="bottom",
-        y=-0.5,
+        y=-0.75,
         xanchor="left",
-        x=0.75))
+        x=0))
 
     html_graph = fig.to_html(full_html=False)
 

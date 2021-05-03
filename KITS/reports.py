@@ -176,12 +176,14 @@ def storage_tables(queryset):
 def storage_data():
     data = []
 
+
     open_studies = Study.objects.all().filter(status='Open')
     exp_kits = KitInstance.objects.all().filter(kit__IRB_number__in=open_studies).filter(status='e').count()
     ava_kits = KitInstance.objects.all().filter(kit__IRB_number__in=open_studies).filter(status='a').count()
 
+    status = ['a', 'e']
     closed_studies = Study.objects.all().filter(status='Closed')
-    closed_kits = KitInstance.objects.all().filter(kit__IRB_number__in=closed_studies).count()
+    closed_kits = KitInstance.objects.all().filter(kit__IRB_number__in=closed_studies).filter(status__in=status).count()
 
     prep_studies = Study.objects.all().filter(status='Preparing to Open')
     prep_exp_kits = KitInstance.objects.all().filter(kit__IRB_number__in=prep_studies).filter(status='e').count()
