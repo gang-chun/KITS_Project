@@ -209,21 +209,21 @@ def query_demolished_kits(startdate, enddate):
             if status[0] == 'demolished':
                 if check_date(status[1], startdate, enddate) == True:
                     study = str(kit.kit.IRB_number)
-                # If the kit type belongs to a study that was already added in the list
-                if study in studies:
-                    # Find the index value from the studies list
-                    study = str(kit.kit.IRB_number)
-                    index = studies.index(study)
-                    # Add demolished kits to the right IRB
-                    test[index][2] = 1 + int(test[index][2])
+                    # If the kit type belongs to a study that was already added in the list
+                    if study in studies:
+                        # Find the index value from the studies list
+                        study = str(kit.kit.IRB_number)
+                        index = studies.index(study)
+                        # Add demolished kits to the right IRB
+                        test[index][2] = 1 + int(test[index][2])
 
-                elif study not in studies:
-                    studies.append(str(kit.kit.IRB_number))
-                    t = []
-                    t.append(str(kit.kit.IRB_number))
-                    study = get_object_or_404(Study, IRB_number=kit.kit.IRB_number)
-                    t.append(str(study.pet_name))
-                    t.append(1)
-                    test.append(t)
+                    elif study not in studies:
+                        studies.append(str(kit.kit.IRB_number))
+                        t = []
+                        t.append(str(kit.kit.IRB_number))
+                        study = get_object_or_404(Study, IRB_number=kit.kit.IRB_number)
+                        t.append(str(study.pet_name))
+                        t.append(1)
+                        test.append(t)
 
     return test
