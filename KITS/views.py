@@ -671,12 +671,15 @@ def export_studieswithexpiredkits(request):
 
     writer = csv.writer(response)
 
-    kits = KitInstance.objects.filter(status='e').values('status')
+    kit = KitInstance.objects.all().filter(status='e')
+    #kits = KitInstance.objects.filter(status='e').values('status')
     with open("Expired_Kits_In_Studies_Report.csv", "w") as csvFile:
-        if kits:
+        if kit:
             writer.writerow(Study.objects.values('pet_name'))
             writer.writerow(Study.objects.values('IRB_number'))
             writer.writerow(Kit.objects.annotate(qty=Count('kit')).values('qty'))
+
+
 
     return response
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:background-color="http://www.w3.org/1999/xhtml">
 {% extends 'KITS/base.html' %}
 {% block content %}
 
@@ -35,13 +35,13 @@
                 <td>{{ instances.scanner_id }}</td>
                 <td>
                     {% if instances.status == 'a' %}
-                        <p><b class="text-success">Available</b></p>
+                        <p><b style="color:darkgreen">Available</b></p>
                     {% elif instances.status == 'c' %}
-                        <p><b class="text-warning">Checked-Out</b></p>
+                        <p><b style="color:cadetblue">Checked-Out</b></p>
                     {% elif instances.status == 'd' %}
-                        <p><b class="text-danger">Demolished</b></p>
+                         <p><b style="color:black">Demolished</b></p>
                     {% elif instances.status == 'e' %}
-                        <p><b class="text-dark">Expired</b></p>
+                        <p><b style="color:darkred">Expired</b></p>
                     {% endif %}
                 </td>
                 <td>{{ instances.expiration_date }}</td>
