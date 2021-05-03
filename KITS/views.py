@@ -20,8 +20,9 @@ from django.contrib import messages
 import collections
 import csv
 from django.http import HttpResponse
-from .reports import query_active_studies, validate_date, query_checked_out_kits, storage_tables, storage_data
+from .reports import query_active_studies, validate_date, query_checked_out_kits, query_demolished_kits, storage_tables, storage_data
 from .datavisualization import bar_graph_kit_activity, storage_graph
+from django.http import HttpResponseRedirect
 
 User = get_user_model()
 users = User.objects.all()
@@ -102,8 +103,8 @@ def logout(request):
 
 
 def home(request):
+    update_database = refresh(request)
     return render(request, 'KITS/home.html')
-
 
 @login_required
 def list_history(request):
@@ -172,6 +173,7 @@ def study_detail(request, pk):
 
 @login_required
 def study_detail_seeallkits(request, pk):
+    update_database = refresh(request)
     study = get_object_or_404(Study, pk=pk)
 
     status = 'a or e'
@@ -362,7 +364,6 @@ def kit_addkitinstance(request, pk):
 def report(request):
     return render(request, 'KITS/report.html')
 
-
 @login_required
 def report_expiredkits(request):
     today = date.today()
@@ -393,6 +394,7 @@ def report_expiredkits(request):
 
 @login_required
 def report_expiredkits_studies(request):
+    update_database = refresh(request)
     kits = Kit.objects.filter(kit__status='e').values('IRB_number__IRB_number') \
         .annotate(qty=Count('kit')).values('IRB_number__IRB_number', 'qty', 'IRB_number__pet_name')
 
@@ -450,7 +452,8 @@ def kit_addlocation(request):
 
 @login_required
 def kit_checkout(request):
-    kitinstance = KitInstance.objects.all()
+    status = ['d', 'c']
+    kitinstance = KitInstance.objects.all().exclude(status__in=status)
     # Filter bar
     kit_instance_filter = KitInstanceFilter(request.GET, queryset=kitinstance)
     kitinstance = kit_instance_filter.qs
@@ -528,13 +531,14 @@ def report_activestudies(request):
             enddate = datetime.strptime(enddate, format).date()
 
     checked_test = query_checked_out_kits(startdate, enddate)
+    demolished_test = query_demolished_kits(startdate, enddate)
 
     # Sort studies by number of kits checked out
     active_studies = checked_test
     active_studies.sort(key=lambda i: i[2], reverse=True)
 
-    not_active_studies = checked_test
-    not_active_studies.sort(key=lambda i: i[2])
+    not_active_studies = demolished_test
+    not_active_studies.sort(key=lambda i: i[2], reverse=True)
 
     kits_activity_csv = query_active_studies(startdate, enddate)  # query function defined in reports.py
     graph = bar_graph_kit_activity(kits_activity_csv)
@@ -550,6 +554,7 @@ def report_activestudies(request):
 
 
 def report_storageusage(request):
+    update_database = refresh(request)
     location = Location.objects.all()
     location_filter = LocationFilter(request.GET, queryset=location)
 
@@ -583,6 +588,7 @@ def report_storageusage(request):
 
 @login_required
 def export_expiredkits(request):
+    update_database = refresh(request)
     if request.method == "POST":
         form = ExpiredReportDownloadForm(request.POST)
 
@@ -616,6 +622,7 @@ def export_expiredkits(request):
 
 @login_required
 def export_studieswithexpiredkits(request):
+    update_database = refresh(request)
     if request.method == "POST":
         form = ExpiredReportDownloadForm(request.POST)
 
@@ -668,3 +675,15 @@ def export_user(request):
 
 
     return response
+
+@login_required
+def refresh(request):
+
+    for object in KitInstance.objects.all().filter(status='a'):
+        if date.today() > object.expiration_date:
+            object.status = 'e'
+            object.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+

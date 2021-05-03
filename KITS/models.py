@@ -139,15 +139,6 @@ class KitInstance(models.Model):
         ordering = ['expiration_date']
         permissions = (("can_mark_demolished", "Set kit as demolished"),)
 
-    # Function is currently not returning anything, is this intentional?
-    @property
-    def is_expired(self):
-        if date.today() > self.expiration_date:
-            self.status = 'e'
-            return True
-        else:
-            return False
-
     @property
     def expired_soon(self):
         if date.today() < self.expiration_date + timedelta(days=30):

@@ -17,6 +17,7 @@ def query_active_studies(startdate, enddate):
         if check_date(q['created_date'], startdate, enddate) == True:
             list.append((q['id'], q['created_date'], 'added'))
 
+
         # Check if a kit instance had a status change
         kit_inst = historical_status_change(q['id'])
 
@@ -30,6 +31,8 @@ def query_active_studies(startdate, enddate):
                     list.append((q['id'], kit_inst[1], 'demolished'))
                 elif kit_inst[0] == 'checked-out':
                     list.append((q['id'], kit_inst[1], 'checked_out'))
+                elif kit_inst[0] == 'none':
+                    continue
 
     outfile = "kitactivity.csv"
     file = open(outfile, 'w')
@@ -64,7 +67,7 @@ def historical_status_change(id):
                 elif change.new == 'c':
                     event = 'checked-out'
                 else:
-                    return False
+                    event = 'none'
 
                 # Get the date of the kit instance history status change
                 hist = kit[i+1].history_date
@@ -101,11 +104,8 @@ def query_checked_out_kits(startdate, enddate):
 
     checked_out = KitInstance.objects.filter(status='c')
 
-    checkedout_kits = Kit.objects.annotate(kiti_count=Count('kit', filter=Q(kit__status='c'))).filter()
-
     test = []
     studies = []
-
 
     for kit in checked_out:
         if check_date(kit.checked_out_date, startdate, enddate) == False:
@@ -194,3 +194,33 @@ def storage_data():
     data.append(prep_ava_kits)
 
     return data
+
+def query_demolished_kits(startdate, enddate):
+    test = []
+    studies = []
+
+    all_kits = KitInstance.objects.all()
+
+    for kit in all_kits:
+        status = historical_status_change(kit.id)
+        if status[0] == 'demolished':
+            if check_date(status[1], startdate, enddate) == True:
+                study = str(kit.kit.IRB_number)
+            # If the kit type belongs to a study that was already added in the list
+            if study in studies:
+                # Find the index value from the studies list
+                study = str(kit.kit.IRB_number)
+                index = studies.index(study)
+                # Add demolished kits to the right IRB
+                test[index][2] = 1 + int(test[index][2])
+
+            elif study not in studies:
+                studies.append(str(kit.kit.IRB_number))
+                t = []
+                t.append(str(kit.kit.IRB_number))
+                study = get_object_or_404(Study, IRB_number=kit.kit.IRB_number)
+                t.append(str(study.pet_name))
+                t.append(1)
+                test.append(t)
+
+    return test
