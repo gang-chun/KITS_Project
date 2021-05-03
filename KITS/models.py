@@ -60,7 +60,7 @@ class KitOrder(models.Model):
     study = models.OneToOneField(Study, on_delete=models.CASCADE, primary_key=True)
     TYPE = (('link', 'Link'), ('file', 'File'), ('description', 'Description'))
     type = models.CharField(max_length=32, choices=TYPE, default='description')
-    link = models.URLField(max_length=200, blank=True, default='Enter link here...')
+    link = models.URLField(max_length=200, blank=True, null=True)
     file = models.FileField(blank=True, null=True)
     description = models.TextField(max_length=100, default='TBD')
     history = HistoricalRecords()
@@ -155,7 +155,7 @@ class Requisition(models.Model):
     study = models.OneToOneField(Study, on_delete=models.CASCADE, primary_key=True)
     TYPE = (('link', 'Link'), ('file', 'File'), ('description', 'Description'))
     type = models.CharField(max_length=32, choices=TYPE, default='description')
-    link = models.URLField(max_length=200, blank=True, default='Enter link...')
+    link = models.URLField(max_length=200, blank=True)
     description = models.CharField(max_length=200, default='TBD')
     file = models.FileField(blank=True, null=True)
 

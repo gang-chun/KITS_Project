@@ -14,6 +14,7 @@ class RequisitionForm(forms.ModelForm):
     class Meta:
         model = Requisition
         fields = '__all__'
+        exclude = ('study',)
 
 
 class KitForm(forms.ModelForm):
@@ -42,6 +43,7 @@ class KitOrderForm(forms.ModelForm):
     class Meta:
         model = KitOrder
         fields = '__all__'
+        exclude = ('study',)
 
 
 class LocationForm(forms.ModelForm):
