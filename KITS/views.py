@@ -712,10 +712,11 @@ def export_user(request):
 @login_required
 def refresh(request):
 
-    for object in KitInstance.objects.all().filter(status='a'):
+    for object in KitInstance.objects.all().filter(status='a').filter(expiration_date__isnull=False):
         if date.today() > object.expiration_date:
             object.status = 'e'
             object.save()
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
