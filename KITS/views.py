@@ -671,12 +671,15 @@ def export_studieswithexpiredkits(request):
 
     writer = csv.writer(response)
 
-    kits = KitInstance.objects.filter(status='e').values('status')
+    kit = KitInstance.objects.all().filter(status='e')
+    #kits = KitInstance.objects.filter(status='e').values('status')
     with open("Expired_Kits_In_Studies_Report.csv", "w") as csvFile:
-        if kits:
+        if kit:
             writer.writerow(Study.objects.values('pet_name'))
             writer.writerow(Study.objects.values('IRB_number'))
             writer.writerow(Kit.objects.annotate(qty=Count('kit')).values('qty'))
+
+
 
     return response
 
@@ -701,8 +704,7 @@ def export_user(request):
 
     with open("User_Report.csv", "w") as csvFile:
         writer.writerow(Study.objects.values('IRB_number'))
-        ihatemylifesomuchsometimeslikehonestlyimnotjoking =Study.objects.values('pet_name')
-        writer.writerow(ihatemylifesomuchsometimeslikehonestlyimnotjoking)
+        writer.writerow(Study.objects.values('pet_name'))
         writer.writerow(User.objects.values('id'))
         writer.writerow(User.objects.values('username'))
 
@@ -712,10 +714,11 @@ def export_user(request):
 @login_required
 def refresh(request):
 
-    for object in KitInstance.objects.all().filter(status='a'):
+    for object in KitInstance.objects.all().filter(status='a').filter(expiration_date__isnull=False):
         if date.today() > object.expiration_date:
             object.status = 'e'
             object.save()
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 

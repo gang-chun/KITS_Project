@@ -34,13 +34,13 @@
                     <td>{{ kitinstance.kit.IRB_number }}</td>
                     <td>
                         {% if kitinstance.status == 'a' %}
-                            <p><b class="text-success">Available</b></p>
+                            <p><b style="color:darkgreen">Available</b></p>
                         {% elif kitinstance.status == 'c' %}
-                            <p><b class="text-warning">Checked-Out</b></p>
+                            <p><b style="color:cadetblue">Checked-Out</b></p>
                         {% elif kitinstance.status == 'd' %}
-                            <p><b class="text-danger">Demolished</b></p>
+                            <p><b style="color:black">Demolished</b></p>
                         {% elif kitinstance.status == 'e' %}
-                            <p><b class="text-dark">Expired</b></p>
+                            <p><b style="color:darkred">Expired</b></p>
                     {% endif %}
                     </td>
                     <td>{{ kitinstance.expiration_date }}</td>
@@ -54,6 +54,7 @@
                         {% elif kitinstance.status == 'e' %}
                             <a href="{% url 'KITS:kitinstance_demolish' pk=kitinstance.pk %}" class="btn-sm btn-danger">Demolish</a>
                         {% endif %}
+
                     </td>
                 </tr>
                 {% endfor %}
