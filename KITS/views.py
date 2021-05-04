@@ -151,7 +151,7 @@ def list_history(request):
 
 @login_required
 def study_list(request):
-    studies = Study.objects.exclude(status='Closed')
+    studies = Study.objects.all()
 
     # Filter bar
     study_filter = StudyFilter(request.GET, queryset=Study.objects.all())
@@ -322,7 +322,9 @@ def kit_addkittype(request):
 
 @login_required
 def kit_list(request):
-    kit = Kit.objects.exclude(IRB_number__status='Closed')
+
+    kit = Kit.objects.all()
+    #exclude(IRB_number__status='Closed')
     # Filter bar
     kit_filter = KitFilter(request.GET, queryset=kit)
     kit = kit_filter.qs
@@ -390,6 +392,7 @@ def kit_addkitinstance(request, pk):
             return redirect('KITS:kit_list')
     else:
         form = KitInstanceForm()
+    update_database = refresh(request)
     return render(request, 'KITS/kit_addkitinstance.html', {'form': form, 'kit_instance': kit_instance})
 
 
