@@ -20,8 +20,8 @@ from django.contrib import messages
 import collections
 import csv
 from django.http import HttpResponse
-from .reports import query_active_studies, validate_date, query_checked_out_kits, query_demolished_kits, storage_tables, storage_data
-from .datavisualization import bar_graph_kit_activity, storage_graph
+from .reports import query_active_studies, validate_date, query_checked_out_kits, query_demolished_kits, storage_tables, storage_data, query_study_activity
+from .datavisualization import bar_graph_kit_activity, storage_graph, bar_graph_study_activity
 from django.http import HttpResponseRedirect
 
 User = get_user_model()
@@ -713,13 +713,42 @@ def export_user(request):
 
 @login_required
 def refresh(request):
-
     for object in KitInstance.objects.all().filter(status='a').filter(expiration_date__isnull=False):
         if date.today() > object.expiration_date:
             object.status = 'e'
             object.save()
-
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
+def report_studyactivity(request):
+    startdate = date.today() - timedelta(days=30)
+    enddate = startdate + timedelta(days=365)
 
+    if request.POST:
+        startdate = request.POST['startdate']
+        enddate = request.POST['enddate']
+
+        # Check if user's date input are correct
+        message = validate_date(startdate, enddate)
+
+        # If user's input are not correct, return error page with the message
+        if not message:
+            message = validate_date(startdate, enddate)
+            messages.error(request, message)
+            return redirect('KITS:report_activestudies')
+        elif message:
+            # Convert date string to date time object
+            format = "%m-%d-%Y"
+            startdate = datetime.strptime(startdate, format).date()
+            enddate = datetime.strptime(enddate, format).date()
+
+    data = query_study_activity(startdate, enddate)
+    table_data = data[0]
+    graph_data = data[1]
+    graph = bar_graph_study_activity(graph_data)
+    if not graph:
+        graph = "No graph can be produced because there was no activity between " + str(startdate) + " and " + \
+                str(enddate) + "."
+
+    return render(request, 'KITS/report_studyactivity.html',
+                  {'startdate': startdate, 'enddate':enddate, 'table_data':table_data, 'graph':graph})
