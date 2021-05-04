@@ -27,12 +27,12 @@
                     <td>{% if kit.status == 'a'%}
 
                             {% if kit.expired_soon == True %}
-                                <p style="color:red;">expiring soon</p>
+                                <p style="color:darkorange;">Expiring Soon</p>
                             {% else %}
-                                <p>available</p>
+                                <p>Available</p>
                             {% endif %}
                         {% elif kit.status == 'e' %}
-                            <p>expired</p>
+                            <p>Expired</p>
                         {% endif %}</td>
                     <td>{{ kit.location }}</td>
 

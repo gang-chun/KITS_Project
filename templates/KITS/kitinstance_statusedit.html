@@ -14,7 +14,8 @@
         <p><b>Note: </b>{{ kitinstance.note }}</p>
         <p><b>Expiration Date </b>{{ kitinstance.expiration_date }}</p>
         <p><b>Location ID: </b>{{ kitinstance.location_id }}</p>
-        <p><b>Current Status:</b> {% if kitinstance.status == 'a' %}
+        <p><b>Current Status:</b>
+                                  {% if kitinstance.status == 'a' %}
                                      Available
                                   {% elif kitinstance.status == 'c' %}
                                     Checked Out
