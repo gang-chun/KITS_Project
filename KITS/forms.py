@@ -92,9 +92,7 @@ class ExpiredReportDownloadForm(forms.ModelForm):
         fields = ['type_name', 'IRB_number']
 
 
-
 class UserReportForm(forms.ModelForm):
     class Meta:
         model = User
         fields = '__all__'
-

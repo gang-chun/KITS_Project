@@ -1,6 +1,4 @@
 from django.utils import timezone
-import datetime
-
 from django.contrib.auth.models import User  # So we can test if authenticated
 from django.contrib.contenttypes.models import ContentType
 # from django.contrib.contenttypes.fields import GenericForeignKey
@@ -83,7 +81,6 @@ class Location(models.Model):
         self.created_date = timezone.now()
         self.save()
 
-
     class Meta:
         unique_together = ['building', 'room', 'shelf_number']
 
@@ -92,12 +89,10 @@ class Kit(models.Model):
     id = models.AutoField(primary_key=True)
     IRB_number = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='studies')
     description = models.CharField(max_length=100, blank=True)
-    date_added = models.DateTimeField(
-        default=timezone.now)
+    date_added = models.DateTimeField(default=timezone.now)
     type_name = models.CharField(max_length=32, blank=True)
     history = HistoricalRecords()
-    created_date = models.DateField(
-        default=timezone.now())
+    created_date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return f'{self.IRB_number} ({self.type_name})'
@@ -194,4 +189,4 @@ class UserHistory(models.Model):
         verbose_name_plural = "UserHistories"
 
 
-#class KitInstanceStatusHistory(models.Model):
+# class KitInstanceStatusHistory(models.Model):
