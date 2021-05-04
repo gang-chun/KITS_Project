@@ -50,6 +50,7 @@ urlpatterns = [
 
     path('export_expiredkits/', views.export_expiredkits, name='export_expiredkits'),
     path('export_studieswithexpiredkits/', views.export_studieswithexpiredkits, name='export_studieswithexpiredkits'),
-    path('export_user/', views.export_user, name='export_user'),
+    path('export_user/<int:pk>', views.export_user, name='export_user'),
+
 
 ]

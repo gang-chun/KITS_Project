@@ -118,6 +118,7 @@
                 </table>
             </div>
         </div>
+               <a href="{% url 'KITS:export_user' pk=user.pk%}" class="btn btn-success">Export Report</a>
     </div>
     {% endif %}
     {% if not request.user.is_staff %}

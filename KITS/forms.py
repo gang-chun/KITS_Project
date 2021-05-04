@@ -96,3 +96,18 @@ class UserReportForm(forms.ModelForm):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class AllKitsForm(forms.ModelForm):
+    class Meta:
+        model = Study
+        fields = '__all__'
+'''
+    class Meta1:
+        model = Kit
+        fields = '__all__'
+
+    class Meta2:
+        model = KitInstance
+        fields = '__all__'
+'''

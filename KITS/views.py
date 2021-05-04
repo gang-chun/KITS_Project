@@ -20,7 +20,8 @@ from django.contrib import messages
 import collections
 import csv
 from django.http import HttpResponse
-from .reports import query_active_studies, validate_date, query_checked_out_kits, query_demolished_kits, storage_tables, storage_data, query_study_activity
+from .reports import query_active_studies, validate_date, query_checked_out_kits, query_demolished_kits, storage_tables, \
+    storage_data, query_study_activity
 from .datavisualization import bar_graph_kit_activity, storage_graph, bar_graph_study_activity
 from django.http import HttpResponseRedirect
 
@@ -67,8 +68,6 @@ def report_userstudies(request, pk):
 
     user = users.filter(pk=in_pk)
     user_str = user[0]
-
-
 
     # Set default date when user first clicks on active studies reports button
     startdate = date.today() - timedelta(days=30)
@@ -139,9 +138,9 @@ def home(request):
     update_database = refresh(request)
     return render(request, 'KITS/home.html')
 
+
 @login_required
 def list_history(request):
-    # header = "Action Key: +=created ~=changed"
     queryset = KitInstance.objects.raw("SELECT * FROM KITS_historicalkitinstance")
     context = {
         "queryset": queryset,
@@ -322,9 +321,8 @@ def kit_addkittype(request):
 
 @login_required
 def kit_list(request):
-
     kit = Kit.objects.all()
-    #exclude(IRB_number__status='Closed')
+    # exclude(IRB_number__status='Closed')
     # Filter bar
     kit_filter = KitFilter(request.GET, queryset=kit)
     kit = kit_filter.qs
@@ -399,6 +397,7 @@ def kit_addkitinstance(request, pk):
 @login_required
 def report(request):
     return render(request, 'KITS/report.html')
+
 
 @login_required
 def report_expiredkits(request):
@@ -645,15 +644,12 @@ def export_expiredkits(request):
 
             writer.writerow(KitInstance.objects.filter(status='e').values('scanner_id'))
             writer.writerow(KitInstance.objects.filter(status='e').values('expiration_date'))
-            writer.writerow(Study.objects.values('IRB_number'))
             bruh = writer.writerow(Study.objects.values('IRB_number'))
             if bruh is not None:
                 writer.writerow(Kit.objects.values('type_name'))
 
 
-
     return response
-
 
 
 @login_required
@@ -675,20 +671,18 @@ def export_studieswithexpiredkits(request):
     writer = csv.writer(response)
 
     kit = KitInstance.objects.all().filter(status='e')
-    #kits = KitInstance.objects.filter(status='e').values('status')
+    # kits = KitInstance.objects.filter(status='e').values('status')
     with open("Expired_Kits_In_Studies_Report.csv", "w") as csvFile:
         if kit:
             writer.writerow(Study.objects.values('pet_name'))
             writer.writerow(Study.objects.values('IRB_number'))
             writer.writerow(Kit.objects.annotate(qty=Count('kit')).values('qty'))
 
-
-
     return response
 
 
 @login_required
-def export_user(request):
+def export_user(request, pk):
     if request.method == "POST":
         form = UserReportForm(request.POST)
 
@@ -704,15 +698,23 @@ def export_user(request):
 
     writer = csv.writer(response)
 
+    url = request.get_full_path()
+    url = str(url)
+
+    study = UserHistory.objects.values('the_object')
 
     with open("User_Report.csv", "w") as csvFile:
+        writer.writerow(User.objects.filter(pk=url[18]).values('id'))
+        writer.writerow(UserHistory.objects.values('the_object'))
         writer.writerow(Study.objects.values('IRB_number'))
-        writer.writerow(Study.objects.values('pet_name'))
-        writer.writerow(User.objects.values('id'))
-        writer.writerow(User.objects.values('username'))
+        writer.writerow(Study.objects.filter(id=url[18]).values('pet_name'))
+        writer.writerow(User.objects.filter(id=url[18]).values('username'))
 
+        if not study:
+            return response
 
     return response
+
 
 @login_required
 def refresh(request):
@@ -754,4 +756,4 @@ def report_studyactivity(request):
                 str(enddate) + "."
 
     return render(request, 'KITS/report_studyactivity.html',
-                  {'startdate': startdate, 'enddate':enddate, 'table_data':table_data, 'graph':graph})
+                  {'startdate': startdate, 'enddate': enddate, 'table_data': table_data, 'graph': graph})
