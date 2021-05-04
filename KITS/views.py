@@ -704,8 +704,7 @@ def export_user(request):
 
     with open("User_Report.csv", "w") as csvFile:
         writer.writerow(Study.objects.values('IRB_number'))
-        ihatemylifesomuchsometimeslikehonestlyimnotjoking =Study.objects.values('pet_name')
-        writer.writerow(ihatemylifesomuchsometimeslikehonestlyimnotjoking)
+        writer.writerow(Study.objects.values('pet_name'))
         writer.writerow(User.objects.values('id'))
         writer.writerow(User.objects.values('username'))
 
