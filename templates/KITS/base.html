@@ -64,9 +64,9 @@
         <div>
             {% if user.is_authenticated %}
             <span class="navbar-text">Welcome, {{ user.get_username }}.</span>
-            <a class="btn-sm btn-outline-danger" href="{% url 'logout' %}">Log Out</a>
+            <a class="btn-sm btn-outline-danger" href="{% url 'logout' %}" id="logout_button">Log Out</a>
             {% else %}
-            <a class="btn-sm btn-outline-success" href="{% url 'login' %}">Log In</a>
+            <a class="btn-sm btn-outline-success" href="{% url 'login' %}" id="login_button">Log In</a>
             {% endif %}
         </div>
 

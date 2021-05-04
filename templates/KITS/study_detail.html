@@ -20,7 +20,10 @@
         <hr>
         {% if kit_exist == 'False' %}
 
-            <p><b>Kits: </b>No kits have been added to this study. To add kits, go to 'Check-In Kits' page.</p>
+            <p>
+                <b>Kits: </b>
+                No kits have been added to this study. To add kits, visit the <a href="{% url 'KITS:kit_list' %}">Check-In Kits</a> page.
+            </p>
 
         {% else %}
 
@@ -62,7 +65,7 @@
         <div class="row">
             <div class="col">
             {% if kit_order_exist %}
-                <h3>Kit Ordering Info</h3>
+                <h3 id="kit_order_info">Kit Ordering Info</h3>
 
                     {% if study.kitorder.description != '' %}
                         <p><b>Description:</b> {{ study.kitorder.description }}</p>
