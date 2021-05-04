@@ -64,7 +64,14 @@
 
         <div class="row">
             <div class="col">
-            {% if kit_order_exist %}
+            {% if study.status == 'Closed' %}
+                <p>Kit order details cannot be accessed as the study is now closed.</p>
+
+            {% elif not kit_order_exist %}
+                <p>{{ kit_order }}</p>
+                <a href="{% url 'KITS:kit_ordering_add' pk=study.pk %}" class="btn-sm btn-success">Add</a>
+
+            {% else %}
                 <h3 id="kit_order_info">Kit Ordering Info</h3>
 
                     {% if study.kitorder.description != '' %}
@@ -80,15 +87,18 @@
 
                         <a href="{% url 'KITS:kit_ordering' pk=study.pk %}" class="btn-sm btn-warning">Edit</a>
                     </p>
-
-            {% else %}
-                <p>{{ kit_order }}</p>
-                <a href="{% url 'KITS:kit_ordering_add' pk=study.pk %}" class="btn-sm btn-success">Add</a>
             {% endif %}
             </div>
 
             <div class="col">
-            {% if req_exist %}
+            {% if study.status == 'Closed' %}
+                <p>Requisition details cannot be accessed as the study is now closed.</p>
+
+            {% elif not req_exist %}
+                <p>{{ req }}</p>
+                <a href="{% url 'KITS:create_req' pk=study.pk %}" class="btn-sm btn-success">Add</a>
+
+            {% else %}
                 <h3>Requisition Info</h3>
 
                     {% if study.requisition.description != '' %}
@@ -104,10 +114,6 @@
 
                         <a href="{% url 'KITS:req_edit' pk=study.pk %}" class="btn-sm btn-warning">Edit</a>
                     </p>
-
-            {% else %}
-                <p>{{ req }}</p>
-                <a href="{% url 'KITS:create_req' pk=study.pk %}" class="btn-sm btn-success">Add</a>
             {% endif %}
             </div>
         </div>
