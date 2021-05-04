@@ -48,10 +48,10 @@ def query_active_studies(startdate, enddate):
 # To check each historical event for a status change for each kit instance event
 # If there is a status change, return new status (i.e. demolished or checked out)
 # & the date the status change occurred
-def historical_status_change(id):
+def historical_status_change(kit_id):
 
     #Get the one kit instance objects
-    kit = get_object_or_404(KitInstance, pk=id)
+    kit = get_object_or_404(KitInstance, pk=kit_id)
 
     # Then get all of the historical events associated with that object
     kit = kit.history.all()
@@ -227,3 +227,75 @@ def query_demolished_kits(startdate, enddate):
                         test.append(t)
 
     return test
+
+def query_study_activity(startdate, enddate):
+    studies = Study.objects.all()
+    query = (['Studies Added', 0], ['Studies Opened', 0], ['Studies Closed', 0])
+    list = []
+
+    for study in studies:
+        historical_create = historical_study_create(study.id)
+        if historical_create[0] == 'added':
+            if check_date(historical_create[1], startdate, enddate) == True:
+                query[0][1] = query[0][1] + 1
+                list.append([study.IRB_number, 'Studies Added', historical_create[1]])
+
+
+        historical_opened = historical_study_status_change(study.id, 'opened')
+        if historical_opened[0] == 'opened':
+            if check_date(historical_opened[1], startdate, enddate) == True:
+                query[1][1] = query[1][1] + 1
+                list.append([study.id, 'Studies Opened', historical_opened[1]])
+
+        historical_closed = historical_study_status_change(study.id, 'closed')
+        if historical_closed[0] == 'closed':
+            if check_date(historical_closed[1], startdate, enddate) == True:
+                query[2][1] = query[2][1] + 1
+                list.append([study.id, 'Studies Closed', historical_closed[1]])
+
+    outfile = "studyactivity.csv"
+    file = open(outfile, 'w')
+    file.write("IRB_number,Date,Action\n")
+    for entry in list:
+        id, action, date = entry
+        month = get_month(date)
+        year = get_year(date)
+        file.write(str(id) + "," + str(month) + "-" + str(year) + "," + action + "\n")
+    file.close()
+    return query, outfile
+
+
+def historical_study_create(study_id):
+    study = get_object_or_404(Study, pk=study_id)
+    study = study.history.all()
+    for s in study:
+        if s.history_type == '+':
+            event = 'added'
+            hist = s.history_date
+            date = datetime.date(hist)
+            return [event, date]
+    return False
+
+
+def historical_study_status_change(study_id, status):
+
+    study = get_object_or_404(Study, pk=study_id)
+    study = study.history.all()
+    for i in range(len(study) - 1):
+        delta = study[i].diff_against(study[i+1])
+        for change in delta.changes:
+            if change.field == 'status':
+                if change.old == 'Preparing to Open' and change.new == 'Open' and status == 'opened':
+                    event = 'opened'
+                    hist = study[i + 1].history_date
+                    date = datetime.date(hist)
+                    return [event, date]
+                elif change.new == 'Closed' and change.old == 'Open' and status == 'closed':
+                    event = 'closed'
+                    hist = study[i + 1].history_date
+                    date = datetime.date(hist)
+                    return [event, date]
+                else:
+                    event = 'none'
+                    date = ''
+            return [event, date]
