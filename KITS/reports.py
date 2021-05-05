@@ -99,7 +99,7 @@ def validate_date(startdate, enddate):
         startdate = datetime.strptime(startdate, date_format)
         enddate = datetime.strptime(enddate, date_format)
         return True
-    except ValueError:
+    except:
         message = "Please format date entries correctly to MM-DD-YYYY."
         return message
 
@@ -237,26 +237,26 @@ def query_study_activity(startdate, enddate):
         historical_create = historical_study_create(study.id)
         if historical_create is not None and historical_create[0] == 'added':
             if check_date(historical_create[1], startdate, enddate) == True:
-        if historical_create[0] == 'added':
-            if check_date(historical_create[1], startdate, enddate):
-                query[0][1] = query[0][1] + 1
-                activity_list.append([study.IRB_number, 'Studies Added', historical_create[1]])
+                if historical_create[0] == 'added':
+                    if check_date(historical_create[1], startdate, enddate):
+                        query[0][1] = query[0][1] + 1
+                        activity_list.append([study.IRB_number, 'Studies Added', historical_create[1]])
 
         historical_opened = historical_study_status_change(study.id, 'opened')
         if historical_opened is not None and historical_opened[0] == 'opened':
             if check_date(historical_opened[1], startdate, enddate) == True:
-        if historical_opened[0] == 'opened':
-            if check_date(historical_opened[1], startdate, enddate):
-                query[1][1] = query[1][1] + 1
-                activity_list.append([study.id, 'Studies Opened', historical_opened[1]])
+                if historical_opened[0] == 'opened':
+                    if check_date(historical_opened[1], startdate, enddate):
+                        query[1][1] = query[1][1] + 1
+                        activity_list.append([study.id, 'Studies Opened', historical_opened[1]])
 
         historical_closed = historical_study_status_change(study.id, 'closed')
         if historical_closed is not None and historical_closed[0] == 'closed':
             if check_date(historical_closed[1], startdate, enddate) == True:
-        if historical_closed[0] == 'closed':
-            if check_date(historical_closed[1], startdate, enddate):
-                query[2][1] = query[2][1] + 1
-                activity_list.append([study.id, 'Studies Closed', historical_closed[1]])
+                if historical_closed[0] == 'closed':
+                    if check_date(historical_closed[1], startdate, enddate):
+                        query[2][1] = query[2][1] + 1
+                        activity_list.append([study.id, 'Studies Closed', historical_closed[1]])
 
     outfile = "studyactivity.csv"
     file = open(outfile, 'w')
