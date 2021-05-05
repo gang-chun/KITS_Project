@@ -1,7 +1,6 @@
 from django.utils import timezone
 from django.contrib.auth.models import User  # So we can test if authenticated
 from django.contrib.contenttypes.models import ContentType
-# from django.contrib.contenttypes.fields import GenericForeignKey
 from datetime import date, timedelta
 from django.db import models
 from simple_history.models import HistoricalRecords
@@ -18,7 +17,6 @@ class Study(models.Model):
     pet_name = models.CharField(max_length=50)
     comment = models.CharField(max_length=100, blank=True)
     sponsor_name = models.CharField(max_length=100)
-    requisition_form_qty = models.CharField(max_length=5)
     history = HistoricalRecords()
     STATUS = (
         ('Preparing to Open', 'Preparing to Open'),

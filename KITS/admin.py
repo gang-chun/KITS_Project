@@ -39,7 +39,7 @@ class LocationList(admin.ModelAdmin):
 
 @admin.register(KitOrder)
 class KitOrderList(admin.ModelAdmin):
-    list_display = ('type', 'link', 'description' )
+    list_display = ('type', 'link', 'description')
     list_filter = ('type', 'link')
     search_fields = ('type', )
     ordering = ['type']
@@ -58,6 +58,7 @@ class RequisitionList(admin.ModelAdmin):
 #    list_filter = ('id','IRB_number', 'start_date')
 #    ordering = ['IRB_number']
 
+
 class StudyHistoryAdmin(SimpleHistoryAdmin):
     list_display = ('id', 'IRB_number', 'pet_name', 'status')
     history_list_display = ["status"]
@@ -66,8 +67,6 @@ class StudyHistoryAdmin(SimpleHistoryAdmin):
 admin.site.register(Study, SimpleHistoryAdmin)
 
 
-
 @admin.register(UserHistory)
 class UserHistoryList(admin.ModelAdmin):
     list_display = ('user', 'changed_on', 'the_object', 'history_instance')
-
