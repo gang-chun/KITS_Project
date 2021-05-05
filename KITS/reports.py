@@ -94,6 +94,14 @@ def validate_date(startdate, enddate):
     elif enddate == '':
         message = "Please enter in an end date"
         return message
+    try:
+        date_format = '%m-%d-%Y'
+        startdate = datetime.strptime(startdate, date_format)
+        enddate = datetime.strptime(enddate, date_format)
+        return True
+    except ValueError:
+        message = "Please format date entries correctly to MM-DD-YYYY."
+        return message
 
 
 def query_checked_out_kits(startdate, enddate):
