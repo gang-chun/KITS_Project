@@ -10,7 +10,8 @@ urlpatterns = [
     path('study_list/', views.study_list, name='study_list'),
     path('study/<int:pk>/study_detail/', views.study_detail, name='study_detail'),
     path('study/<int:pk>/study_detail/kit_edit/', views.kit_edit, name='kit_edit_from_study'),
-    path('study/<int:pk>/study_detail/study_detail_seeallkits/', views.study_detail_seeallkits, name='study_detail_seeallkits'),
+    path('study/<int:pk>/study_detail/study_detail_seeallkits/', views.study_detail_seeallkits,
+         name='study_detail_seeallkits'),
     path('study/<int:pk>/study_detail/study_edit', views.study_edit, name='study_detail_study_edit'),
 
     path('create_study/', views.create_study, name='create_study'),
@@ -41,7 +42,7 @@ urlpatterns = [
     path('study/<int:pk>/study_detail/kit_ordering', views.kit_ordering, name='kit_ordering'),
     path('study/<int:pk>/kit_ordering_add/', views.kit_ordering_add, name='kit_ordering_add'),
 
-    path('help/', views.help, name='help'),
+    path('help/', views.help_page, name='help'),
     path('refresh/', views.refresh, name='refresh'),
 
     path('kit_checkout/', views.kit_checkout, name='kit_checkout'),

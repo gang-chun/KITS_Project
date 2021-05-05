@@ -1,22 +1,21 @@
 from .models import *
-from django.shortcuts import render, get_object_or_404
-from datetime import datetime, timedelta, date
+from django.shortcuts import get_object_or_404
+from datetime import datetime
 from .datavisualization import get_month, get_year
-from django.db.models import Count, Q
+from django.db.models import Count
 
 
 def query_active_studies(startdate, enddate):
     qs = KitInstance.objects.values('id', 'created_date', 'status')
 
-    list = []
+    study_list = []
 
-    #Iterate through each kit instance to check if the date created is within date range
+    # Iterate through each kit instance to check if the date created is within date range
     for q in qs:
 
-        #If kit instance was created within date range, add to the list
-        if check_date(q['created_date'], startdate, enddate) == True:
-            list.append((q['id'], q['created_date'], 'added'))
-
+        # If kit instance was created within date range, add to the study_list
+        if check_date(q['created_date'], startdate, enddate):
+            study_list.append((q['id'], q['created_date'], 'added'))
 
         # Check if a kit instance had a status change
         kit_inst = historical_status_change(q['id'])
@@ -24,33 +23,36 @@ def query_active_studies(startdate, enddate):
         if kit_inst is not None:
             # If historical_status_change returns with values (i.e. not None)
             # Then check the date of that status change
-            if check_date(kit_inst[1], startdate, enddate) == True:
+            if check_date(kit_inst[1], startdate, enddate):
 
                 # If status change within date range
                 if kit_inst[0] == 'demolished':
-                    list.append((q['id'], kit_inst[1], 'demolished'))
+                    study_list.append((q['id'], kit_inst[1], 'demolished'))
                 elif kit_inst[0] == 'checked-out':
-                    list.append((q['id'], kit_inst[1], 'checked_out'))
+                    study_list.append((q['id'], kit_inst[1], 'checked_out'))
                 elif kit_inst[0] == 'none':
                     continue
 
     outfile = "kitactivity.csv"
     file = open(outfile, 'w')
     file.write("ID,Date,Action\n")
-    for entry in list:
-        id, date, action = entry
-        month = get_month(date)
-        year = get_year(date)
-        file.write(str(id) + "," + str(month) + "-" + str(year) + "," + action + "\n")
+
+    for entry in study_list:
+        study_id, study_date, action = entry
+        month = get_month(study_date)
+        year = get_year(study_date)
+        file.write(str(study_id) + "," + str(month) + "-" + str(year) + "," + action + "\n")
     file.close()
     return outfile
 
 # To check each historical event for a status change for each kit instance event
 # If there is a status change, return new status (i.e. demolished or checked out)
 # & the date the status change occurred
+
+
 def historical_status_change(kit_id):
 
-    #Get the one kit instance objects
+    # Get the one kit instance objects
     kit = get_object_or_404(KitInstance, pk=kit_id)
 
     # Then get all of the historical events associated with that object
@@ -71,13 +73,15 @@ def historical_status_change(kit_id):
 
                 # Get the date of the kit instance history status change
                 hist = kit[i+1].history_date
-                date = datetime.date(hist)
+                changed_date = datetime.date(hist)
 
-                return [event, date]
+                return [event, changed_date]
 
 # Check if date falls between the start and end date
-def check_date(date, startdate, enddate):
-    if date > startdate and date < enddate:
+
+
+def check_date(checked_date, startdate, enddate):
+    if startdate < checked_date < enddate:
         return True
     else:
         return False
@@ -90,14 +94,6 @@ def validate_date(startdate, enddate):
     elif enddate == '':
         message = "Please enter in an end date"
         return message
-    try:
-        format = "%m-%d-%Y"
-        startdate = datetime.strptime(startdate, format)
-        enddate = datetime.strptime(enddate, format)
-        return True
-    except ValueError:
-        message = "Please format date entries correctly to MM-DD-YYYY"
-        return message
 
 
 def query_checked_out_kits(startdate, enddate):
@@ -108,9 +104,9 @@ def query_checked_out_kits(startdate, enddate):
     studies = []
 
     for kit in checked_out:
-        if check_date(kit.checked_out_date, startdate, enddate) == False:
+        if not check_date(kit.checked_out_date, startdate, enddate):
             break
-        elif check_date(kit.checked_out_date, startdate, enddate) == True:
+        elif check_date(kit.checked_out_date, startdate, enddate):
 
             study = str(kit.kit.IRB_number)
 
@@ -124,8 +120,7 @@ def query_checked_out_kits(startdate, enddate):
 
             elif study not in studies:
                 studies.append(str(kit.kit.IRB_number))
-                t = []
-                t.append(str(kit.kit.IRB_number))
+                t = [str(kit.kit.IRB_number)]
                 study = get_object_or_404(Study, IRB_number=kit.kit.IRB_number)
                 t.append(str(study.pet_name))
                 t.append(1)
@@ -133,27 +128,23 @@ def query_checked_out_kits(startdate, enddate):
 
     return test
 
-def storage_tables(queryset):
-    queryset_kits = KitInstance.objects.all().filter(kit__IRB_number_id__in=queryset).annotate(num_kit=Count('kit')).order_by('location_id')
 
+def storage_tables(queryset):
+    queryset_kits = KitInstance.objects.all().filter(kit__IRB_number_id__in=queryset).annotate(num_kit=Count('kit')).\
+        order_by('location_id')
 
     location_list = []
-    location_study_list = []
-    kit_count = []
 
     table1 = []
 
     for kit in queryset_kits:
         if str(kit.location) not in location_list:
             location_list.append(str(kit.location))
-            entry = []
-            entry.append(str(kit.location))
+            entry = [str(kit.location)]
 
-            entry1 = []
-            entry1.append(str(kit.kit.IRB_number))
+            entry1 = [str(kit.kit.IRB_number)]
 
-            entry2 = []
-            entry2.append(1)
+            entry2 = [1]
 
             entry.append(entry1)
             entry.append(entry2)
@@ -173,9 +164,9 @@ def storage_tables(queryset):
 
     return table1
 
+
 def storage_data():
     data = []
-
 
     open_studies = Study.objects.all().filter(status='Open')
     exp_kits = KitInstance.objects.all().filter(kit__IRB_number__in=open_studies).filter(status='e').count()
@@ -197,6 +188,7 @@ def storage_data():
 
     return data
 
+
 def query_demolished_kits(startdate, enddate):
     test = []
     studies = []
@@ -207,7 +199,7 @@ def query_demolished_kits(startdate, enddate):
         status = historical_status_change(kit.id)
         if status is not None:
             if status[0] == 'demolished':
-                if check_date(status[1], startdate, enddate) == True:
+                if check_date(status[1], startdate, enddate):
                     study = str(kit.kit.IRB_number)
                     # If the kit type belongs to a study that was already added in the list
                     if study in studies:
@@ -219,8 +211,7 @@ def query_demolished_kits(startdate, enddate):
 
                     elif study not in studies:
                         studies.append(str(kit.kit.IRB_number))
-                        t = []
-                        t.append(str(kit.kit.IRB_number))
+                        t = [str(kit.kit.IRB_number)]
                         study = get_object_or_404(Study, IRB_number=kit.kit.IRB_number)
                         t.append(str(study.pet_name))
                         t.append(1)
@@ -228,39 +219,40 @@ def query_demolished_kits(startdate, enddate):
 
     return test
 
+
 def query_study_activity(startdate, enddate):
     studies = Study.objects.all()
     query = (['Studies Added', 0], ['Studies Opened', 0], ['Studies Closed', 0])
-    list = []
+    activity_list = []
 
     for study in studies:
         historical_create = historical_study_create(study.id)
         if historical_create[0] == 'added':
-            if check_date(historical_create[1], startdate, enddate) == True:
+            if check_date(historical_create[1], startdate, enddate):
                 query[0][1] = query[0][1] + 1
-                list.append([study.IRB_number, 'Studies Added', historical_create[1]])
-
+                activity_list.append([study.IRB_number, 'Studies Added', historical_create[1]])
 
         historical_opened = historical_study_status_change(study.id, 'opened')
         if historical_opened[0] == 'opened':
-            if check_date(historical_opened[1], startdate, enddate) == True:
+            if check_date(historical_opened[1], startdate, enddate):
                 query[1][1] = query[1][1] + 1
-                list.append([study.id, 'Studies Opened', historical_opened[1]])
+                activity_list.append([study.id, 'Studies Opened', historical_opened[1]])
 
         historical_closed = historical_study_status_change(study.id, 'closed')
         if historical_closed[0] == 'closed':
-            if check_date(historical_closed[1], startdate, enddate) == True:
+            if check_date(historical_closed[1], startdate, enddate):
                 query[2][1] = query[2][1] + 1
-                list.append([study.id, 'Studies Closed', historical_closed[1]])
+                activity_list.append([study.id, 'Studies Closed', historical_closed[1]])
 
     outfile = "studyactivity.csv"
     file = open(outfile, 'w')
     file.write("IRB_number,Date,Action\n")
-    for entry in list:
-        id, action, date = entry
-        month = get_month(date)
-        year = get_year(date)
-        file.write(str(id) + "," + str(month) + "-" + str(year) + "," + action + "\n")
+
+    for entry in activity_list:
+        entry_id, action, entry_date = entry
+        month = get_month(entry_date)
+        year = get_year(entry_date)
+        file.write(str(entry_id) + "," + str(month) + "-" + str(year) + "," + action + "\n")
     file.close()
     return query, outfile
 
@@ -272,8 +264,8 @@ def historical_study_create(study_id):
         if s.history_type == '+':
             event = 'added'
             hist = s.history_date
-            date = datetime.date(hist)
-            return [event, date]
+            hist_date = datetime.date(hist)
+            return [event, hist_date]
     return False
 
 
@@ -288,14 +280,14 @@ def historical_study_status_change(study_id, status):
                 if change.old == 'Preparing to Open' and change.new == 'Open' and status == 'opened':
                     event = 'opened'
                     hist = study[i + 1].history_date
-                    date = datetime.date(hist)
-                    return [event, date]
+                    changed_date = datetime.date(hist)
+                    return [event, changed_date]
                 elif change.new == 'Closed' and change.old == 'Open' and status == 'closed':
                     event = 'closed'
                     hist = study[i + 1].history_date
-                    date = datetime.date(hist)
-                    return [event, date]
+                    changed_date = datetime.date(hist)
+                    return [event, changed_date]
                 else:
                     event = 'none'
-                    date = ''
-            return [event, date]
+                    changed_date = ''
+            return [event, changed_date]

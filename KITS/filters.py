@@ -41,15 +41,17 @@ class StudyOnKitInstanceFilter(django_filters.FilterSet):
         model = Study
         fields = 'pet_name', 'IRB_number',
 
+
 class DateRangeFilter(django_filters.FilterSet):
     class Meta:
         model = KitInstance
         fields = '__all__'
 
+
 class LocationFilter(django_filters.FilterSet):
 
-    #building = django_filters.ChoiceFilter(choices=FILTER_CHOICES)
+    # building = django_filters.ChoiceFilter(choices=FILTER_CHOICES)
     class Meta:
         model = Location
         fields = '__all__'
-        #fields = ['building', 'room']
+        # fields = ['building', 'room']

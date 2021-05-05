@@ -102,6 +102,8 @@ class AllKitsForm(forms.ModelForm):
     class Meta:
         model = Study
         fields = '__all__'
+
+
 '''
     class Meta1:
         model = Kit

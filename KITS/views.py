@@ -3,30 +3,19 @@ from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
-from django.db.models import Count, Max, Q, Sum
-# from django.db.models import F, Sum
-# from django.db.models.functions import Greatest
-from .filters import LocationFilter, StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter, \
-    StudyOnKitInstanceFilter, \
-    DateRangeFilter
+from django.db.models import Count, Max, Q
+from .filters import LocationFilter, StudyFilter, KitFilter, KitReportFilter, KitInstanceFilter
 from django.contrib.auth import get_user_model
 from django.dispatch import receiver
-from simple_history.signals import (
-    pre_create_historical_record,
-    post_create_historical_record
-)
+from simple_history.signals import post_create_historical_record
 from datetime import datetime, timedelta, date
 from django.contrib import messages
-import collections
 import csv
 from django.http import HttpResponse
-from .reports import query_active_studies, validate_date, query_checked_out_kits, query_demolished_kits, storage_tables, \
-    storage_data, query_study_activity
+from .reports import query_active_studies, validate_date, query_checked_out_kits, query_demolished_kits, \
+    storage_tables, storage_data, query_study_activity
 from .datavisualization import bar_graph_kit_activity, storage_graph, bar_graph_study_activity
 from django.http import HttpResponseRedirect
-
-User = get_user_model()
-users = User.objects.all()
 
 
 @receiver(post_create_historical_record)
@@ -35,9 +24,6 @@ def post_create_historical_record_callback(sender, **kwargs):
 
     complete_object = " ".join([str(kwargs["instance"]), str(type(kwargs["instance"]))])
     print(kwargs["history_instance"])
-    date_t = kwargs["history_date"]
-    viewed_on_t = models.DateTimeField(auto_now_add=True)
-    # print(date_t, viewed_on_t)
     user_history_instance = \
         UserHistory.objects.create_user_history(t_user_t, complete_object, str(kwargs["history_instance"]),
                                                 kwargs["history_date"])
@@ -47,12 +33,8 @@ def post_create_historical_record_callback(sender, **kwargs):
 
 @login_required
 def user_list(request):
-    User = get_user_model()
-    users = User.objects.all()
-    # Filter bar
-    study_filter = StudyFilter(request.GET, queryset=Study.objects.all())
-    if request.GET:
-        studies = study_filter.qs
+    user = get_user_model()
+    users = user.objects.all()
 
     return render(request, 'KITS/user_list.html', {'users': users})
 
@@ -62,8 +44,8 @@ def report_userstudies(request, pk):
     in_pk = pk
 
     # get the username back
-    User = get_user_model()
-    users = User.objects.all()
+    user = get_user_model()
+    users = user.objects.all()
     # username is from filter
 
     user = users.filter(pk=in_pk)
@@ -87,9 +69,9 @@ def report_userstudies(request, pk):
             return redirect('KITS:report_userstudies')
         elif message:
             # Convert date string to date time object
-            format = "%m-%d-%Y"
-            startdate = datetime.strptime(startdate, format).date()
-            enddate = datetime.strptime(enddate, format).date()
+            date_format = "%m-%d-%Y"
+            startdate = datetime.strptime(startdate, date_format).date()
+            enddate = datetime.strptime(enddate, date_format).date()
 
     # Need to constrain to the history_user_id, date range, change type (created, changed, deleted)
     qs = Study.history.all()
@@ -135,7 +117,7 @@ def logout(request):
 
 
 def home(request):
-    update_database = refresh(request)
+    refresh(request)
     return render(request, 'KITS/home.html')
 
 
@@ -205,7 +187,7 @@ def study_detail(request, pk):
 
 @login_required
 def study_detail_seeallkits(request, pk):
-    update_database = refresh(request)
+    refresh(request)
     study = get_object_or_404(Study, pk=pk)
 
     status = 'a or e'
@@ -390,7 +372,6 @@ def kit_addkitinstance(request, pk):
             return redirect('KITS:kit_list')
     else:
         form = KitInstanceForm()
-    update_database = refresh(request)
     return render(request, 'KITS/kit_addkitinstance.html', {'form': form, 'kit_instance': kit_instance})
 
 
@@ -401,18 +382,12 @@ def report(request):
 
 @login_required
 def report_expiredkits(request):
-    today = date.today()
-    in1month = today + timedelta(days=30)
-    i = today.strftime('%Y-%m-%d')
-    j = in1month.strftime('%Y-%m-%d')
-    # KitInstance.objects.filter(expiration_date__range=(i,j)
 
     kits = KitInstance.objects.filter(status='e')
 
     # To grab the IRB numbers and put them into a list
     kits2 = list(kits)
     test = []
-    test1 = []
     for kit in kits2:
         test1 = kit.kit.IRB_number
         test.append(test1)
@@ -429,7 +404,7 @@ def report_expiredkits(request):
 
 @login_required
 def report_expiredkits_studies(request):
-    update_database = refresh(request)
+
     kits = Kit.objects.filter(kit__status='e').values('IRB_number__IRB_number') \
         .annotate(qty=Count('kit')).values('IRB_number__IRB_number', 'qty', 'IRB_number__pet_name')
 
@@ -487,6 +462,8 @@ def kit_addlocation(request):
 
 @login_required
 def kit_checkout(request):
+    refresh(request)
+
     status = ['d', 'c']
     kitinstance = KitInstance.objects.all().exclude(status__in=status)
     # Filter bar
@@ -498,23 +475,20 @@ def kit_checkout(request):
 
 
 @login_required
-def help(request):
+def help_page(request):
     return render(request, 'KITS/help.html')
 
 
 @login_required
 def kitinstance_statusedit(request, pk):
     kiti = get_object_or_404(KitInstance, pk=pk)
-    kitname = get_object_or_404(Kit, pk=kiti.kit_id)
-    # kit = get_object_or_404(KitInstance.objects.values('kit__id'), pk=pk)
+
     if request.method == "POST":
         form = KitInstanceEditForm(request.POST, instance=kiti)
         if form.is_valid():
             kiti = form.save(commit=False)
-            # kiti.created_date = timezone.now()
             kiti.checked_out_date = timezone.now()
             kiti.save()
-            # form.save()
         return redirect('KITS:kit_checkout')
     else:
         form = KitInstanceEditForm(instance=kiti)
@@ -525,8 +499,7 @@ def kitinstance_statusedit(request, pk):
 @login_required
 def kitinstance_demolish(request, pk):
     kiti = get_object_or_404(KitInstance, pk=pk)
-    kitname = get_object_or_404(Kit, pk=kiti.kit_id)
-    # kit = get_object_or_404(KitInstance.objects.values('kit__id'), pk=pk)
+
     if request.method == "POST":
         form = KitInstanceDemolishForm(request.POST, instance=kiti)
         if form.is_valid():
@@ -561,9 +534,9 @@ def report_activestudies(request):
             return redirect('KITS:report_activestudies')
         elif message:
             # Convert date string to date time object
-            format = "%m-%d-%Y"
-            startdate = datetime.strptime(startdate, format).date()
-            enddate = datetime.strptime(enddate, format).date()
+            date_format = "%m-%d-%Y"
+            startdate = datetime.strptime(startdate, date_format).date()
+            enddate = datetime.strptime(enddate, date_format).date()
 
     checked_test = query_checked_out_kits(startdate, enddate)
     demolished_test = query_demolished_kits(startdate, enddate)
@@ -589,7 +562,7 @@ def report_activestudies(request):
 
 
 def report_storageusage(request):
-    update_database = refresh(request)
+    refresh(request)
     location = Location.objects.all()
     location_filter = LocationFilter(request.GET, queryset=location)
 
@@ -623,7 +596,8 @@ def report_storageusage(request):
 
 @login_required
 def export_expiredkits(request):
-    update_database = refresh(request)
+    refresh(request)
+
     if request.method == "POST":
         form = ExpiredReportDownloadForm(request.POST)
 
@@ -639,22 +613,21 @@ def export_expiredkits(request):
 
     writer = csv.writer(response)
     kit = KitInstance.objects.filter(status='e')
-    with open("Expired_Kit_Report.csv", "w") as csvFile:
+    with open("Expired_Kit_Report.csv", "w"):
         if kit:
-
             writer.writerow(KitInstance.objects.filter(status='e').values('scanner_id'))
             writer.writerow(KitInstance.objects.filter(status='e').values('expiration_date'))
             bruh = writer.writerow(Study.objects.values('IRB_number'))
             if bruh is not None:
                 writer.writerow(Kit.objects.values('type_name'))
 
-
     return response
 
 
 @login_required
 def export_studieswithexpiredkits(request):
-    update_database = refresh(request)
+    refresh(request)
+
     if request.method == "POST":
         form = ExpiredReportDownloadForm(request.POST)
 
@@ -669,10 +642,9 @@ def export_studieswithexpiredkits(request):
     response['Content-Disposition'] = 'attachment; filename="Expired_Kits_In_Studies_Report.csv"'
 
     writer = csv.writer(response)
-
     kit = KitInstance.objects.all().filter(status='e')
-    # kits = KitInstance.objects.filter(status='e').values('status')
-    with open("Expired_Kits_In_Studies_Report.csv", "w") as csvFile:
+
+    with open("Expired_Kits_In_Studies_Report.csv", "w"):
         if kit:
             writer.writerow(Study.objects.values('pet_name'))
             writer.writerow(Study.objects.values('IRB_number'))
@@ -703,7 +675,7 @@ def export_user(request, pk):
 
     study = UserHistory.objects.values('the_object')
 
-    with open("User_Report.csv", "w") as csvFile:
+    with open("User_Report.csv", "w"):
         writer.writerow(User.objects.filter(pk=url[18]).values('id'))
         writer.writerow(UserHistory.objects.values('the_object'))
         writer.writerow(Study.objects.values('IRB_number'))
@@ -718,10 +690,10 @@ def export_user(request, pk):
 
 @login_required
 def refresh(request):
-    for object in KitInstance.objects.all().filter(status='a').filter(expiration_date__isnull=False):
-        if date.today() > object.expiration_date:
-            object.status = 'e'
-            object.save()
+    for kit_instance in KitInstance.objects.all().filter(status='a').filter(expiration_date__isnull=False):
+        if date.today() > kit_instance.expiration_date:
+            kit_instance.status = 'e'
+            kit_instance.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
@@ -743,9 +715,9 @@ def report_studyactivity(request):
             return redirect('KITS:report_activestudies')
         elif message:
             # Convert date string to date time object
-            format = "%m-%d-%Y"
-            startdate = datetime.strptime(startdate, format).date()
-            enddate = datetime.strptime(enddate, format).date()
+            date_format = "%m-%d-%Y"
+            startdate = datetime.strptime(startdate, date_format).date()
+            enddate = datetime.strptime(enddate, date_format).date()
 
     data = query_study_activity(startdate, enddate)
     table_data = data[0]
