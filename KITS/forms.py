@@ -6,7 +6,7 @@ class StudyForm(forms.ModelForm):
     class Meta:
         model = Study
         fields = (
-            'id', 'IRB_number', 'pet_name', 'comment', 'sponsor_name', 'requisition_form_qty', 'status',
+            'id', 'IRB_number', 'pet_name', 'comment', 'sponsor_name', 'status',
             'start_date', 'end_date')
 
 
