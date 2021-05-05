@@ -235,20 +235,20 @@ def query_study_activity(startdate, enddate):
 
     for study in studies:
         historical_create = historical_study_create(study.id)
-        if historical_create[0] == 'added':
+        if historical_create is not None and historical_create[0] == 'added':
             if check_date(historical_create[1], startdate, enddate) == True:
                 query[0][1] = query[0][1] + 1
                 list.append([study.IRB_number, 'Studies Added', historical_create[1]])
 
 
         historical_opened = historical_study_status_change(study.id, 'opened')
-        if historical_opened[0] == 'opened':
+        if historical_opened is not None and historical_opened[0] == 'opened':
             if check_date(historical_opened[1], startdate, enddate) == True:
                 query[1][1] = query[1][1] + 1
                 list.append([study.id, 'Studies Opened', historical_opened[1]])
 
         historical_closed = historical_study_status_change(study.id, 'closed')
-        if historical_closed[0] == 'closed':
+        if historical_closed is not None and historical_closed[0] == 'closed':
             if check_date(historical_closed[1], startdate, enddate) == True:
                 query[2][1] = query[2][1] + 1
                 list.append([study.id, 'Studies Closed', historical_closed[1]])
